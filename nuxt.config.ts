@@ -1,5 +1,5 @@
-import Components from "unplugin-vue-components/vite";
-import { NaiveUiResolver } from "unplugin-vue-components/resolvers";
+import Components from "unplugin-vue-components/vite"
+import { NaiveUiResolver } from "unplugin-vue-components/resolvers"
 export default defineNuxtConfig({
   ssr: false,
   devtools: { enabled: false },
@@ -21,28 +21,32 @@ export default defineNuxtConfig({
       },
     },
   },
-  plugins: [
-    '~/plugins/pinia.ts',
-  ],
+  plugins: ["~/plugins/pinia.ts"],
   runtimeConfig: {
     public: {
-      apiURL: 'http://localhost:8000/api/',
-      apiURLUnSlashed: 'http://localhost:8000/api',
+      // apiURL: 'http://localhost:8000/api/',
+      // apiURLUnSlashed: 'http://localhost:8000/api',
 
-      rootURL: 'http://localhost:8000/',
-      rootURLUnSlashed: 'http://localhost:8000',
-    }
+      // rootURL: 'http://localhost:8000/',
+      // rootURLUnSlashed: 'http://localhost:8000',
+
+      apiURL: "http://web.venture-tools.klonotech.com/api/",
+      apiURLUnSlashed: "http://web.venture-tools.klonotech.com/api",
+
+      rootURL: "http://web.venture-tools.klonotech.com/",
+      rootURLUnSlashed: "http://web.venture-tools.klonotech.com",
+    },
   },
 
-  compatibilityDate: '2025-01-04',
+  compatibilityDate: "2025-01-04",
 
-  modules: ['@nuxtjs/color-mode'],
+  modules: ["@nuxtjs/color-mode"],
 
   alias: {
-    '@/stores': '~/stores',
+    "@/stores": "~/stores",
   },
 
   colorMode: {
-    classSuffix: ''
-  }
+    classSuffix: "",
+  },
 })
