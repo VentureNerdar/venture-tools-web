@@ -1,0 +1,16 @@
+{
+  "cSpell.words": [
+    "unplugin"
+  ],
+  "editor.defaultFormatter": "Vue.volar",
+  "editor.tabSize": 2,
+  "javascript.format.semicolons": "remove",
+  "[typescript]": {
+    "editor.defaultFormatter": "vscode.typescript-language-features"
+  },
+  "typescript.format.semicolons": "remove",
+  "editor.tokenColorCustomizations": {
+    "comments": "",
+    "textMateRules": []
+  }
+}
