@@ -32,7 +32,7 @@
         <n-flex justify="center" style="margin-bottom: 10px">
           <n-flex vertical justify="center">
             <div
-              v-for="item in bottomNavigation"
+              v-for="item in userBottomNav"
               :key="item.title"
               :to="item.link"
               :icon="item.icon"
@@ -69,6 +69,9 @@ import {
 import { PrayingHands } from "@vicons/fa"
 
 import { useAuthStore } from "~/stores/useAuthStore"
+import { useLanguagesStore } from "~/stores/useLanguagesStore"
+import { useSettingStore } from "~/stores/useSettingsStore"
+import { storeToRefs } from "pinia"
 
 // Define a type for a navigation item
 interface NavigationItem {
@@ -119,11 +122,25 @@ const navItems = [
   },
 ] as NavigationItem[]
 
-const userRoledNavItems = computed(() =>
-  navItems.filter((item) => item.roles.includes(auth.authUser.user_role_id)),
+const words = useLanguagesStore().words
+const usrPreferLang = useSettingStore().currentPreferredLanguage
+const helpers = useHelpers();
+const translatedWord = (key: string) => {
+  return helpers.getTranslatedWord(usrPreferLang.value.translations, words, key);
+};
+
+const userRoledNavItems = computed(() =>{
+  return navItems
+    .filter(item => item.roles.includes(auth.authUser.user_role_id))
+    .map(item => ({
+      ...item,
+      title: translatedWord(item.title.toLowerCase())
+    }))
+  }
 )
 
 const handleLogout = async () => {
+
   await auth.logout()
 }
 
@@ -143,6 +160,20 @@ const bottomNavigation = shallowRef([
     onClick: handleLogout,
   },
 ])
+const userBottomNav = computed(() => {
+  return bottomNavigation.value.map(item => {
+ 
+    const translationKey =
+      item.title === 'Logout'
+        ? 'log_out'
+        : item.title.toLowerCase()
+
+    return {
+      ...item,
+      title: translatedWord(translationKey)
+    }
+  })
+})
 </script>
 
 <style lang="scss" scoped>

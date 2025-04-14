@@ -4,7 +4,7 @@
       <div>
 
         <div class="brand">
-          Venture Tools
+          {{ translatedWord('venture_tool') }}
         </div>
 
         <span class="page-name">
@@ -14,6 +14,7 @@
 
       <div class="controls">
       </div>
+      <FormPartialsLanguageSwitcher />
     </n-flex>
   </div>
 </template>
@@ -22,8 +23,20 @@
   lang="ts"
   setup
 >
+import { useLanguagesStore } from '~/stores/useLanguagesStore'
+import { useSettingStore } from '~/stores/useSettingsStore'
+
 
   const route = useRoute()
+  // Language Switching
+  const words = useLanguagesStore().words
+  const usrPreferLang = useSettingStore().currentPreferredLanguage
+  const helpers = useHelpers();
+  const translatedWord = (key: string) => {
+    return helpers.getTranslatedWord(usrPreferLang.value.translations, words, key);
+  };
+  // e.o Language Switching
+
 
   const pageName = computed(() => {
     const page = route.fullPath.split('/')[1]
@@ -31,9 +44,9 @@
     if (page.startsWith('settings')) {
       const query = page.split('?')[1]
       const settingType = query.split('=')[1].replaceAll('_', ' ')
-      return 'Settings > ' + settingType
+      return `${translatedWord('settings')} > ${translatedWord(settingType.trim())}`
     } else {
-      return page
+      return translatedWord(page)
     }
 
   });

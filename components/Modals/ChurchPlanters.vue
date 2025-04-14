@@ -1,6 +1,6 @@
 <template>
   <n-space :size="10" vertical>
-    <div>Church Planters</div>
+    <div>{{ translatedWord('church_planters') }}</div>
     <n-flex justify="space-between">
       <div>
         <n-scrollbar x-scrollable>
@@ -16,7 +16,7 @@
                 {{ cp.name }}
               </n-tag>
             </n-space>
-            <n-text depth="3" v-else><i>No Church Planters</i></n-text>
+            <n-text depth="3" v-else><i>{{ translatedWord('no_church_planters') }}</i></n-text>
           </div>
         </n-scrollbar>
       </div>
@@ -53,7 +53,7 @@
       <n-space vertical :size="10">
         <n-input
           size="small"
-          placeholder="Search church planters by name"
+          :placeholder="translatedWord('search_church_planters_by_name')"
           v-model:value="d.value"
           clearable
           @keypress.enter="m.consume.search"
@@ -116,7 +116,7 @@
               size="small"
               @click="m.handle.click.btn.close"
             >
-              Close
+              {{ translatedWord('close') }}
             </n-button>
           </n-space>
         </n-flex>
@@ -128,6 +128,8 @@
 <script lang="ts" setup>
 import { PlusRound, CloseRound } from "@vicons/material"
 import { useConsumeApi } from "~/composables/useConsumeApi"
+import { useLanguagesStore } from "~/stores/useLanguagesStore"
+import { useSettingStore } from "~/stores/useSettingsStore"
 import { RoutePaths, type BrowseConditionAll } from "~/types/index.d"
 
 const p = defineProps<{
@@ -135,6 +137,14 @@ const p = defineProps<{
 }>()
 
 const emit = defineEmits(["addedChurchPlanter", "removedChurchPlanter"])
+// Language Switching
+const words = useLanguagesStore().words
+const usrPreferLang = useSettingStore().currentPreferredLanguage
+const helpers = useHelpers();
+const translatedWord = (key: string) => {
+  return helpers.getTranslatedWord(usrPreferLang.value.translations, words, key);
+};
+// e.o Language Switching
 
 const consume = {
   churchPlanter: useConsumeApi(RoutePaths.USERS),
@@ -150,7 +160,7 @@ const d = reactive({
   addedChurchPlanters: [] as any,
 
   modal: {
-    title: "Add Church Planter",
+    title: translatedWord('add_church_planter'),
   },
 })
 

@@ -111,7 +111,11 @@ const tasks: Task[] = [
       key: "languages",
       storeState: useLanguagesStore().languages,
     } as StoreOptions,
-    query,
+    // query,
+    {
+      ...query,
+      with: JSON.stringify(["translations"]),
+    },
   ],
 
   [
@@ -120,7 +124,7 @@ const tasks: Task[] = [
     "languageWords",
     {
       ...d.defaultStoreOptions,
-      key: "words",
+      key: "languageWords",
       storeState: useLanguagesStore().words,
     } as StoreOptions,
     query,

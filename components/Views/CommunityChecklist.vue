@@ -1,7 +1,7 @@
 <template>
   <div>
     <n-space :size="10" vertical>
-      <h2>Community Checklist. Need to change</h2>
+      <h2>{{ translatedWord('community_checklist.need_to_change') }}</h2>
 
       <n-alert v-if="data.deleted_at !== null" type="error">
         <template #icon>
@@ -9,13 +9,13 @@
             <DeleteRound />
           </n-icon>
         </template>
-        This community checklist is in trash.
+        {{ translatedWord('this_community_checklist_is_in_trash') }}
       </n-alert>
 
       <n-table :single-line="false">
         <tbody>
           <tr>
-            <td><b>Name :</b> &nbsp; {{ data.name }}</td>
+            <td><b>{{ translatedWord('name') }} :</b> &nbsp; {{ data.name }}</td>
           </tr>
         </tbody>
       </n-table>
@@ -24,15 +24,15 @@
         <tbody>
           <tr>
             <td>
-              <b>Created At</b> &nbsp;
+              <b>{{ translatedWord('created_at') }}</b> &nbsp;
               <n-text tag="div" code>{{ data.created_at }}</n-text>
             </td>
             <td>
-              <b>Updated At</b> &nbsp;
+              <b>{{ translatedWord('updated_at') }} At</b> &nbsp;
               <n-text tag="div" code>{{ data.updated_at }}</n-text>
             </td>
             <td>
-              <b>Deleted At</b> &nbsp;
+              <b>{{ translatedWord('deleted_at') }}</b> &nbsp;
               <n-text tag="div" code>{{
                 data.deleted_at ? data.deleted_at : "N/A"
               }}</n-text>
@@ -47,9 +47,18 @@
 <script lang="ts" setup>
 import { DeleteRound } from "@vicons/material"
 import { useLanguagesStore } from "~/stores/useLanguagesStore"
+import { useSettingStore } from "~/stores/useSettingsStore"
 import { useUserStore } from "~/stores/useUsersStore"
 
 const emit = defineEmits(["modalTitle"])
+// Language Switching
+const words = useLanguagesStore().words
+const usrPreferLang = useSettingStore().currentPreferredLanguage
+const helpers = useHelpers();
+const translatedWord = (key: string) => {
+  return helpers.getTranslatedWord(usrPreferLang.value.translations, words, key);
+};
+// e.o Language Switching
 
 const p = withDefaults(
   defineProps<{

@@ -2,7 +2,7 @@
   <n-form
     ref="formRef"
     :model="d.model"
-    :rules="rules"
+    :rules="translatedRules"
     label-placement="top"
     size="small"
     label-width="150px"
@@ -11,9 +11,9 @@
     <!-- Name -->
     <n-form-item
       path="name"
-      label="Name"
+      :label="translatedWord('name')"
     >
-      <n-input v-model:value="d.model.name" />
+      <n-input v-model:value="d.model.name" :placeholder="translatedWord('please_input')" />
     </n-form-item> <!-- e.o Name -->
 
   </n-form>
@@ -39,6 +39,7 @@
   // mostly for computes
   import { useUserStore } from '~/stores/useUsersStore'
   import { useLanguagesStore } from '~/stores/useLanguagesStore'
+  import { useSettingStore } from '~/stores/useSettingsStore'
   // e.o Imports
 
 
@@ -50,6 +51,15 @@
   const module = modules.communicationPlatforms
 
   const emit = defineEmits(['formChanged'])
+
+  // Language Switching
+  const words = useLanguagesStore().words
+  const usrPreferLang = useSettingStore().currentPreferredLanguage
+  const helpers = useHelpers();
+  const translatedWord = (key: string) => {
+    return helpers.getTranslatedWord(usrPreferLang.value.translations, words, key);
+  };
+  // e.o Language Switching
 
 
   // props
@@ -75,6 +85,29 @@
    * Its spreaded from the {@link Module}
    */
   const rules: FormRules = { ...module.form.rules }
+  const toSnakeCase = (str: string) => {
+  return str
+    .toLowerCase()
+    .replace(/[.\s]+/g, '_')
+    .replace(/^_+|_+$/g, '');
+  };
+
+
+  const translatedRules = computed(() => {
+    const result: Record<string, any[]> = {};
+
+    for (const key in rules) {
+      result[key] = (rules[key] as FormRules[]).map((rule:any) => {
+        
+        return {
+          ...rule,
+          message: translatedWord(toSnakeCase(rule.message)),
+        };
+      });
+    }
+
+    return result;
+  })
 
   /** Model Ref
    * It is defined to whether create or edit.

@@ -2,7 +2,7 @@
   <n-form
     ref="formRef"
     :model="d.model"
-    :rules="rules"
+    :rules="translatedRules"
     label-placement="top"
     size="small"
     label-width="150px"
@@ -11,13 +11,13 @@
       <n-card size="small">
         <n-grid x-gap="10" :cols="4">
           <n-gi>
-            <n-form-item path="is_active" label="Is Active">
+            <n-form-item path="is_active" :label="translatedWord('is_active')">
               <n-switch v-model:value="d.model.is_active"></n-switch>
             </n-form-item>
           </n-gi>
 
           <n-gi>
-            <n-form-item path="assigned_to" label="Assigned To">
+            <n-form-item path="assigned_to" :label="translatedWord('assigned_to')">
               <n-select
                 :loading="d.loading.assignedTo"
                 filterable
@@ -29,8 +29,7 @@
               >
                 <template #action>
                   <n-text :depth="3">
-                    Loading maximum 20 users. Type in the name of the user to
-                    search.
+                    {{ translatedWord('loading_maximum_20_users._type_in_the_name_of_the_user_to_search') }}
                   </n-text>
                 </template>
               </n-select>
@@ -39,10 +38,10 @@
 
           <n-gi>
             <!-- Parent Church -->
-            <n-form-item path="community_id" label="Community">
+            <n-form-item path="community_id" :label="translatedWord('community')">
               <n-select
                 v-model:value="d.model.community_id"
-                placeholder="Select a community"
+                :placeholder="translatedWord('select_a_community')"
                 filterable
                 clearable
                 remote
@@ -67,20 +66,21 @@
         <n-grid :cols="5" x-gap="10">
           <n-gi span="2">
             <!-- Name -->
-            <n-form-item path="name" label="Church Name">
+            <n-form-item path="name" :label="translatedWord('church_name')">
               <n-input
                 v-model:value="d.model.name"
-                placeholder="Enter church name"
+                :placeholder="translatedWord('enter_church_name')"
               />
             </n-form-item>
             <!-- e.o Name -->
 
             <!-- Description -->
-            <n-form-item path="description" label="Description">
+            <n-form-item path="description" :label="translatedWord('description')">
               <n-input
                 v-model:value="d.model.description"
                 type="textarea"
                 :rows="4"
+                :placeholder="translatedWord('please_input')"
               />
             </n-form-item>
             <!-- e.o Description -->
@@ -88,10 +88,10 @@
 
           <n-gi>
             <!-- Parent Church -->
-            <n-form-item path="parent_church_id" label="Parent Church">
+            <n-form-item path="parent_church_id" :label="translatedWord('parent_church')">
               <n-select
                 v-model:value="d.model.parent_church_id"
-                placeholder="Select a parent church if any"
+                :placeholder="translatedWord('select_a_parent_church_if_any')"
                 filterable
                 clearable
                 remote
@@ -103,21 +103,21 @@
             <!-- e.o Parent Church -->
 
             <!-- Website -->
-            <n-form-item path="website" label="Church Website">
+            <n-form-item path="website" :label="translatedWord('church_website')">
               <n-input
                 v-model:value="d.model.website"
-                placeholder="Enter church website"
+                :placeholder="translatedWord('enter_church_website')"
               />
             </n-form-item>
             <!-- e.o Website -->
 
             <!-- Founded At -->
-            <n-form-item path="founded_at" label="Founded At">
+            <n-form-item path="founded_at" :label="translatedWord('founded_at')">
               <n-date-picker
                 v-model:value="d.model.founded_at"
                 value-format="yyyy-MM-dd HH:mm:ss"
                 format="dd MMM yyyy"
-                placeholder="Select a date"
+                :placeholder="translatedWord('select_a_date')"
                 style="width: 100%"
                 :input-readonly="true"
               />
@@ -126,26 +126,26 @@
 
           <n-gi>
             <!-- Denomination -->
-            <n-form-item path="denomination" label="Denomination">
+            <n-form-item path="denomination" :label="translatedWord('denomination')">
               <n-select
                 v-model:value="d.model.denomination_id"
-                placeholder="Select a church denomination"
+                :placeholder="translatedWord('select_a_church_denomination')"
                 :options="d.options.denominations"
               />
             </n-form-item>
             <!-- e.o Denomination -->
 
             <!-- Phone -->
-            <n-form-item path="phone_number" label="Church Phone Number">
+            <n-form-item path="phone_number" :label="translatedWord('church_phone_number')">
               <n-input
                 v-model:value="d.model.phone_number"
-                placeholder="Enter church phone number"
+                :placeholder="translatedWord('enter_church_phone_number')"
               />
             </n-form-item>
             <!-- e.o Phone -->
 
             <!-- Is Visited -->
-            <n-form-item path="is_visited" label="Is Visited">
+            <n-form-item path="is_visited" :label="translatedWord('is_visited')">
               <n-switch v-model:value="d.model.is_visited"></n-switch>
             </n-form-item>
             <!-- e.o Is Visited -->
@@ -154,36 +154,39 @@
           <n-gi>
             <n-form-item
               path="church_members_count"
-              label="Church Members Count"
+              :label="translatedWord('church_members_count')"
             >
               <n-input-number
                 v-model:value="d.model.church_members_count"
                 clearable
+                :placeholder="translatedWord('please_input')"
               />
             </n-form-item>
 
             <n-form-item
               path="confession_of_faith_count"
-              label="Confession of Faith Count"
+              :label="translatedWord('confession_of_faith_count')"
             >
               <n-input-number
                 v-model:value="d.model.confession_of_faith_count"
                 clearable
+                :placeholder="translatedWord('please_input')"
               />
             </n-form-item>
 
-            <n-form-item path="baptized_count" label="Baptized Count">
-              <n-input-number v-model:value="d.model.baptism_count" clearable />
+            <n-form-item path="baptized_count" :label="translatedWord('baptized_count')">
+              <n-input-number v-model:value="d.model.baptism_count" clearable :placeholder="translatedWord('please_input')" />
             </n-form-item>
           </n-gi>
         </n-grid>
       </n-card>
 
       <n-card size="small">
-        <n-form-item path="current_prayers" label="Current Prayers">
+        <n-form-item path="current_prayers" :label="translatedWord('current_prayers')">
           <n-input
             v-model:value="d.model.current_prayers"
             type="textarea"
+            :placeholder="translatedWord('please_input')"
             :rows="4"
           />
         </n-form-item>
@@ -207,6 +210,8 @@ import type { ChurchFormModel } from "~/types/index.d"
 import { useConsumeApi } from "~/composables/useConsumeApi"
 import { useAuthStore } from "~/stores/useAuthStore"
 import { useDenominationStore } from "~/stores/useDenominationsStore"
+import { useSettingStore } from "~/stores/useSettingsStore"
+import { useLanguagesStore } from "~/stores/useLanguagesStore"
 // e.o Imports
 
 // mandatory . defining a model ref type. change the ref
@@ -226,6 +231,17 @@ const consume = {
 }
 
 const emit = defineEmits(["formChanged"])
+
+// Language Switching
+const words = useLanguagesStore().words
+const usrPreferLang = useSettingStore().currentPreferredLanguage
+const helpers = useHelpers();
+const translatedWord = (key: string) => {
+  return helpers.getTranslatedWord(usrPreferLang.value.translations, words, key);
+};
+// e.o Language Switching
+
+
 
 // props
 // Self Ref : Need to change editData form model type
@@ -253,6 +269,31 @@ const formRef = ref<FormInst | null>(null)
  * Its spreaded from the {@link Module}
  */
 const rules: FormRules = { ...module.form.rules }
+
+ const toSnakeCase = (str: string) => {
+  return str
+    .toLowerCase()
+    .replace(/[.\s]+/g, '_')
+    .replace(/^_+|_+$/g, '');
+};
+
+
+const translatedRules = computed(() => {
+  const result: Record<string, any[]> = {};
+
+  for (const key in rules) {
+    result[key] = (rules[key] as FormRules[]).map((rule:any) => {
+      
+      return {
+        ...rule,
+        message: translatedWord(toSnakeCase(rule.message)),
+      };
+    });
+  }
+
+  return result;
+});
+
 
 /** Model Ref
  * It is defined to whether create or edit.

@@ -2,7 +2,7 @@
   <n-form
     ref="formRef"
     :model="d.model"
-    :rules="rules"
+    :rules="translatedRules"
     label-placement="top"
     size="small"
     label-width="150px"
@@ -11,24 +11,24 @@
       <n-grid x-gap="10" :cols="4">
         <!-- Name -->
         <n-gi span="2">
-          <n-form-item path="name" label="Name">
-            <n-input v-model:value="d.model.name" />
+          <n-form-item path="name" :label="translatedWord('name')">
+            <n-input v-model:value="d.model.name" :placeholder="translatedWord('please_input')" />
           </n-form-item>
         </n-gi>
         <!-- e.o Name -->
 
         <!-- Longitude -->
         <n-gi>
-          <n-form-item path="location_longitude" label="Longitude">
-            <n-input v-model:value="d.model.location_longitude" />
+          <n-form-item path="location_longitude" :label="translatedWord('longitude')">
+            <n-input v-model:value="d.model.location_longitude" :placeholder="translatedWord('please_input')" />
           </n-form-item>
         </n-gi>
         <!-- e.o Longitude -->
 
         <!-- Latitude -->
         <n-gi>
-          <n-form-item path="location_latitude" label="Latitude">
-            <n-input v-model:value="d.model.location_latitude" />
+          <n-form-item path="location_latitude" :label="translatedWord('latitude')">
+            <n-input v-model:value="d.model.location_latitude" :placeholder="translatedWord('please_input')" />
           </n-form-item>
         </n-gi>
         <!-- e.o Latitude -->
@@ -70,7 +70,7 @@
               <n-checkbox
                 v-model:checked="d.model.conducted_survey_of_community_needs"
               >
-                Conducted Survey Of Community Needs
+                {{ translatedWord('conducted_survey_of_community_needs') }}
               </n-checkbox>
 
               <n-input
@@ -78,35 +78,36 @@
                 :disabled="
                   d.model.conducted_survey_of_community_needs ? false : true
                 "
-                placeholder="Community Needs 1"
+                :placeholder="translatedWord('community_needs') + ' 1'"
               />
               <n-input
                 v-model:value="d.model.community_needs_2"
                 :disabled="
                   d.model.conducted_survey_of_community_needs ? false : true
                 "
-                placeholder="Community Needs 2"
+                :placeholder="translatedWord('community_needs') + ' 2'"
               />
               <n-input
                 v-model:value="d.model.community_needs_3"
                 :disabled="
                   d.model.conducted_survey_of_community_needs ? false : true
                 "
-                placeholder="Community Needs 3"
+                :placeholder="translatedWord('community_needs') + ' 3'"
               />
               <n-input
                 v-model:value="d.model.community_needs_4"
                 :disabled="
                   d.model.conducted_survey_of_community_needs ? false : true
                 "
-                placeholder="Community Needs 4"
+                :placeholder="translatedWord('community_needs') + ' 4'"
               />
               <n-input
                 v-model:value="d.model.community_needs_5"
                 :disabled="
                   d.model.conducted_survey_of_community_needs ? false : true
                 "
-                placeholder="Community Needs 5"
+
+                :placeholder="translatedWord('community_needs') + ' 5'"
               />
             </n-space>
           </n-card>
@@ -117,7 +118,7 @@
             <template #header>
               <div>
                 <b>
-                  Churches :
+                  {{ translatedWord('churches') }} :
                   {{ d.model.churches ? d.model.churches.length : "" }}
                 </b>
               </div>
@@ -149,6 +150,8 @@ import modules from "~/utils/modules"
 
 // mandatory . variable form model types.
 import type { CommunityChecklistFormModel, CommunityFormModel } from "~/types"
+import { useLanguagesStore } from "~/stores/useLanguagesStore"
+import { useSettingStore } from "~/stores/useSettingsStore"
 
 // optional . modular imports based on what the module form need
 // mostly for computes
@@ -161,6 +164,14 @@ type ModelRefType = Ref<CommunityFormModel>
 const module = modules.communities
 
 const emit = defineEmits(["formChanged"])
+// Language Switching
+const words = useLanguagesStore().words
+const usrPreferLang = useSettingStore().currentPreferredLanguage
+const helpers = useHelpers();
+const translatedWord = (key: string) => {
+  return helpers.getTranslatedWord(usrPreferLang.value.translations, words, key);
+};
+// e.o Language Switching
 
 // props
 // Self Ref : Need to change editData form model type
@@ -188,6 +199,30 @@ const formRef = ref<FormInst | null>(null)
  * Its spreaded from the {@link Module}
  */
 const rules: FormRules = { ...module.form.rules }
+
+ const toSnakeCase = (str: string) => {
+  return str
+    .toLowerCase()
+    .replace(/[.\s]+/g, '_')
+    .replace(/^_+|_+$/g, '');
+};
+
+
+const translatedRules = computed(() => {
+  const result: Record<string, any[]> = {};
+
+  for (const key in rules) {
+    result[key] = (rules[key] as FormRules[]).map((rule:any) => {
+      
+      return {
+        ...rule,
+        message: translatedWord(toSnakeCase(rule.message)),
+      };
+    });
+  }
+
+  return result;
+});
 
 /** Model Ref
  * It is defined to whether create or edit.

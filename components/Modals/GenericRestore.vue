@@ -13,7 +13,7 @@
       </n-button>
     </template>
 
-    Restore
+    {{ translatedWord('restore') }}
   </n-tooltip>
 </template>
 
@@ -23,9 +23,19 @@
 >
   import { RestorePageRound } from '@vicons/material'
   import { useDialog } from 'naive-ui'
+  import { useLanguagesStore } from '~/stores/useLanguagesStore'
+  import { useSettingStore } from '~/stores/useSettingsStore'
   import { RoutePaths } from '~/types/index.d'
 
   const emit = defineEmits(['restoreProgress'])
+  // Language Switching
+  const words = useLanguagesStore().words
+  const usrPreferLang = useSettingStore().currentPreferredLanguage
+  const helpers = useHelpers();
+  const translatedWord = (key: string) => {
+    return helpers.getTranslatedWord(usrPreferLang.value.translations, words, key);
+  };
+// e.o Language Switching
 
   const p = withDefaults(defineProps<{
     model: RoutePaths,

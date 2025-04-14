@@ -4,13 +4,13 @@
     <n-spin :show="d.loading.page">
       <GenericsActionBar>
         <template #left>
-          <b>Manage System Languages</b>
+          <b>{{ translatedWord('manage_system_languages') }}</b>
         </template>
 
         <template #right>
           <div>
             <n-select
-              placeholder="Select Language"
+              :placeholder="translatedWord('select_language')"
               v-model:value="selectedLanguage"
               :options="languageOptions"
               style="width: 200px;"
@@ -28,7 +28,7 @@
           <n-input-group>
             <n-input
               type="text"
-              placeholder="Search Word"
+              :placeholder="translatedWord('search_word')"
               clearable
               size="small"
               @input="m.handle.change.searchInput"
@@ -48,7 +48,7 @@
                 </n-button>
 
               </template>
-              Create Word
+              {{ translatedWord('create_word') }}
             </n-tooltip>
 
 
@@ -63,7 +63,7 @@
               <tr>
                 <th width="470px">Word</th>
                 <th style="width: 120px; text-align: center;"></th>
-                <th style="width: 50%;">Translation</th>
+                <th style="width: 50%;">{{ translatedWord('translation') }}</th>
               </tr>
             </thead>
 
@@ -102,7 +102,7 @@
                 <td>
                   <n-input
                     type="text"
-                    placeholder="Input a translated word"
+                    :placeholder="translatedWord('input_a_translated_word')"
                     :value="m.getTranslatedWord(word.id)"
                     :disabled="!selectedLanguage"
                     size="small"
@@ -136,8 +136,18 @@
   import { RoutePaths } from '~/types/index.d'
   import type { StoreOptions } from '~/types/index.d'
   import { useLanguagesStore } from '~/stores/useLanguagesStore'
+import { useSettingStore } from '~/stores/useSettingsStore'
 
   const selectedLanguage = ref(null)
+
+      // Language Switching
+  const words = useLanguagesStore().words
+  const usrPreferLang = useSettingStore().currentPreferredLanguage
+  const helpers = useHelpers();
+  const translatedWord = (key: string) => {
+    return helpers.getTranslatedWord(usrPreferLang.value.translations, words, key);
+  };
+  // e.o Language Switching
 
   const models = {
     languages: RoutePaths.LANGUAGES,
@@ -185,7 +195,7 @@
 
       const languageResponse = await u.consumeLanguages.browse({
         all: true,
-        with: ['translations'],
+        with: JSON.stringify(["translations"]),
       }, d.languagesStoreOptions)
 
       d.data.languages = languageResponse as any

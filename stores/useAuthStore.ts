@@ -29,7 +29,7 @@ type Credentials = {
 export const useAuthStore = defineStore("auth", () => {
   const config = useRuntimeConfig()
   const user = ref<User | null>(null)
-  let authUser = JSON.parse(localStorage.getItem("authUser") || "{}")
+  let authUser = ref(JSON.parse(localStorage.getItem("authUser") || "{}"))
   const token = ref(localStorage.getItem("Bearer") || "")
 
   async function fetchUser() {
@@ -61,6 +61,7 @@ export const useAuthStore = defineStore("auth", () => {
 
     if (response) {
       user.value = response as User
+      authUser.value = response as User
       localStorage.setItem("authUser", JSON.stringify(response) as string)
     }
   }

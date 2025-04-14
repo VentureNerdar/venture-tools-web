@@ -8,39 +8,39 @@
       style="height: calc(100vh - 100px)"
       @update:value="m.handleTabChange"
     >
-      <n-tab-pane name="users" tab="Users" class="tab">
+      <n-tab-pane name="users" :tab="translatedWord('users')" class="tab">
         <SettingsUsers />
       </n-tab-pane>
 
       <n-tab-pane
         name="communication_Platforms"
-        tab="Communication Platforms"
+        :tab="translatedWord('communication_platforms')"
         class="tab"
       >
         <SettingsCommunicationPlatforms />
       </n-tab-pane>
 
-      <n-tab-pane name="faith_milestones" tab="Faith Milestones" class="tab">
+      <n-tab-pane name="faith_milestones" :tab="translatedWord('faith_milestones')" class="tab">
         <SettingsFaithMilestones />
       </n-tab-pane>
 
-      <n-tab-pane name="people_groups" tab="People Groups" class="tab">
+      <n-tab-pane name="people_groups" :tab="translatedWord('people_group')" class="tab">
         <SettingsPeopleGroups />
       </n-tab-pane>
 
-      <n-tab-pane name="denominations" tab="Denominations" class="tab">
+      <n-tab-pane name="denominations" :tab="translatedWord('denominations')" class="tab">
         <SettingsDenominations />
       </n-tab-pane>
 
       <n-tab-pane
         name="community_checklists"
-        tab="Community Checklists"
+        :tab="translatedWord('community_checklists')"
         class="tab"
       >
         <SettingsCommunityChecklists />
       </n-tab-pane>
 
-      <n-tab-pane name="languages" tab="Languages" class="tab">
+      <n-tab-pane name="languages" :tab="translatedWord('languages')" class="tab">
         <SettingsLanguages />
       </n-tab-pane>
     </n-tabs>
@@ -48,8 +48,20 @@
 </template>
 
 <script lang="ts" setup>
+import { useLanguagesStore } from '~/stores/useLanguagesStore'
+import { useSettingStore } from '~/stores/useSettingsStore'
+
 const route = useRoute()
 const router = useRouter()
+
+// Language Switching
+const words = useLanguagesStore().words
+const usrPreferLang = useSettingStore().currentPreferredLanguage
+const helpers = useHelpers();
+const translatedWord = (key: string) => {
+  return helpers.getTranslatedWord(usrPreferLang.value.translations, words, key);
+};
+// e.o Language Switching
 
 const d = reactive({
   currentTab: route.query.settingType as string,

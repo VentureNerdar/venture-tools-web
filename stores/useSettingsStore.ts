@@ -1,8 +1,13 @@
 import { defineStore } from 'pinia'
+import type { LanguageFormModel } from '~/types'
 
 export const useSettingStore = defineStore('setting', () => {
   const statuses = JSON.parse(localStorage.getItem('statuses') || '{}')
+  const userPreferredLanguage = ref<LanguageFormModel>(
+    JSON.parse(localStorage.getItem('user_preferred_language') || 'null')
+  )
 
+  const currentPreferredLanguage = computed(() => userPreferredLanguage)
   const contactStatuses = computed(() => statuses.filter((s: any) => s.type === 'contact'))
   const groupStatuses = computed(() => statuses.filter((s: any) => s.type === 'group'))
   const faithStatuses = computed(() => statuses.filter((s: any) => s.type === 'faith_status'))
@@ -20,5 +25,13 @@ export const useSettingStore = defineStore('setting', () => {
     genders: [{ label: 'Male', value: 'male' }, { label: 'Female', value: 'female' }],
   }))
 
-  return { statuses, contactStatuses, groupStatuses, faithStatuses, options }
+  function setUserPreferredLanguage(lang: LanguageFormModel) {
+    userPreferredLanguage.value = lang
+    localStorage.setItem(
+      'user_preferred_language',
+      JSON.stringify(lang)
+    )
+  }
+
+  return { statuses, contactStatuses, groupStatuses, faithStatuses, options, userPreferredLanguage, setUserPreferredLanguage, currentPreferredLanguage }
 })

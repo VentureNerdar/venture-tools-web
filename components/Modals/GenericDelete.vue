@@ -15,7 +15,7 @@
       </n-button>
     </template>
 
-    {{ p.permanent ? 'Delete Permanently' : 'Trash' }}
+    {{ p.permanent ? translatedWord('delete_permanently') : translatedWord('trash') }}
   </n-tooltip>
 </template>
 
@@ -25,9 +25,19 @@
 >
   import { DeleteRound, DeleteForeverRound } from '@vicons/material'
   import { useDialog } from 'naive-ui'
+  import { useLanguagesStore } from '~/stores/useLanguagesStore'
+  import { useSettingStore } from '~/stores/useSettingsStore'
   import { RoutePaths } from '~/types/index.d'
 
   const emit = defineEmits(['deleteProgress'])
+  // Language Switching
+  const words = useLanguagesStore().words
+  const usrPreferLang = useSettingStore().currentPreferredLanguage
+  const helpers = useHelpers();
+  const translatedWord = (key: string) => {
+    return helpers.getTranslatedWord(usrPreferLang.value.translations, words, key);
+  };
+  // e.o Language Switching
 
   const p = withDefaults(defineProps<{
     permanent?: boolean
@@ -43,10 +53,10 @@
   const m = {
     handleDelete() {
       dialog.warning({
-        title: 'Confirm deletion' + p.id,
-        content: 'Are you sure? You cannot undo this action afterwards.',
-        positiveText: 'Confirm Delete',
-        negativeText: 'Cancel',
+        title: translatedWord('confirm_deletion') + p.id,
+        content: translatedWord('are_you_sure_you_cannot_undo_this_action_afterwards'),
+        positiveText: translatedWord('confirm_delete'),
+        negativeText: translatedWord('cancel'),
         closeOnEsc: true,
         transformOrigin: 'center',
         positiveButtonProps: {

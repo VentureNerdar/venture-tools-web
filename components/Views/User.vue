@@ -13,14 +13,14 @@
             <DeleteRound />
           </n-icon>
         </template>
-        This user is in trash.
+        {{ translatedWord('this_user_is_in_trash') }}
       </n-alert>
 
       <n-table :single-line="false">
         <tbody>
           <tr>
             <td>
-              <b>Name :</b> &nbsp;
+              <b>{{ translatedWord('name') }} :</b> &nbsp;
               <n-text type="info">
                 <b>{{ data.name }} </b> &nbsp;
                 <n-tag
@@ -28,7 +28,7 @@
                   :bordered="false"
                   :type="data.is_active ? 'success' : 'default'"
                 >
-                  {{ data.is_active ? 'ACTIVE' : 'INACTIVE' }}
+                  {{ data.is_active ? translatedWord('active_up') : translatedWord('inactive_up') }}
                 </n-tag>
               </n-text>
               <div class="wrap-info">
@@ -45,26 +45,26 @@
           </tr>
           <tr>
             <td colspan="2">
-              <div><b>Email :</b> {{ data.email ? data.email : 'N/A' }}</div>
+              <div><b>{{ translatedWord('email') }} :</b> {{ data.email ? data.email : 'N/A' }}</div>
             </td>
           </tr>
 
           <tr>
             <td colspan="2">
-              <div><b>Phone :</b> {{ data.phone_number ? data.phone_number : 'N/A' }}</div>
+              <div><b>{{ translatedWord('phone') }} :</b> {{ data.phone_number ? data.phone_number : 'N/A' }}</div>
             </td>
           </tr>
 
           <tr>
             <td colspan="2">
-              <div><b>Biography</b></div>
+              <div><b>{{ translatedWord('biography') }}</b></div>
               <p>{{ data.biography === '' ? 'N/A' : data.biography }}</p>
             </td>
           </tr>
 
           <tr>
             <td colspan="2">
-              <div><b>Language Preference:</b> {{ m.languagePreference(data.preferred_language_id) }}</div>
+              <div><b>{{ translatedWord('language_preference') }}:</b> {{ m.languagePreference(data.preferred_language_id) }}</div>
             </td>
           </tr>
 
@@ -78,28 +78,28 @@
         <tbody>
           <tr>
             <td>
-              <b>Created At</b> &nbsp;
+              <b>{{ translatedWord('created_at') }} </b> &nbsp;
               <n-text
                 tag="div"
                 code
               >{{ data.created_at }}</n-text>
             </td>
             <td>
-              <b>Updated At</b> &nbsp;
+              <b>{{ translatedWord('updated_at') }} </b> &nbsp;
               <n-text
                 tag="div"
                 code
               >{{ data.updated_at }}</n-text>
             </td>
             <td>
-              <b>Deleted At</b> &nbsp;
+              <b>{{ translatedWord('deleted_at') }} </b> &nbsp;
               <n-text
                 tag="div"
                 code
               >{{ data.deleted_at ? data.deleted_at : 'N/A' }}</n-text>
             </td>
             <td>
-              <b>Created At</b> &nbsp;
+              <b>{{ translatedWord('created_at') }}</b> &nbsp;
               <n-text
                 tag="div"
                 code
@@ -119,9 +119,18 @@
 >
   import { DeleteRound } from '@vicons/material'
   import { useLanguagesStore } from '~/stores/useLanguagesStore'
+import { useSettingStore } from '~/stores/useSettingsStore'
   import { useUserStore } from '~/stores/useUsersStore'
 
   const emit = defineEmits(['modalTitle'])
+  // Language Switching
+  const words = useLanguagesStore().words
+  const usrPreferLang = useSettingStore().currentPreferredLanguage
+  const helpers = useHelpers();
+  const translatedWord = (key: string) => {
+    return helpers.getTranslatedWord(usrPreferLang.value.translations, words, key);
+  };
+  // e.o Language Switching
 
   const p = withDefaults(defineProps<{
     id: number,

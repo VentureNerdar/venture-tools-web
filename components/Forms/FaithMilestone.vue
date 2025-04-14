@@ -2,7 +2,7 @@
   <n-form
     ref="formRef"
     :model="d.model"
-    :rules="rules"
+    :rules="translatedRules"
     label-placement="top"
     size="small"
     label-width="150px"
@@ -13,15 +13,15 @@
     <!-- Name -->
     <n-form-item
       path="name"
-      label="Name"
+      :label="translatedWord('name')"
     >
-      <n-input v-model:value="d.model.name" />
+      <n-input v-model:value="d.model.name" :placeholder="translatedWord('please_input')" />
     </n-form-item> <!-- e.o Name -->
 
     <!-- Description -->
     <n-form-item
       path="icon"
-      label="Icon"
+      :label="translatedWord('icon')"
     >
       <n-space :size="10">
         <n-avatar
@@ -39,7 +39,7 @@
           name="icon"
           @finish="m.handle.upload.finished"
         >
-          <n-button>{{ d.model.icon !== null ? 'Change Icon' : 'Upload Icon' }}</n-button>
+          <n-button>{{ d.model.icon !== null ? translatedWord('change_icon') : translatedWord('upload_icon') }}</n-button>
         </n-upload>
       </n-space>
     </n-form-item> <!-- e.o Name -->
@@ -67,6 +67,7 @@
   // mostly for computes
   import { useUserStore } from '~/stores/useUsersStore'
   import { useLanguagesStore } from '~/stores/useLanguagesStore'
+  import { useSettingStore } from '~/stores/useSettingsStore'
   // e.o Imports
 
   const conf = useRuntimeConfig()
@@ -77,6 +78,14 @@
   // Self Ref : Need to set a module
   const module = modules.faithMilestones
   const emit = defineEmits(['formChanged', 'beingUploaded'])
+  // Language Switching
+  const words = useLanguagesStore().words
+  const usrPreferLang = useSettingStore().currentPreferredLanguage
+  const helpers = useHelpers();
+  const translatedWord = (key: string) => {
+    return helpers.getTranslatedWord(usrPreferLang.value.translations, words, key);
+  };
+  // e.o Language Switching
 
   // props
   // Self Ref : Need to change editData form model type
@@ -101,6 +110,30 @@
    * Its spreaded from the {@link Module}
    */
   const rules: FormRules = { ...module.form.rules }
+
+   const toSnakeCase = (str: string) => {
+  return str
+    .toLowerCase()
+    .replace(/[.\s]+/g, '_')
+    .replace(/^_+|_+$/g, '');
+  };
+
+
+  const translatedRules = computed(() => {
+    const result: Record<string, any[]> = {};
+
+    for (const key in rules) {
+      result[key] = (rules[key] as FormRules[]).map((rule:any) => {
+        
+        return {
+          ...rule,
+          message: translatedWord(toSnakeCase(rule.message)),
+        };
+      });
+    }
+
+    return result;
+  });
 
   /** Model Ref
    * It is defined to whether create or edit.

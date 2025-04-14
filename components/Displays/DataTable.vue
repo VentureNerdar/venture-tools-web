@@ -17,7 +17,7 @@
                   </n-icon>
                 </template>
 
-                Quick Filter
+                {{ translatedWord('quick_filter') }}
               </n-tooltip>
               &nbsp;
 
@@ -28,10 +28,10 @@
                 @update:value="m.handle.changed.quickFilter"
                 size="small"
               >
-                <n-radio-button :key="'all'" :value="'all'" :label="'All'" />
+                <n-radio-button :key="'all'" :value="'all'" :label="translatedWord('all')" />
 
                 <n-radio-button
-                  v-for="filter in p.module.options.filter.values"
+                  v-for="filter in translatedFilterValues"
                   :key="filter.value"
                   :value="filter.value"
                   :label="filter.label"
@@ -65,8 +65,8 @@
 
             <!-- SERACH -->
             <n-input
-              :placeholder="`Search in ${p.module.name.toLowerCase()} by ${p.searchByFieldName}...`"
               size="small"
+              :placeholder="`${translatedWord('search_in')} ${translatedWord(p.module.name.toLowerCase())} ${translatedWord('by')}  ${translatedWord(p.searchByFieldName)}...`"
               v-model:value="d.searchKeyword"
               :clearable="true"
               @keydown="m.handle.keydown.search"
@@ -95,11 +95,12 @@
         </n-flex>
 
         <!-- DATA TABLE -->
+          <!-- :data="d.data" -->
         <n-data-table
           ref="table"
           :columns="dataColumns"
-          :data="d.data"
           :pagination="false"
+          :data="d.data"
           :bordered="true"
           empty="asdfasdf"
           max-height="calc(100vh - 304px)"
@@ -109,6 +110,7 @@
         >
           <template #empty>
             <n-space vertical :size="10" style="text-align: center">
+            
               <n-icon :size="40">
                 <n-text :depth="3">
                   <InboxRound />
@@ -202,9 +204,40 @@ import GenericRestore from "../Modals/GenericRestore.vue"
 import GenericEdit from "../Modals/GenericEdit.vue"
 import type { Module } from "~/utils/modules"
 import GenericView from "../Modals/GenericView.vue"
+import { useSettingStore } from "~/stores/useSettingsStore"
+import { useLanguagesStore } from "~/stores/useLanguagesStore"
 
 const tableRef = ref<DataTableInst | null>(null)
 const table = tableRef
+
+const words = useLanguagesStore().words
+const usrPreferLang = useSettingStore().currentPreferredLanguage
+const helpers = useHelpers();
+const translatedWord = (key: string) => {
+  return helpers.getTranslatedWord(usrPreferLang.value.translations, words, key);
+};
+const translationTitleMap: Record<string, string> = {
+  'Name': 'name',
+  'Nickname': 'nickname',
+  'Contact Status': 'contact_status',
+  'Description': 'description',
+  'Email': 'email',
+  'Active Status': 'active_status'
+}
+
+const translationOptionsMap: Record<string, string> = {
+  'All' : 'all',
+  'Active': 'active',
+  'Paused': 'paused',
+  'Archived': 'archived',
+  'New Contact': 'new_contact',
+  'Not Ready': 'not_ready',
+  'Administrators': 'administrators',
+  'Church Planters': 'church_planters',
+  'Guest': 'guest'
+}
+
+
 
 const p = withDefaults(
   defineProps<{
@@ -220,6 +253,17 @@ const p = withDefaults(
     getAll: false,
   },
 ) // e.o p
+
+const translatedFilterValues = computed(() => {
+  return p.module.options.filter.values.map((filter:any) => {
+    const key = translationOptionsMap[filter.label]
+    return {
+      ...filter,
+      label: key ? translatedWord(key) : filter.label,
+    }
+  })
+})
+
 
 const d = reactive({
   modalForm: false as false | FormModel,
@@ -254,6 +298,8 @@ const d = reactive({
   }, // e.o defaultBrowseQuery
 }) // e.o d
 
+
+
 const u = {
   consume: useConsumeApi(p.module.routePath),
 } // e.o u
@@ -279,6 +325,7 @@ const m = {
         if (!p.getAll) {
           const res = response as { data: any; total?: number }
           d.data = res.data
+          
 
           if (res.total !== undefined) {
             d.totalItems = res.total
@@ -292,7 +339,7 @@ const m = {
       d.data = response
     }
 
-    console.log(d.data)
+    
   }, // e.o getData
 
   browse: async () => {
@@ -500,10 +547,18 @@ const m = {
   }, // e.o handle
 } // e.o m
 
-const dataColumns = computed(() => {
-  const columns = [...p.module.dataTable.columns]
 
-  columns.push({
+const dataColumns = computed(() => {
+  // const columns = [...p.module.dataTable.columns]
+    const translatedColumns = p.module.dataTable.columns.map((column: any) => {
+    // Look up a translation key based on the original title.
+    const translationKey = translationTitleMap[column.title]
+    return translationKey
+      ? { ...column, title: translatedWord(translationKey) }
+      : column
+  })
+
+  translatedColumns.push({
     key: "actions",
     width: "160px",
     align: "center",
@@ -574,7 +629,7 @@ const dataColumns = computed(() => {
     },
   })
 
-  return columns
+  return translatedColumns
 })
 
 const isFiltered = computed(() => {

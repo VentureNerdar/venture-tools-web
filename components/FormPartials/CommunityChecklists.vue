@@ -1,7 +1,7 @@
 <template>
   <n-card size="small">
     <n-space :size="10" vertical>
-      <div><b>Community Checklist</b></div>
+      <div><b>{{ translatedWord('community_checklist') }}</b></div>
       <div
         v-for="checklist in s.community.communityChecklists"
         :key="checklist.id"
@@ -22,8 +22,19 @@
 <script lang="ts" setup>
 import type { CommunityChecklistFormModel } from "~/types"
 import { useCommunityStore } from "~/stores/useCommunitiesStore"
+import { useLanguagesStore } from "~/stores/useLanguagesStore"
+import { useSettingStore } from "~/stores/useSettingsStore"
 
 const emits = defineEmits(["changed"])
+
+// Language Switching
+const words = useLanguagesStore().words
+const usrPreferLang = useSettingStore().currentPreferredLanguage
+const helpers = useHelpers();
+const translatedWord = (key: string) => {
+  return helpers.getTranslatedWord(usrPreferLang.value.translations, words, key);
+};
+// e.o Language Switching
 
 const s = {
   community: useCommunityStore(),

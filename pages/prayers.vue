@@ -4,7 +4,7 @@
       <h4 class="center-vertically">
         <n-icon :component="Church" :size="20" />
 
-        &nbsp; Planted Churches' Prayers &nbsp;
+        &nbsp; {{ translatedWord('planted_churches_prayers') }} &nbsp;
         <n-tag :bordered="false" size="small" type="info">
           {{ d.prayers.churchPlanterPrayers.length }}
         </n-tag>
@@ -36,7 +36,7 @@
     <n-gi>
       <h4 class="center-vertically">
         <n-icon :component="ChurchRound" :size="20" />
-        &nbsp; Assigned Churches' Prayers &nbsp;
+        &nbsp; {{ translatedWord('assigned_churches_prayers') }} &nbsp;
         <n-tag :bordered="false" size="small" type="info">
           {{ d.prayers.assignedToChurchPrayers.length }}
         </n-tag>
@@ -67,7 +67,7 @@
     <n-gi>
       <h4 class="center-vertically">
         <n-icon :component="PersonRound" :size="20" />
-        &nbsp; Assigned Contacts' Prayers &nbsp;
+        &nbsp; {{ translatedWord('assigned_contacts_prayers') }} &nbsp;
         <n-tag :bordered="false" size="small" type="info">
           {{ d.prayers.assignedToContactPrayers.length }}
         </n-tag>
@@ -105,6 +105,8 @@ import { Church, PrayingHands } from "@vicons/fa"
 import type { BrowseConditionAll } from "~/types/index.d"
 import { RoutePaths } from "~/types/index.d"
 import { useConsumeApi } from "~/composables/useConsumeApi"
+import { useLanguagesStore } from "~/stores/useLanguagesStore"
+import { useSettingStore } from "~/stores/useSettingsStore"
 
 type Prayers = {
   churchPlanterPrayers: any[]
@@ -115,6 +117,17 @@ type Prayers = {
 const consume = {
   prayers: useConsumeApi(RoutePaths.SETTINGS_PRAYERS),
 }
+
+// Language Switching
+const words = useLanguagesStore().words
+const usrPreferLang = useSettingStore().currentPreferredLanguage
+const helpers = useHelpers();
+const translatedWord = (key: string) => {
+  return helpers.getTranslatedWord(usrPreferLang.value.translations, words, key);
+};
+// e.o Language Switching
+
+
 
 const d = reactive({
   prayers: {} as Prayers,

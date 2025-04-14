@@ -10,48 +10,66 @@
           :rules="rules"
           size="small"
         >
-          <n-form-item label="Name" path="name">
-            <n-input v-model:value="formValue.name" placeholder="Input Name" />
+          <n-form-item
+            :label="translatedWord('name')"
+            path="name"
+          >
+            <n-input v-model:value="formValue.name" 
+            :placeholder="translatedWord('input_name')"
+            />
           </n-form-item>
 
-          <n-form-item label="Role" path="user_role_id">
+          <n-form-item
+            :label="translatedWord('role')"
+            path="user_role_id"
+          >
             <n-tag type="info">{{ authUserRoleName }}</n-tag>
           </n-form-item>
 
-          <n-form-item label="Username" path="username">
+          <n-form-item
+            :label="translatedWord('username')"
+            path="username"
+          >
             <n-input
               v-model:value="formValue.username"
-              placeholder="Input Username"
+              :placeholder="translatedWord('input_username')"
             />
           </n-form-item>
 
-          <n-form-item label="Email Address" path="email">
+          <n-form-item
+            :label="translatedWord('email_address')"
+            path="email"
+          >
             <n-input
               v-model:value="formValue.email"
-              placeholder="Input Email Address"
+              :placeholder="translatedWord('input_email_address')"
             />
           </n-form-item>
 
-          <n-form-item label="Phone Number" path="phone_number">
+          <n-form-item :label="translatedWord('phone_number')" 
+              path="phone_number">
             <n-input
               v-model:value="formValue.phone_number"
-              placeholder="Input Phone Number"
+              :placeholder="translatedWord('input_phone_number')"
             />
           </n-form-item>
 
-          <n-form-item label="Biography" path="biography">
+          <n-form-item :label="translatedWord('biography')" 
+              path="biography">
             <n-input
               v-model:value="formValue.biography"
               type="textarea"
-              placeholder="Input Biography"
+              :placeholder="translatedWord('input_biography')"
             />
           </n-form-item>
 
-          <n-form-item label="Preferred Language" path="preferred_language_id">
+          <n-form-item 
+          :label="translatedWord('preferred_language')" 
+          path="preferred_language_id">
             <n-select
               v-model:value="formValue.preferred_language_id"
               clearable
-              placeholder="Select Preferred Language"
+              :placeholder="translatedWord('select_preferred_language')"
               :options="languageOptions"
             />
           </n-form-item>
@@ -61,7 +79,7 @@
               <template #icon
                 ><n-icon :component="CloudUploadRound"
               /></template>
-              Update
+              {{translatedWord('update')}}
             </n-button>
           </n-flex>
         </n-form>
@@ -69,7 +87,7 @@
         <n-divider />
 
         <n-form-item
-          label="Change Password : "
+          :label="translatedWord('change_password')"
           label-placement="left"
           size="small"
         >
@@ -88,10 +106,20 @@ import { useLanguagesStore } from "~/stores/useLanguagesStore"
 import { CloudUploadRound } from "@vicons/material"
 
 import type { FormInst } from "naive-ui"
+import { useSettingStore } from "~/stores/useSettingsStore"
 
 const auth = useAuthStore()
 const formRef = ref<FormInst | null>(null)
 const formValue = ref({ ...(auth.authUser as any) })
+
+// Language Switching
+const words = useLanguagesStore().words
+const usrPreferLang = useSettingStore().currentPreferredLanguage
+const helpers = useHelpers();
+const translatedWord = (key: string) => {
+  return helpers.getTranslatedWord(usrPreferLang.value.translations, words, key);
+};
+// e.o Language Switching
 
 const s = {
   roles: useUserStore().userRoles,
@@ -125,7 +153,6 @@ const languageOptions = computed(() => {
 })
 
 const authUserRoleName = computed(() => {
-  console.log(s.roles)
 
   return s.roles.find((role: any) => role.id === formValue.value.user_role_id)
     ?.label

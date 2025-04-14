@@ -2,7 +2,7 @@
 
   <GenericsActionBar>
     <template #left>
-      <b>Manage Communication Platforms</b>
+      <b>{{ translatedWord('manage_communication_platforms') }}</b>
     </template>
 
     <template #right>
@@ -23,12 +23,21 @@
   setup
 >
 
-  import type { StoreOptions, FormModalOptions } from '~/types/index.d'
+  import { useLanguagesStore } from '~/stores/useLanguagesStore'
+import { useSettingStore } from '~/stores/useSettingsStore'
+import type { StoreOptions, FormModalOptions } from '~/types/index.d'
   import type { Module } from '~/utils/modules'
   import modules from '~/utils/modules'
 
   const module = modules.communicationPlatforms as Module
-
+  // Language Switching
+  const words = useLanguagesStore().words
+  const usrPreferLang = useSettingStore().currentPreferredLanguage
+  const helpers = useHelpers();
+  const translatedWord = (key: string) => {
+    return helpers.getTranslatedWord(usrPreferLang.value.translations, words, key);
+  };
+  // e.o Language Switching
   const d = reactive({
     loading: {
       page: false

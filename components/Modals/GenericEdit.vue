@@ -12,7 +12,7 @@
         </template>
       </n-button>
     </template>
-    Edit
+    {{ translatedWord('edit') }}
   </n-tooltip>
 </template>
 
@@ -21,12 +21,21 @@
   setup
 >
   import { EditRound } from '@vicons/material'
+import { useLanguagesStore } from '~/stores/useLanguagesStore'
+import { useSettingStore } from '~/stores/useSettingsStore'
   const emit = defineEmits(['editClick'])
 
   const handleClick = () => {
     emit('editClick')
   }
-
+// Language Switching
+const words = useLanguagesStore().words
+const usrPreferLang = useSettingStore().currentPreferredLanguage
+const helpers = useHelpers();
+const translatedWord = (key: string) => {
+  return helpers.getTranslatedWord(usrPreferLang.value.translations, words, key);
+};
+// e.o Language Switching
 
 
 </script>

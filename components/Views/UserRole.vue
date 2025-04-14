@@ -13,17 +13,17 @@
             <DeleteRound />
           </n-icon>
         </template>
-        This user role is in trash.
+        {{ translatedWord('this_user_role_is_in_trash') }}
       </n-alert>
 
       <n-table :single-line="false">
         <tbody>
           <tr>
             <td>
-              <b>Name :</b> &nbsp; {{ data.name }}
+              <b>{{ translatedWord('name') }} :</b> &nbsp; {{ data.name }}
             </td>
             <td>
-              <b>Label :</b> &nbsp;
+              <b>{{ translatedWord('label') }} :</b> &nbsp;
               {{ data.label }}
             </td>
           </tr>
@@ -31,7 +31,7 @@
 
           <tr>
             <td colspan="2">
-              <div><b>Description</b></div>
+              <div><b>{{ translatedWord('description') }}</b></div>
               <p>{{ data.description }}</p>
             </td>
           </tr>
@@ -45,21 +45,21 @@
         <tbody>
           <tr>
             <td>
-              <b>Created At</b> &nbsp;
+              <b>{{ translatedWord('created_at') }} </b> &nbsp;
               <n-text
                 tag="div"
                 code
               >{{ data.created_at }}</n-text>
             </td>
             <td>
-              <b>Updated At</b> &nbsp;
+              <b>{{ translatedWord('updated_at') }} </b> &nbsp;
               <n-text
                 tag="div"
                 code
               >{{ data.updated_at }}</n-text>
             </td>
             <td>
-              <b>Deleted At</b> &nbsp;
+              <b>{{ translatedWord('deleted_at') }} </b> &nbsp;
               <n-text
                 tag="div"
                 code
@@ -79,9 +79,18 @@
 >
   import { DeleteRound } from '@vicons/material'
   import { useLanguagesStore } from '~/stores/useLanguagesStore'
+  import { useSettingStore } from '~/stores/useSettingsStore'
   import { useUserStore } from '~/stores/useUsersStore'
 
   const emit = defineEmits(['modalTitle'])
+  // Language Switching
+  const words = useLanguagesStore().words
+  const usrPreferLang = useSettingStore().currentPreferredLanguage
+  const helpers = useHelpers();
+  const translatedWord = (key: string) => {
+    return helpers.getTranslatedWord(usrPreferLang.value.translations, words, key);
+  };
+  // e.o Language Switching 
 
   const p = withDefaults(defineProps<{
     id: number,

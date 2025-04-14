@@ -3,13 +3,13 @@
     <template #icon>
       <n-icon :component="WarningRound" />
     </template>
-    Change Password
+    {{ translatedWord('change_password') }}
   </n-button>
 
   <n-modal v-model:show="d.visibility.modal" transform-origin="center">
     <n-card
       style="width: 600px"
-      title="Change Password"
+      :title="translatedWord('change_password')"
       size="small"
       role="dialog"
       aria-modal="true"
@@ -17,7 +17,7 @@
       <n-spin :show="d.loading.form">
         <n-space :size="10" vertical>
           <n-alert
-            title="You will need to log in again after you change your password."
+            :title="translatedWord('you_will_need_to_log_in_again_after_you_chang_your_password')"
             type="info"
           />
 
@@ -25,21 +25,21 @@
             size="small"
             v-model:value="d.form.current_password"
             type="password"
-            placeholder="Current Password"
+            :placeholder="translatedWord('current_password')"
           />
 
           <n-input
             size="small"
             v-model:value="d.form.new_password"
             type="password"
-            placeholder="New Password"
+            :placeholder="translatedWord('new_password')"
           />
 
           <n-input
             size="small"
             v-model:value="d.form.confirm_new_password"
             type="password"
-            placeholder="Confirm New Password"
+            :placeholder="translatedWord('confirm_new_password')"
           />
         </n-space>
       </n-spin>
@@ -51,7 +51,7 @@
             size="small"
             :disabled="d.loading.buttonCancel"
             @click="m.handle.click.button.cancel"
-            >Cancel</n-button
+            >{{ translatedWord('cancel') }}</n-button
           >
           <n-button
             type="primary"
@@ -59,7 +59,7 @@
             :disabled="d.loading.buttonSave"
             :loading="d.loading.buttonSave"
             @click="m.handle.click.button.save"
-            >Save</n-button
+            >{{ translatedWord('save') }}</n-button
           >
         </n-flex>
       </template>
@@ -73,8 +73,21 @@ import { WarningRound } from "@vicons/material"
 import { RoutePaths } from "~/types/index.d"
 import { useConsumeApi } from "~/composables/useConsumeApi"
 import { useAuthStore } from "~/stores/useAuthStore"
+import { useLanguagesStore } from "~/stores/useLanguagesStore"
+import { useSettingStore } from "~/stores/useSettingsStore"
 
 const auth = useAuthStore()
+
+// Language Switching
+const words = useLanguagesStore().words
+const usrPreferLang = useSettingStore().currentPreferredLanguage
+const helpers = useHelpers();
+const translatedWord = (key: string) => {
+  return helpers.getTranslatedWord(usrPreferLang.value.translations, words, key);
+};
+// e.o Language Switching
+
+
 
 const consume = {
   updateProfile: useConsumeApi(RoutePaths.USERS),

@@ -70,9 +70,32 @@ export interface ChurchFormModel {
   updated_at?: Date
 }
 
-export interface LanguageFormModel {}
+export interface LanguageFormModel {
+  id?: number
+  is_enabled: number
+  label: string
+  name: string
+  locale: string
+  created_at: Date
+  updated_at: Date
+  translations: [LanguageTranslationFormModel]
+}
 
-export interface LanguageWordFormModel {}
+export interface LanguageTranslationFormModel {
+  id?: number
+  system_language_id: number
+  system_language_word_id: number
+  translation: string
+  created_at: Date
+  updated_at: Date
+}
+
+export interface LanguageWordFormModel {
+  id?: number
+  word: string
+  created_at: Date
+  updated_at: Date
+}
 
 export interface DenominationFormModel {
   name: string | null
@@ -164,10 +187,10 @@ export interface CommunityFormModel {
   committees: CommunityCommittee[]
 
   checklists?:
-    | CommunityChecklistFormModel[]
-    | { id: number; checked: boolean }[]
-    | number[]
-    | null
+  | CommunityChecklistFormModel[]
+  | { id: number; checked: boolean }[]
+  | number[]
+  | null
 
   churches: ChurchFormModel[] | null
   churchPlanters: [] | null
@@ -185,6 +208,7 @@ export type FormModel =
   | ChurchFormModel
   | CommunityFormModel
   | LanguageFormModel
+  | LanguageTranslationFormModel
   | LanguageWordFormModel
   | DenominationFormModel
   | FaithMilestoneFormModel

@@ -3,7 +3,7 @@
     <template #header>
       <div>
         <b>
-          Church Planters :
+          {{ translatedWord('church_planters') }} :
           {{ p.churchPlanters.length }}
         </b>
       </div>
@@ -24,6 +24,17 @@
 </template>
 
 <script lang="ts" setup>
+import { useLanguagesStore } from '~/stores/useLanguagesStore'
+import { useSettingStore } from '~/stores/useSettingsStore'
+
+// Language Switching
+const words = useLanguagesStore().words
+const usrPreferLang = useSettingStore().currentPreferredLanguage
+const helpers = useHelpers();
+const translatedWord = (key: string) => {
+  return helpers.getTranslatedWord(usrPreferLang.value.translations, words, key);
+};
+// e.o Language Switching
 const p = defineProps<{
   churchPlanters: any[]
 }>()

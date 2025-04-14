@@ -1,6 +1,6 @@
 <template>
   <div class="center">
-    <n-empty description="Under Construction">
+    <n-empty :description="translatedWord('under_construction')">
       <template #icon>
         <n-icon>
           <ConstructionRound />
@@ -15,6 +15,16 @@
   setup
 >
   import { ConstructionRound } from '@vicons/material'
+  import { useLanguagesStore } from '~/stores/useLanguagesStore'
+  import { useSettingStore } from '~/stores/useSettingsStore'
+  // Language Switching
+  const words = useLanguagesStore().words
+  const usrPreferLang = useSettingStore().currentPreferredLanguage
+  const helpers = useHelpers();
+  const translatedWord = (key: string) => {
+    return helpers.getTranslatedWord(usrPreferLang.value.translations, words, key);
+  };
+// e.o Language Switching
 </script>
 
 <style

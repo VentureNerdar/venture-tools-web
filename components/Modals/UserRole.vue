@@ -4,7 +4,7 @@
     size="small"
     @click="d.visibility.modal = true"
   >
-    User Role
+    {{ translatedWord('user_role') }}
   </n-button>
 
   <n-modal
@@ -13,7 +13,7 @@
   >
     <n-card
       style="width: calc(100vw - 40px); height: calc(100vh - 40px)"
-      title="Manage User Roles"
+      :title="translatedWord('manage_user_role')"
       :bordered="true"
       size="small"
       role="dialog"
@@ -38,7 +38,7 @@
             type="default"
             @click="d.visibility.modal = false"
           >
-            Close
+            {{ translatedWord('close') }}
           </n-button>
         </n-flex>
       </template>
@@ -51,12 +51,22 @@
   setup
 >
 
-  import type { StoreOptions, FormModalOptions } from '~/types/index.d'
+  import { useLanguagesStore } from '~/stores/useLanguagesStore'
+import { useSettingStore } from '~/stores/useSettingsStore'
+import type { StoreOptions, FormModalOptions } from '~/types/index.d'
   import type { Module } from '~/utils/modules'
   import modules from '~/utils/modules'
 
 
   const module = modules.userRoles as Module
+  // Language Switching
+    const words = useLanguagesStore().words
+    const usrPreferLang = useSettingStore().currentPreferredLanguage
+    const helpers = useHelpers();
+    const translatedWord = (key: string) => {
+      return helpers.getTranslatedWord(usrPreferLang.value.translations, words, key);
+    };
+  // e.o Language Switching
 
   // data
   const d = reactive({

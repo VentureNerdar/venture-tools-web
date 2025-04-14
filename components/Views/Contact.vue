@@ -14,21 +14,21 @@
         <tbody>
           <tr>
             <td colspan="2">
-              <b>Name :</b> &nbsp;
+              <b>{{ translatedWord('name') }} :</b> &nbsp;
               <span class="uppercase">{{ data.name }}</span>
               <br />
-              <b>Nickname : </b> &nbsp; {{ data.nickname }}
+              <b>{{ translatedWord('username') }} : </b> &nbsp; {{ data.nickname }}
             </td>
 
             <td style="width: 20%">
-              <b>Contact Status :</b> &nbsp;
+              <b>{{ translatedWord('contact_status') }} :</b> &nbsp;
               <n-tag :border="false" type="info">
                 {{ m.contactStatus(data.contact_status_id as number) }}</n-tag
               >
             </td>
 
             <td style="width: 20%">
-              <b>Faith Status :</b> &nbsp;
+              <b>{{ translatedWord('faith_status') }} :</b> &nbsp;
               <n-tag :border="false" type="info">
                 {{ m.faithStatus(data.faith_status_id as number) }}
               </n-tag>
@@ -37,24 +37,24 @@
 
           <tr>
             <td style="width: 20%">
-              <b>Gender : </b> &nbsp;
+              <b>{{ translatedWord('gender') }} : </b> &nbsp;
               <span class="uppercase">{{ data.gender }}</span>
             </td>
 
             <td style="width: 20%">
-              <b>Age : </b> &nbsp;
+              <b>{{ translatedWord('age') }} : </b> &nbsp;
               <span class="uppercase"> {{ data.age }}</span>
             </td>
 
             <td>
-              <b>Assigned To :</b> &nbsp;
+              <b>{{ translatedWord('assigned_to') }} :</b> &nbsp;
               <span class="uppercase">{{
                 m.render.assignedTo(data.assigned_to)
               }}</span>
             </td>
 
             <td>
-              <b>Coached By :</b> &nbsp;
+              <b>{{ translatedWord('coached_by') }} :</b> &nbsp;
               <span>{{ m.render.coachedBy(data.coached_by) }}</span>
             </td>
           </tr>
@@ -62,7 +62,7 @@
           <tr>
             <td colspan="2">
               <div style="margin-bottom: 10px">
-                <b>People Group </b>
+                <b>{{ translatedWord('people_group') }} </b>
               </div>
 
               <n-space :size="10" v-if="dataPeopleGroups">
@@ -75,7 +75,7 @@
 
           <tr>
             <td colspan="4">
-              <div style="margin-bottom: 10px"><b>Faith Milestones</b></div>
+              <div style="margin-bottom: 10px"><b>{{ translatedWord('faith_milestones') }}</b></div>
 
               <n-space :size="10">
                 <div
@@ -99,7 +99,7 @@
           <tr style="height: 100%">
             <td colspan="4">
               <n-space vertical>
-                <div><b>Current Prayers</b></div>
+                <div><b>{{ translatedWord('current_prayers') }}</b></div>
 
                 <div>
                   {{ data.current_prayers }}
@@ -114,7 +114,7 @@
         <tbody>
           <tr>
             <td>
-              <b>Created At</b> &nbsp;
+              <b>{{ translatedWord('created_at') }}</b> &nbsp;
               <n-text tag="div" code>{{
                 useHelpers().formatDate(
                   data.created_at ? data.created_at : "N/A",
@@ -122,7 +122,7 @@
               }}</n-text>
             </td>
             <td>
-              <b>Updated At</b> &nbsp;
+              <b>{{ translatedWord('updated_at') }}</b> &nbsp;
               <n-text tag="div" code>{{
                 useHelpers().formatDate(
                   data.updated_at ? data.updated_at : "N/A",
@@ -130,7 +130,7 @@
               }}</n-text>
             </td>
             <td>
-              <b>Deleted At</b> &nbsp;
+              <b>{{ translatedWord('deleted_at') }}</b> &nbsp;
               <n-text tag="div" code>{{
                 useHelpers().formatDate(
                   data.deleted_at ? data.deleted_at : "N/A",
@@ -156,6 +156,8 @@ import { RoutePaths } from "~/types/index.d"
 
 const emit = defineEmits(["modalTitle"])
 
+
+
 const p = withDefaults(
   defineProps<{
     id: number
@@ -174,6 +176,13 @@ const s = {
   settings: useSettingStore(),
   faithMilestones: useFaithMilestoneStore(),
 }
+
+const helpers = useHelpers();
+const usrPreferLang = s.settings.currentPreferredLanguage
+const words = s.systemLanguages.words
+const translatedWord = (key: string) => {
+  return helpers.getTranslatedWord(usrPreferLang.value.translations, words, key);
+};
 
 const d = reactive({
   faithMilestones: [] as any[],
@@ -216,7 +225,7 @@ const m = {
 
   render: {
     assignedTo: (at: any) => {
-      return at.name
+      return at?.name
     },
 
     coachedBy: (cb: any) => {

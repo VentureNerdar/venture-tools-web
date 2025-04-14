@@ -10,6 +10,8 @@ import type { ConfigProviderProps } from "naive-ui"
 import { RoutePaths } from "~/types/index.d"
 import { createDiscreteApi, darkTheme } from "naive-ui"
 import { NaiveThemeOverrides } from "~/types/NaiveThemeOverrides"
+import { useLanguagesStore } from "~/stores/useLanguagesStore"
+import { useSettingStore } from "~/stores/useSettingsStore"
 
 type ConsumptionType =
   | "browse"
@@ -78,15 +80,44 @@ const request = async (
         errorTexts.push(text as any)
       })
 
+      // Language Switching
+      const words = useLanguagesStore().words
+      const usrPreferLang = useSettingStore().currentPreferredLanguage
+      const helpers = useHelpers();
+       const toSnakeCase = (str: string) => {
+        return str
+          .toLowerCase()
+          .replace(/[.\s]+/g, '_')
+          .replace(/^_+|_+$/g, '');
+      };
+      const translatedWord = (key: string) => {
+        return helpers.getTranslatedWord(usrPreferLang.value.translations, words, key);
+      };
+      // e.o Language Switching
+
+      [...errorTexts.map((text) => {
+            let message:string = ""; 
+              if(typeof text[0] === 'string') {
+                message = text[0]
+              }
+           
+          })]
+
       discreteNotificationAPI.notification.error({
         title: "Aiyo! Something went wrong.",
         description:
-          "[ STATUS : " +
-          error.response.status +
-          " ] " +
-          error.response._data.message,
+        "[ STATUS : " +
+        error.response.status +
+        " ] " + '',
+        // error.response._data.message,
         content: () => {
-          return h("div", {}, [...errorTexts.map((text) => h("div", {}, text))])
+          return h("div", {}, [...errorTexts.map((text) => {
+            let message:string = ""; 
+              if(typeof text[0] === 'string') {
+                message = text[0]
+              }
+            return h("div", {}, text)
+          })])
         },
         duration: 3000,
         keepAliveOnHover: true,

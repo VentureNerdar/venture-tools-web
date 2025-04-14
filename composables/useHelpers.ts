@@ -1,4 +1,5 @@
 import { format, isValid, parseISO } from "date-fns"
+import type { LanguageTranslationFormModel, LanguageWordFormModel } from "~/types"
 
 export function useHelpers() {
   const helpers = {
@@ -13,6 +14,31 @@ export function useHelpers() {
 
       return format(dateObj, "dd MMM yyyy")
     }, // e.o Format Date
+
+    getTranslatedWord: (
+      translations: LanguageTranslationFormModel[],
+      words: LanguageWordFormModel[],
+      word: string
+    ) => {
+      let translatedWord = ""
+      let wordId = 0
+      if (words) {
+        const systemWord = words.find((sw) => sw.word == word)
+        if (systemWord && systemWord.id) {
+          wordId = systemWord.id
+        }
+      }
+      if (translations && wordId) {
+        const translation = translations.find(
+          (translation: any) => translation.system_language_word_id === wordId,
+        )
+        if (translation) {
+          translatedWord = translation.translation
+        }
+      }
+      return translatedWord
+    }
+
   }
 
   return helpers

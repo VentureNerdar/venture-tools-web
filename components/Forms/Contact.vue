@@ -2,7 +2,7 @@
   <n-form
     ref="formRef"
     :model="d.model"
-    :rules="rules"
+    :rules="translatedRules"
     label-placement="top"
     size="small"
     label-width="150px"
@@ -12,7 +12,7 @@
         <n-grid x-gap="10" :cols="4">
           <!-- Contact Status -->
           <n-gi>
-            <n-form-item path="contact_status_id" label="Contact Status">
+            <n-form-item path="contact_status_id" :label="translatedWord('contact_status')">
               <n-select
                 v-model:value="d.model.contact_status_id"
                 :options="useSettingStore().options.contact"
@@ -23,7 +23,7 @@
 
           <!-- Faith Status -->
           <n-gi>
-            <n-form-item path="faith_status_id" label="Faith Status">
+            <n-form-item path="faith_status_id" :label="translatedWord('faith_status')">
               <n-select
                 v-model:value="d.model.faith_status_id"
                 :options="useSettingStore().options.faith"
@@ -34,7 +34,7 @@
 
           <!-- Assigned To -->
           <n-gi>
-            <n-form-item path="assigned_to" label="Assigned To">
+            <n-form-item path="assigned_to" :label="translatedWord('assigned_to')">
               <n-select
                 :loading="d.loading.assignedTo"
                 filterable
@@ -43,11 +43,11 @@
                 @search="m.handle.searchAssignedToOption"
                 v-model:value="d.model.assigned_to"
                 :options="d.options.assignedTo as any[]"
+                :placeholder="translatedWord('please_select')"
               >
                 <template #action>
                   <n-text :depth="3">
-                    Loading maximum 20 users. Type in the name of the user to
-                    search.
+                    {{ translatedWord('loading_maximum_20_users._type_in_the_name_of_the_user_to_search') }}
                   </n-text>
                 </template>
               </n-select>
@@ -57,20 +57,20 @@
 
           <!-- Coached By -->
           <n-gi>
-            <n-form-item path="coached_by" label="Coached By">
+            <n-form-item path="coached_by" :label="translatedWord('coached_by')">
               <n-select
                 :loading="d.loading.coachedBy"
                 filterable
                 clearable
                 remote
+                :placeholder="translatedWord('please_select')"
                 @search="m.handle.searchCoachedByOption"
                 v-model:value="d.model.coached_by"
                 :options="d.options.coachedBy as any[]"
               >
                 <template #action>
                   <n-text :depth="3">
-                    Loading maximum 20 contacts. Type in the name of the contact
-                    to search.
+                    {{ translatedWord('loading_maximum_20_contacts._type_in_the_name_of_the_contact_to_search') }}
                   </n-text>
                 </template>
               </n-select>
@@ -84,23 +84,23 @@
         <n-grid x-gap="10" :cols="4">
           <!-- Name -->
           <n-gi>
-            <n-form-item path="name" label="Name">
-              <n-input v-model:value="d.model.name" />
+            <n-form-item path="name" :label="translatedWord('name')">
+              <n-input v-model:value="d.model.name" :placeholder="translatedWord('please_input')" />
             </n-form-item>
           </n-gi>
           <!-- e.o Name -->
 
           <!-- Nickname -->
           <n-gi>
-            <n-form-item path="nickname" label="Nickname">
-              <n-input v-model:value="d.model.nickname" />
+            <n-form-item path="nickname" :label="translatedWord('nickname')">
+              <n-input v-model:value="d.model.nickname" :placeholder="translatedWord('please_input')" />
             </n-form-item>
           </n-gi>
           <!-- e.o Nickname -->
 
           <!-- Gender -->
           <n-gi>
-            <n-form-item path="gender" label="Gender">
+            <n-form-item path="gender" :label="translatedWord('gender')">
               <n-radio-group v-model:value="d.model.gender" name="radiogroup">
                 <n-space>
                   <n-radio
@@ -117,21 +117,23 @@
 
           <!-- Age -->
           <n-gi>
-            <n-form-item path="age" label="Age">
+            <n-form-item path="age" :label="translatedWord('age')">
               <n-select
                 v-model:value="d.model.age"
                 :options="useSettingStore().options.ageGroups"
+                :placeholder="translatedWord('please_select')"
               />
             </n-form-item>
           </n-gi>
           <!-- e.o Age -->
 
           <n-gi>
-            <n-form-item path="people_group" label="People Group">
+            <n-form-item path="people_group" :label="translatedWord('people_group')">
               <n-select
                 v-model:value="d.model.people_group"
                 multiple
                 :options="usePeopleGroupStore().options"
+                :placeholder="translatedWord('please_select')"
               />
             </n-form-item>
           </n-gi>
@@ -141,7 +143,7 @@
           <n-gi span="4">
             <n-card size="small">
               <n-space vertical>
-                <b>Contact Platforms</b>
+                <b>{{ translatedWord('contact_platforms') }}</b>
 
                 <n-grid x-gap="10" :cols="5">
                   <n-gi
@@ -177,7 +179,7 @@
           <!-- Faith Milestones -->
           <n-gi span="2">
             <!-- Faith Milestones -->
-            <n-form-item path="asdf" label="Faith Milestones">
+            <n-form-item path="asdf" :label="translatedWord('faith_milestones')">
               <n-flex>
                 <n-button
                   v-for="fm in d.options.faithMilestones"
@@ -210,7 +212,7 @@
 
           <!-- Baptized By -->
           <n-gi>
-            <n-form-item path="baptized_by" label="Baptized By">
+            <n-form-item path="baptized_by" :label="translatedWord('baptized_by')">
               <n-select
                 v-model:value="d.model.baptized_by"
                 :loading="d.loading.baptizedBy"
@@ -219,11 +221,11 @@
                 clearable
                 remote
                 @search="m.handle.searchCoachedByOption"
+                :placeholder="translatedWord('please_select')"
               >
                 <template #action>
                   <n-text :depth="3">
-                    Loading maximum 20 contacts. Type in the name of the contact
-                    to search.
+                    {{ translatedWord('loading_maximum_20_contacts._type_in_the_name_of_the_contact_to_search') }}
                   </n-text>
                 </template>
               </n-select>
@@ -233,7 +235,7 @@
 
           <!-- Baptism Date -->
           <n-gi>
-            <n-form-item path="baptism_date" label="Baptism Date">
+            <n-form-item path="baptism_date" :label="translatedWord('baptism_date')">
               <n-date-picker
                 v-model:value="d.model.baptism_date"
                 value-format="yyyy-MM-dd HH:mm:ss"
@@ -241,6 +243,7 @@
                 :input-readonly="true"
                 type="date"
                 style="width: 100%"
+                :placeholder="translatedWord('please_input')"
               />
             </n-form-item>
           </n-gi>
@@ -251,11 +254,12 @@
       <!-- Current Prayers -->
       <n-card size="small">
         <!-- Current Prayers -->
-        <n-form-item path="current_prayers" label="Current Prayers">
+        <n-form-item path="current_prayers" :label="translatedWord('current_prayers')">
           <n-input
             type="textarea"
             :autosize="{ minRows: 3 }"
             v-model:value="d.model.current_prayers"
+            :placeholder="translatedWord('please_input')"
           />
         </n-form-item>
         <!-- e.o Current Prayers -->
@@ -280,6 +284,7 @@ import { useSettingStore } from "~/stores/useSettingsStore"
 import { useAuthStore } from "~/stores/useAuthStore"
 import { usePeopleGroupStore } from "~/stores/usePeopleGroupsStore"
 import { useCommunicationPlatformStore } from "~/stores/useCommunicationPlatformsStore"
+import { useLanguagesStore } from "~/stores/useLanguagesStore"
 
 // e.o Imports
 
@@ -299,6 +304,15 @@ const consume = {
 }
 
 const emit = defineEmits(["formChanged", "beingUploaded"])
+
+// Language Switching
+const words = useLanguagesStore().words
+const usrPreferLang = useSettingStore().currentPreferredLanguage
+const translationHelper = useHelpers();
+const translatedWord = (key: string) => {
+  return translationHelper.getTranslatedWord(usrPreferLang.value.translations, words, key);
+};
+// e.o Language Switching
 
 // props
 // Self Ref : Need to change editData form model type
@@ -326,6 +340,31 @@ const formRef = ref<FormInst | null>(null)
  * Its spreaded from the {@link Module}
  */
 const rules: FormRules = { ...module.form.rules }
+
+ const toSnakeCase = (str: string) => {
+  return str
+    .toLowerCase()
+    .replace(/[.\s]+/g, '_')
+    .replace(/^_+|_+$/g, '');
+};
+
+
+const translatedRules = computed(() => {
+  const result: Record<string, any[]> = {};
+
+  for (const key in rules) {
+    result[key] = (rules[key] as FormRules[]).map((rule:any) => {
+      
+      return {
+        ...rule,
+        message: translatedWord(toSnakeCase(rule.message)),
+      };
+    });
+  }
+
+  return result;
+});
+
 
 /** Model Ref
  * It is defined to whether create or edit.
@@ -392,7 +431,6 @@ if (p.editData !== false) {
       ...(p.editData.contact_communication_platforms as any),
     ]
     modelRefRef.contact_communication_platforms = []
-
     s.communicationPlatforms.communicationPlatforms.forEach(
       (cp: { name: string; id: number }) => {
         if (modelRefRef.contact_communication_platforms !== undefined) {
