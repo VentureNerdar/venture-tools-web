@@ -13,15 +13,15 @@
     <!-- Name -->
     <n-form-item
       path="name"
-      :label="translatedWord('name')"
+      :label="h.translate('name')"
     >
-      <n-input v-model:value="d.model.name" :placeholder="translatedWord('please_input')" />
+      <n-input v-model:value="d.model.name" :placeholder="h.translate('please_input')" />
     </n-form-item> <!-- e.o Name -->
 
     <!-- Description -->
     <n-form-item
       path="icon"
-      :label="translatedWord('icon')"
+      :label="h.translate('icon')"
     >
       <n-space :size="10">
         <n-avatar
@@ -39,7 +39,7 @@
           name="icon"
           @finish="m.handle.upload.finished"
         >
-          <n-button>{{ d.model.icon !== null ? translatedWord('change_icon') : translatedWord('upload_icon') }}</n-button>
+          <n-button>{{ d.model.icon !== null ? h.translate('change_icon') : h.translate('upload_icon') }}</n-button>
         </n-upload>
       </n-space>
     </n-form-item> <!-- e.o Name -->
@@ -78,14 +78,7 @@
   // Self Ref : Need to set a module
   const module = modules.faithMilestones
   const emit = defineEmits(['formChanged', 'beingUploaded'])
-  // Language Switching
-  const words = useLanguagesStore().words
-  const usrPreferLang = useSettingStore().currentPreferredLanguage
-  const helpers = useHelpers();
-  const translatedWord = (key: string) => {
-    return helpers.getTranslatedWord(usrPreferLang.value.translations, words, key);
-  };
-  // e.o Language Switching
+const h = useHelpers()
 
   // props
   // Self Ref : Need to change editData form model type
@@ -111,14 +104,6 @@
    */
   const rules: FormRules = { ...module.form.rules }
 
-   const toSnakeCase = (str: string) => {
-  return str
-    .toLowerCase()
-    .replace(/[.\s]+/g, '_')
-    .replace(/^_+|_+$/g, '');
-  };
-
-
   const translatedRules = computed(() => {
     const result: Record<string, any[]> = {};
 
@@ -127,7 +112,7 @@
         
         return {
           ...rule,
-          message: translatedWord(toSnakeCase(rule.message)),
+          message: h.translate(h.toSnakeCase(rule.message)),
         };
       });
     }

@@ -11,37 +11,37 @@
     <!-- Name -->
     <n-form-item
       path="name"
-      :label="translatedWord('name')"
+      :label="h.translate('name')"
     >
-      <n-input v-model:value="d.model.name" :placeholder="translatedWord('please_input')" />
+      <n-input v-model:value="d.model.name" :placeholder="h.translate('please_input')" />
     </n-form-item> <!-- e.o Name -->
 
     <!-- Username -->
     <n-form-item
       path="username"
-      :label="translatedWord('username')"
+      :label="h.translate('username')"
     >
-      <n-input v-model:value="d.model.username" :placeholder="translatedWord('please_input')" />
+      <n-input v-model:value="d.model.username" :placeholder="h.translate('please_input')" />
     </n-form-item> <!-- e.o Username -->
 
     <!-- Password -->
     <n-form-item
       v-if="p.editData === false"
       path="password"
-      :label="translatedWord('password')"
+      :label="h.translate('password')"
     >
       <n-input
         v-model:value="d.model.password"
         show-password-on="click"
         type="password"
-        :placeholder="translatedWord('please_input')"
+        :placeholder="h.translate('please_input')"
       />
     </n-form-item> <!-- e.o Password -->
 
     <!-- User Role -->
     <n-form-item
       path="user_role_id"
-      :label="translatedWord('user_role')"
+      :label="h.translate('user_role')"
     >
       <n-flex justify="center">
         <n-radio-group
@@ -61,24 +61,24 @@
     <!-- Biography -->
     <n-form-item
       path="biography"
-      :label="translatedWord('biography')"
+      :label="h.translate('biography')"
     >
       <n-input
         v-model:value="d.model.biography"
         type="textarea"
-        :placeholder="translatedWord('please_input')"
+        :placeholder="h.translate('please_input')"
       />
     </n-form-item> <!-- e.o Biography -->
 
     <!-- Preferred Language -->
     <n-form-item
       path="preferred_language_id"
-      :label="translatedWord('preferred_language')"
+      :label="h.translate('preferred_language')"
     >
       <n-select
         v-model:value="d.model.preferred_language_id"
         clearable
-        :placeholder="translatedWord('select_preferred_language')"
+        :placeholder="h.translate('select_preferred_language')"
         :options="languageOptions"
       />
     </n-form-item> <!-- e.o Preferred Language -->
@@ -86,23 +86,23 @@
     <!-- Email -->
     <n-form-item
       path="email"
-      :label="translatedWord('email')"
+      :label="h.translate('email')"
     >
-      <n-input v-model:value="d.model.email" :placeholder="translatedWord('please_input')" />
+      <n-input v-model:value="d.model.email" :placeholder="h.translate('please_input')" />
     </n-form-item> <!-- e.o Email -->
 
     <!-- Phone Number -->
     <n-form-item
       path="phone_number"
-      :label="translatedWord('phone_number')"
+      :label="h.translate('phone_number')"
     >
-      <n-input v-model:value="d.model.phone_number" :placeholder="translatedWord('please_input')" />
+      <n-input v-model:value="d.model.phone_number" :placeholder="h.translate('please_input')" />
     </n-form-item> <!-- e.o Phone Number -->
 
     <!-- Is Active -->
     <n-form-item
       path="is_active"
-      :label="translatedWord('is_active')"
+      :label="h.translate('is_active')"
       @change="console.log(d.model.is_active)"
     >
       <n-switch v-model:value="d.model.is_active" />
@@ -144,14 +144,7 @@
 
   const emit = defineEmits(['formChanged'])
 
-  // Language Switching
-  const words = useLanguagesStore().words
-  const usrPreferLang = useSettingStore().currentPreferredLanguage
-  const helpers = useHelpers();
-  const translatedWord = (key: string) => {
-    return helpers.getTranslatedWord(usrPreferLang.value.translations, words, key);
-  };
-  // e.o Language Switching
+const h = useHelpers()
 
 
   // props
@@ -177,13 +170,6 @@
    * Its spreaded from the {@link Module}
    */
   const rules: FormRules = { ...module.form.rules }
-   const toSnakeCase = (str: string) => {
-      return str
-        .toLowerCase()
-        .replace(/[.\s]+/g, '_')
-        .replace(/^_+|_+$/g, '');
-    };
-
 
     const translatedRules = computed(() => {
       const result: Record<string, any[]> = {};
@@ -193,7 +179,7 @@
           
           return {
             ...rule,
-            message: translatedWord(toSnakeCase(rule.message)),
+            message: h.translate(h.toSnakeCase(rule.message)),
           };
         });
       }
@@ -221,7 +207,7 @@
   const userRoleOptions = computed(() => {
 
     return useUserStore().userRoles.map((role: any) => ({
-      label: translatedWord(toSnakeCase(role.label)),
+      label: h.translate(h.toSnakeCase(role.label)),
       value: role.id
     })).reverse()
 

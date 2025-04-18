@@ -31,7 +31,7 @@
             size="small"
             @click="m.handleCloseModal"
           >
-            {{ translatedWord('cancel') }}
+            {{ h.translate('cancel') }}
           </n-button>
 
           <n-button
@@ -39,7 +39,7 @@
             size="small"
             @click="m.handleSave"
           >
-            {{translatedWord('save')}}
+            {{h.translate('save')}}
           </n-button>
         </n-flex>
       </template>
@@ -52,21 +52,13 @@
   setup
 >
   import { useLanguagesStore } from '~/stores/useLanguagesStore'
-import { useSettingStore } from '~/stores/useSettingsStore'
   import { RoutePaths } from '~/types/index.d'
   import type { StoreOptions, FilterOptions, FormModalOptions } from '~/types/index.d'
 
   const model = RoutePaths.LANGUAGE_WORDS
 
   const emit = defineEmits(['modalClosed'])
-  // Language Switching
-  const words = useLanguagesStore().words
-  const usrPreferLang = useSettingStore().currentPreferredLanguage
-  const helpers = useHelpers();
-  const translatedWord = (key: string) => {
-    return helpers.getTranslatedWord(usrPreferLang.value.translations, words, key);
-  };
-  // e.o Language Switching
+const h = useHelpers()
 
   const p = withDefaults(defineProps<{
     showModal: boolean,

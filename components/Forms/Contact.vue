@@ -12,7 +12,7 @@
         <n-grid x-gap="10" :cols="4">
           <!-- Contact Status -->
           <n-gi>
-            <n-form-item path="contact_status_id" :label="translatedWord('contact_status')">
+            <n-form-item path="contact_status_id" :label="h.translate('contact_status')">
               <n-select
                 v-model:value="d.model.contact_status_id"
                 :options="useSettingStore().options.contact"
@@ -23,7 +23,7 @@
 
           <!-- Faith Status -->
           <n-gi>
-            <n-form-item path="faith_status_id" :label="translatedWord('faith_status')">
+            <n-form-item path="faith_status_id" :label="h.translate('faith_status')">
               <n-select
                 v-model:value="d.model.faith_status_id"
                 :options="useSettingStore().options.faith"
@@ -34,7 +34,7 @@
 
           <!-- Assigned To -->
           <n-gi>
-            <n-form-item path="assigned_to" :label="translatedWord('assigned_to')">
+            <n-form-item path="assigned_to" :label="h.translate('assigned_to')">
               <n-select
                 :loading="d.loading.assignedTo"
                 filterable
@@ -43,11 +43,11 @@
                 @search="m.handle.searchAssignedToOption"
                 v-model:value="d.model.assigned_to"
                 :options="d.options.assignedTo as any[]"
-                :placeholder="translatedWord('please_select')"
+                :placeholder="h.translate('please_select')"
               >
                 <template #action>
                   <n-text :depth="3">
-                    {{ translatedWord('loading_maximum_20_users._type_in_the_name_of_the_user_to_search') }}
+                    {{ h.translate('loading_maximum_20_users._type_in_the_name_of_the_user_to_search') }}
                   </n-text>
                 </template>
               </n-select>
@@ -57,20 +57,20 @@
 
           <!-- Coached By -->
           <n-gi>
-            <n-form-item path="coached_by" :label="translatedWord('coached_by')">
+            <n-form-item path="coached_by" :label="h.translate('coached_by')">
               <n-select
                 :loading="d.loading.coachedBy"
                 filterable
                 clearable
                 remote
-                :placeholder="translatedWord('please_select')"
+                :placeholder="h.translate('please_select')"
                 @search="m.handle.searchCoachedByOption"
                 v-model:value="d.model.coached_by"
                 :options="d.options.coachedBy as any[]"
               >
                 <template #action>
                   <n-text :depth="3">
-                    {{ translatedWord('loading_maximum_20_contacts._type_in_the_name_of_the_contact_to_search') }}
+                    {{ h.translate('loading_maximum_20_contacts._type_in_the_name_of_the_contact_to_search') }}
                   </n-text>
                 </template>
               </n-select>
@@ -84,23 +84,23 @@
         <n-grid x-gap="10" :cols="4">
           <!-- Name -->
           <n-gi>
-            <n-form-item path="name" :label="translatedWord('name')">
-              <n-input v-model:value="d.model.name" :placeholder="translatedWord('please_input')" />
+            <n-form-item path="name" :label="h.translate('name')">
+              <n-input v-model:value="d.model.name" :placeholder="h.translate('please_input')" />
             </n-form-item>
           </n-gi>
           <!-- e.o Name -->
 
           <!-- Nickname -->
           <n-gi>
-            <n-form-item path="nickname" :label="translatedWord('nickname')">
-              <n-input v-model:value="d.model.nickname" :placeholder="translatedWord('please_input')" />
+            <n-form-item path="nickname" :label="h.translate('nickname')">
+              <n-input v-model:value="d.model.nickname" :placeholder="h.translate('please_input')" />
             </n-form-item>
           </n-gi>
           <!-- e.o Nickname -->
 
           <!-- Gender -->
           <n-gi>
-            <n-form-item path="gender" :label="translatedWord('gender')">
+            <n-form-item path="gender" :label="h.translate('gender')">
               <n-radio-group v-model:value="d.model.gender" name="radiogroup">
                 <n-space>
                   <n-radio
@@ -117,23 +117,23 @@
 
           <!-- Age -->
           <n-gi>
-            <n-form-item path="age" :label="translatedWord('age')">
+            <n-form-item path="age" :label="h.translate('age')">
               <n-select
                 v-model:value="d.model.age"
                 :options="useSettingStore().options.ageGroups"
-                :placeholder="translatedWord('please_select')"
+                :placeholder="h.translate('please_select')"
               />
             </n-form-item>
           </n-gi>
           <!-- e.o Age -->
 
           <n-gi>
-            <n-form-item path="people_group" :label="translatedWord('people_group')">
+            <n-form-item path="people_group" :label="h.translate('people_group')">
               <n-select
                 v-model:value="d.model.people_group"
                 multiple
                 :options="usePeopleGroupStore().options"
-                :placeholder="translatedWord('please_select')"
+                :placeholder="h.translate('please_select')"
               />
             </n-form-item>
           </n-gi>
@@ -143,7 +143,7 @@
           <n-gi span="4">
             <n-card size="small">
               <n-space vertical>
-                <b>{{ translatedWord('contact_platforms') }}</b>
+                <b>{{ h.translate('contact_platforms') }}</b>
 
                 <n-grid x-gap="10" :cols="5">
                   <n-gi
@@ -179,7 +179,7 @@
           <!-- Faith Milestones -->
           <n-gi span="2">
             <!-- Faith Milestones -->
-            <n-form-item path="asdf" :label="translatedWord('faith_milestones')">
+            <n-form-item path="asdf" :label="h.translate('faith_milestones')">
               <n-flex>
                 <n-button
                   v-for="fm in d.options.faithMilestones"
@@ -212,7 +212,7 @@
 
           <!-- Baptized By -->
           <n-gi>
-            <n-form-item path="baptized_by" :label="translatedWord('baptized_by')">
+            <n-form-item path="baptized_by" :label="h.translate('baptized_by')">
               <n-select
                 v-model:value="d.model.baptized_by"
                 :loading="d.loading.baptizedBy"
@@ -221,11 +221,11 @@
                 clearable
                 remote
                 @search="m.handle.searchCoachedByOption"
-                :placeholder="translatedWord('please_select')"
+                :placeholder="h.translate('please_select')"
               >
                 <template #action>
                   <n-text :depth="3">
-                    {{ translatedWord('loading_maximum_20_contacts._type_in_the_name_of_the_contact_to_search') }}
+                    {{ h.translate('loading_maximum_20_contacts._type_in_the_name_of_the_contact_to_search') }}
                   </n-text>
                 </template>
               </n-select>
@@ -235,7 +235,7 @@
 
           <!-- Baptism Date -->
           <n-gi>
-            <n-form-item path="baptism_date" :label="translatedWord('baptism_date')">
+            <n-form-item path="baptism_date" :label="h.translate('baptism_date')">
               <n-date-picker
                 v-model:value="d.model.baptism_date"
                 value-format="yyyy-MM-dd HH:mm:ss"
@@ -243,7 +243,7 @@
                 :input-readonly="true"
                 type="date"
                 style="width: 100%"
-                :placeholder="translatedWord('please_input')"
+                :placeholder="h.translate('please_input')"
               />
             </n-form-item>
           </n-gi>
@@ -254,12 +254,12 @@
       <!-- Current Prayers -->
       <n-card size="small">
         <!-- Current Prayers -->
-        <n-form-item path="current_prayers" :label="translatedWord('current_prayers')">
+        <n-form-item path="current_prayers" :label="h.translate('current_prayers')">
           <n-input
             type="textarea"
             :autosize="{ minRows: 3 }"
             v-model:value="d.model.current_prayers"
-            :placeholder="translatedWord('please_input')"
+            :placeholder="h.translate('please_input')"
           />
         </n-form-item>
         <!-- e.o Current Prayers -->
@@ -305,14 +305,7 @@ const consume = {
 
 const emit = defineEmits(["formChanged", "beingUploaded"])
 
-// Language Switching
-const words = useLanguagesStore().words
-const usrPreferLang = useSettingStore().currentPreferredLanguage
-const translationHelper = useHelpers();
-const translatedWord = (key: string) => {
-  return translationHelper.getTranslatedWord(usrPreferLang.value.translations, words, key);
-};
-// e.o Language Switching
+const h = useHelpers()
 
 // props
 // Self Ref : Need to change editData form model type
@@ -341,14 +334,6 @@ const formRef = ref<FormInst | null>(null)
  */
 const rules: FormRules = { ...module.form.rules }
 
- const toSnakeCase = (str: string) => {
-  return str
-    .toLowerCase()
-    .replace(/[.\s]+/g, '_')
-    .replace(/^_+|_+$/g, '');
-};
-
-
 const translatedRules = computed(() => {
   const result: Record<string, any[]> = {};
 
@@ -357,7 +342,7 @@ const translatedRules = computed(() => {
       
       return {
         ...rule,
-        message: translatedWord(toSnakeCase(rule.message)),
+        message: h.translate(h.toSnakeCase(rule.message)),
       };
     });
   }

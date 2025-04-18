@@ -11,65 +11,65 @@
           size="small"
         >
           <n-form-item
-            :label="translatedWord('name')"
+            :label="h.translate('name')"
             path="name"
           >
             <n-input v-model:value="formValue.name" 
-            :placeholder="translatedWord('input_name')"
+            :placeholder="h.translate('input_name')"
             />
           </n-form-item>
 
           <n-form-item
-            :label="translatedWord('role')"
+            :label="h.translate('role')"
             path="user_role_id"
           >
             <n-tag type="info">{{ authUserRoleName }}</n-tag>
           </n-form-item>
 
           <n-form-item
-            :label="translatedWord('username')"
+            :label="h.translate('username')"
             path="username"
           >
             <n-input
               v-model:value="formValue.username"
-              :placeholder="translatedWord('input_username')"
+              :placeholder="h.translate('input_username')"
             />
           </n-form-item>
 
           <n-form-item
-            :label="translatedWord('email_address')"
+            :label="h.translate('email_address')"
             path="email"
           >
             <n-input
               v-model:value="formValue.email"
-              :placeholder="translatedWord('input_email_address')"
+              :placeholder="h.translate('input_email_address')"
             />
           </n-form-item>
 
-          <n-form-item :label="translatedWord('phone_number')" 
+          <n-form-item :label="h.translate('phone_number')" 
               path="phone_number">
             <n-input
               v-model:value="formValue.phone_number"
-              :placeholder="translatedWord('input_phone_number')"
+              :placeholder="h.translate('input_phone_number')"
             />
           </n-form-item>
 
-          <n-form-item :label="translatedWord('biography')" 
+          <n-form-item :label="h.translate('biography')" 
               path="biography">
             <n-input
               v-model:value="formValue.biography"
               type="textarea"
-              :placeholder="translatedWord('input_biography')"
+              :placeholder="h.translate('input_biography')"
             />
           </n-form-item>
 
           <n-form-item 
-          :label="translatedWord('preferred_language')" 
+          :label="h.translate('preferred_language')" 
           path="preferred_language_id">
             <n-select
               v-model:value="formValue.preferred_language_id"
               clearable
-              :placeholder="translatedWord('select_preferred_language')"
+              :placeholder="h.translate('select_preferred_language')"
               :options="languageOptions"
             />
           </n-form-item>
@@ -79,7 +79,7 @@
               <template #icon
                 ><n-icon :component="CloudUploadRound"
               /></template>
-              {{translatedWord('update')}}
+              {{h.translate('update')}}
             </n-button>
           </n-flex>
         </n-form>
@@ -87,7 +87,7 @@
         <n-divider />
 
         <n-form-item
-          :label="translatedWord('change_password')"
+          :label="h.translate('change_password')"
           label-placement="left"
           size="small"
         >
@@ -112,14 +112,8 @@ const auth = useAuthStore()
 const formRef = ref<FormInst | null>(null)
 const formValue = ref({ ...(auth.authUser as any) })
 
-// Language Switching
-const words = useLanguagesStore().words
-const usrPreferLang = useSettingStore().currentPreferredLanguage
-const helpers = useHelpers();
-const translatedWord = (key: string) => {
-  return helpers.getTranslatedWord(usrPreferLang.value.translations, words, key);
-};
-// e.o Language Switching
+const h = useHelpers();
+
 
 const s = {
   roles: useUserStore().userRoles,

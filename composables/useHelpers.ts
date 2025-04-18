@@ -1,4 +1,6 @@
 import { format, isValid, parseISO } from "date-fns"
+import { useLanguagesStore } from "~/stores/useLanguagesStore"
+import { useSettingStore } from "~/stores/useSettingsStore"
 import type { LanguageTranslationFormModel, LanguageWordFormModel } from "~/types"
 
 export function useHelpers() {
@@ -15,29 +17,40 @@ export function useHelpers() {
       return format(dateObj, "dd MMM yyyy")
     }, // e.o Format Date
 
-    getTranslatedWord: (
-      translations: LanguageTranslationFormModel[],
-      words: LanguageWordFormModel[],
-      word: string
+    // Language Switching
+    translate: (
+      key: string
     ) => {
-      let translatedWord = ""
+      let translate = ""
       let wordId = 0
+      const translations = useSettingStore().currentPreferredLanguage.value.translations
+      const words = useLanguagesStore().words
       if (words) {
-        const systemWord = words.find((sw) => sw.word == word)
+        const systemWord = words.find((sw:LanguageWordFormModel) => sw.word == key)
         if (systemWord && systemWord.id) {
           wordId = systemWord.id
         }
       }
       if (translations && wordId) {
         const translation = translations.find(
-          (translation: any) => translation.system_language_word_id === wordId,
+          (translation: LanguageTranslationFormModel) => translation.system_language_word_id === wordId,
         )
         if (translation) {
-          translatedWord = translation.translation
+          translate = translation.translation
         }
       }
-      return translatedWord
-    }
+      return translate
+    },
+    // e.o Language Switching
+
+    // snake case for language switching
+    toSnakeCase: (str: string) => {
+      return str
+        .toLowerCase()
+        .replace(/[.\s]+/g, '_')
+        .replace(/^_+|_+$/g, '');
+    } 
+    // e.o snake case for language switching
 
   }
 

@@ -382,6 +382,9 @@ export default {
         name: [
           { required: true, message: "Name is required", trigger: "blur" },
         ],
+        community_id: [
+          {required: true, message: "Community is required", trigger: "blur"}
+        ]
       },
       component: shallowRef(forms.church),
       // createButtonIconComponent: shallowRef(PersonAddAlt1Round),

@@ -12,7 +12,7 @@
         </template>
       </n-button>
     </template>
-    {{ translatedWord('view') }}
+    {{ h.translate('view') }}
   </n-tooltip>
 
   <!-- modal -->
@@ -28,7 +28,7 @@
       :bordered="true"
       size="small"
       role="dialog"
-      :title="translatedWord('view') + ' ' + d.modalTitle"
+      :title="h.translate('view') + ' ' + d.modalTitle"
       aria-modal="true"
       :style="`width: ${p.width}; max-height: calc(100vh - 20px);`"
     >
@@ -82,19 +82,10 @@
 >
   import { EditRound, CloseRound } from '@vicons/material'
   import { TextSnippetRound } from '@vicons/material'
-  import { useLanguagesStore } from '~/stores/useLanguagesStore'
-  import { useSettingStore } from '~/stores/useSettingsStore'
   import type { ModalWidthSize } from '~/types'
 
   const emit = defineEmits(['editButtonClicked'])
-  // Language Switching
-  const words = useLanguagesStore().words
-  const usrPreferLang = useSettingStore().currentPreferredLanguage
-  const helpers = useHelpers();
-  const translatedWord = (key: string) => {
-    return helpers.getTranslatedWord(usrPreferLang.value.translations, words, key);
-  };
-  // e.o Language Switching
+  const h = useHelpers()
 
   const p = withDefaults(defineProps<{
     id: number,

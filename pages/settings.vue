@@ -8,39 +8,39 @@
       style="height: calc(100vh - 100px)"
       @update:value="m.handleTabChange"
     >
-      <n-tab-pane name="users" :tab="translatedWord('users')" class="tab">
+      <n-tab-pane name="users" :tab="h.translate('users')" class="tab">
         <SettingsUsers />
       </n-tab-pane>
 
       <n-tab-pane
         name="communication_Platforms"
-        :tab="translatedWord('communication_platforms')"
+        :tab="h.translate('communication_platforms')"
         class="tab"
       >
         <SettingsCommunicationPlatforms />
       </n-tab-pane>
 
-      <n-tab-pane name="faith_milestones" :tab="translatedWord('faith_milestones')" class="tab">
+      <n-tab-pane name="faith_milestones" :tab="h.translate('faith_milestones')" class="tab">
         <SettingsFaithMilestones />
       </n-tab-pane>
 
-      <n-tab-pane name="people_groups" :tab="translatedWord('people_group')" class="tab">
+      <n-tab-pane name="people_groups" :tab="h.translate('people_group')" class="tab">
         <SettingsPeopleGroups />
       </n-tab-pane>
 
-      <n-tab-pane name="denominations" :tab="translatedWord('denominations')" class="tab">
+      <n-tab-pane name="denominations" :tab="h.translate('denominations')" class="tab">
         <SettingsDenominations />
       </n-tab-pane>
 
       <n-tab-pane
         name="community_checklists"
-        :tab="translatedWord('community_checklists')"
+        :tab="h.translate('community_checklists')"
         class="tab"
       >
         <SettingsCommunityChecklists />
       </n-tab-pane>
 
-      <n-tab-pane name="languages" :tab="translatedWord('languages')" class="tab">
+      <n-tab-pane name="languages" :tab="h.translate('languages')" class="tab">
         <SettingsLanguages />
       </n-tab-pane>
     </n-tabs>
@@ -55,12 +55,7 @@ const route = useRoute()
 const router = useRouter()
 
 // Language Switching
-const words = useLanguagesStore().words
-const usrPreferLang = useSettingStore().currentPreferredLanguage
-const helpers = useHelpers();
-const translatedWord = (key: string) => {
-  return helpers.getTranslatedWord(usrPreferLang.value.translations, words, key);
-};
+const h = useHelpers();
 // e.o Language Switching
 
 const d = reactive({

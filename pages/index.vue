@@ -24,6 +24,7 @@
                     type="password"
                     show-password-on="click"
                     placeholder="Password"
+                    @keydown.enter="handleLogin"
                   />
                 </n-form-item>
 

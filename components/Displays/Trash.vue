@@ -17,7 +17,7 @@
       </n-button>
     </template>
 
-    {{ d.trashView ? 'Exit Trashed View' : 'View Trashed Items' }}
+    {{ d.trashView ? h.translate('exit_trashed_view') : h.translate('view_trashed_item') }}
   </n-tooltip>
 </template>
 
@@ -28,6 +28,7 @@
   import { DeleteRound } from '@vicons/material'
 
   const emit = defineEmits(['trashViewToggled'])
+  const h = useHelpers()
 
   const d = reactive({
     trashView: false

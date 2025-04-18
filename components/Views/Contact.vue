@@ -7,28 +7,28 @@
             <DeleteRound />
           </n-icon>
         </template>
-        This contact is in trash.
+        {{ h.translate('this_contact_is_in_trash') }}
       </n-alert>
 
       <table class="table">
         <tbody>
           <tr>
             <td colspan="2">
-              <b>{{ translatedWord('name') }} :</b> &nbsp;
+              <b>{{ h.translate('name') }} :</b> &nbsp;
               <span class="uppercase">{{ data.name }}</span>
               <br />
-              <b>{{ translatedWord('username') }} : </b> &nbsp; {{ data.nickname }}
+              <b>{{ h.translate('username') }} : </b> &nbsp; {{ data.nickname }}
             </td>
 
             <td style="width: 20%">
-              <b>{{ translatedWord('contact_status') }} :</b> &nbsp;
+              <b>{{ h.translate('contact_status') }} :</b> &nbsp;
               <n-tag :border="false" type="info">
                 {{ m.contactStatus(data.contact_status_id as number) }}</n-tag
               >
             </td>
 
             <td style="width: 20%">
-              <b>{{ translatedWord('faith_status') }} :</b> &nbsp;
+              <b>{{ h.translate('faith_status') }} :</b> &nbsp;
               <n-tag :border="false" type="info">
                 {{ m.faithStatus(data.faith_status_id as number) }}
               </n-tag>
@@ -37,24 +37,24 @@
 
           <tr>
             <td style="width: 20%">
-              <b>{{ translatedWord('gender') }} : </b> &nbsp;
+              <b>{{ h.translate('gender') }} : </b> &nbsp;
               <span class="uppercase">{{ data.gender }}</span>
             </td>
 
             <td style="width: 20%">
-              <b>{{ translatedWord('age') }} : </b> &nbsp;
+              <b>{{ h.translate('age') }} : </b> &nbsp;
               <span class="uppercase"> {{ data.age }}</span>
             </td>
 
             <td>
-              <b>{{ translatedWord('assigned_to') }} :</b> &nbsp;
+              <b>{{ h.translate('assigned_to') }} :</b> &nbsp;
               <span class="uppercase">{{
                 m.render.assignedTo(data.assigned_to)
               }}</span>
             </td>
 
             <td>
-              <b>{{ translatedWord('coached_by') }} :</b> &nbsp;
+              <b>{{ h.translate('coached_by') }} :</b> &nbsp;
               <span>{{ m.render.coachedBy(data.coached_by) }}</span>
             </td>
           </tr>
@@ -62,7 +62,7 @@
           <tr>
             <td colspan="2">
               <div style="margin-bottom: 10px">
-                <b>{{ translatedWord('people_group') }} </b>
+                <b>{{ h.translate('people_group') }} </b>
               </div>
 
               <n-space :size="10" v-if="dataPeopleGroups">
@@ -75,7 +75,7 @@
 
           <tr>
             <td colspan="4">
-              <div style="margin-bottom: 10px"><b>{{ translatedWord('faith_milestones') }}</b></div>
+              <div style="margin-bottom: 10px"><b>{{ h.translate('faith_milestones') }}</b></div>
 
               <n-space :size="10">
                 <div
@@ -99,7 +99,7 @@
           <tr style="height: 100%">
             <td colspan="4">
               <n-space vertical>
-                <div><b>{{ translatedWord('current_prayers') }}</b></div>
+                <div><b>{{ h.translate('current_prayers') }}</b></div>
 
                 <div>
                   {{ data.current_prayers }}
@@ -114,7 +114,7 @@
         <tbody>
           <tr>
             <td>
-              <b>{{ translatedWord('created_at') }}</b> &nbsp;
+              <b>{{ h.translate('created_at') }}</b> &nbsp;
               <n-text tag="div" code>{{
                 useHelpers().formatDate(
                   data.created_at ? data.created_at : "N/A",
@@ -122,7 +122,7 @@
               }}</n-text>
             </td>
             <td>
-              <b>{{ translatedWord('updated_at') }}</b> &nbsp;
+              <b>{{ h.translate('updated_at') }}</b> &nbsp;
               <n-text tag="div" code>{{
                 useHelpers().formatDate(
                   data.updated_at ? data.updated_at : "N/A",
@@ -130,7 +130,7 @@
               }}</n-text>
             </td>
             <td>
-              <b>{{ translatedWord('deleted_at') }}</b> &nbsp;
+              <b>{{ h.translate('deleted_at') }}</b> &nbsp;
               <n-text tag="div" code>{{
                 useHelpers().formatDate(
                   data.deleted_at ? data.deleted_at : "N/A",
@@ -177,12 +177,7 @@ const s = {
   faithMilestones: useFaithMilestoneStore(),
 }
 
-const helpers = useHelpers();
-const usrPreferLang = s.settings.currentPreferredLanguage
-const words = s.systemLanguages.words
-const translatedWord = (key: string) => {
-  return helpers.getTranslatedWord(usrPreferLang.value.translations, words, key);
-};
+ const h = useHelpers()
 
 const d = reactive({
   faithMilestones: [] as any[],
@@ -202,17 +197,19 @@ const m = {
   },
 
   contactStatus: (contactStatusID: number) => {
-    const status = s.settings.options.contact.find(
+    let status = s.settings.options.contact.find(
       (c: any) => c.value === contactStatusID,
     )
-    return status ? status.label : "N/A"
+    return status ? h.translate(h.toSnakeCase(status.label)) : "N/A"
   },
 
   faithStatus: (faithStatusID: number) => {
     const status = s.settings.options.faith.find(
       (f: any) => f.value === faithStatusID,
     )
-    return status ? status.label : "N/A"
+    // return status ? h.translate(h.toSnakeCase(status.label)) : "N/A"
+
+    return status ? h.translate(h.toSnakeCase(status.label)) : "N/A"
   },
 
   handle: {

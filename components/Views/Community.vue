@@ -7,18 +7,18 @@
             <DeleteRound />
           </n-icon>
         </template>
-        {{ translatedWord('this_community_is_in_trash') }}
+        {{ h.translate('this_community_is_in_trash') }}
 
       </n-alert>
 
       <n-table :single-line="false" class="topaligned">
         <tbody>
           <tr>
-            <td style="width: 50%"><b>{{ translatedWord('name') }}:</b> &nbsp; {{ data.name }}</td>
+            <td style="width: 50%"><b>{{ h.translate('name') }}:</b> &nbsp; {{ data.name }}</td>
             <td colspan="2">
-              <b>{{ translatedWord('longitude') }} : </b> {{ data.location_longitude }}
+              <b>{{ h.translate('longitude') }} : </b> {{ data.location_longitude }}
               &nbsp;&nbsp;
-              <b>{{ translatedWord('latitude') }} : </b> {{ data.location_latitude }}
+              <b>{{ h.translate('latitude') }} : </b> {{ data.location_latitude }}
             </td>
           </tr>
 
@@ -34,12 +34,12 @@
 
                   <n-icon :component="CheckBoxRound" v-else size="20" />
 
-                  <span> &nbsp; {{ translatedWord('conducted_survey_of_community_needs') }} </span>
+                  <span> &nbsp; {{ h.translate('conducted_survey_of_community_needs') }} </span>
                 </div>
 
                 <n-list>
                   <n-list-item>
-                    <div><b>{{ translatedWord('community_needs') }} 1</b></div>
+                    <div><b>{{ h.translate('community_needs') }} 1</b></div>
                     {{
                       data.community_needs_1 === null
                         ? "N/A"
@@ -47,7 +47,7 @@
                     }}
                   </n-list-item>
                   <n-list-item>
-                    <div><b>{{ translatedWord('community_needs') }} 2</b></div>
+                    <div><b>{{ h.translate('community_needs') }} 2</b></div>
                     {{
                       data.community_needs_2 === null
                         ? "N/A"
@@ -55,7 +55,7 @@
                     }}
                   </n-list-item>
                   <n-list-item>
-                    <div><b>{{ translatedWord('community_needs') }} 3</b></div>
+                    <div><b>{{ h.translate('community_needs') }} 3</b></div>
                     {{
                       data.community_needs_3 === null
                         ? "N/A"
@@ -63,7 +63,7 @@
                     }}
                   </n-list-item>
                   <n-list-item>
-                    <div><b>{{ translatedWord('community_needs') }} 4</b></div>
+                    <div><b>{{ h.translate('community_needs') }} 4</b></div>
                     {{
                       data.community_needs_4 === null
                         ? "N/A"
@@ -71,7 +71,7 @@
                     }}
                   </n-list-item>
                   <n-list-item>
-                    <div><b>{{ translatedWord('community_needs') }} 5</b></div>
+                    <div><b>{{ h.translate('community_needs') }} 5</b></div>
                     {{
                       data.community_needs_5 === null
                         ? "N/A"
@@ -85,7 +85,7 @@
             <td>
               <n-list>
                 <template #header>
-                  <b> {{ translatedWord('person_of_peace') }} </b>
+                  <b> {{ h.translate('person_of_peace') }} </b>
                 </template>
 
                 <n-list-item
@@ -110,7 +110,7 @@
                 </n-list-item>
 
                 <n-list-item v-else>
-                  <n-empty :description="translatedWord('no_person_of_peace')">
+                  <n-empty :description="h.translate('no_person_of_peace')">
                     <template #icon>
                       <n-icon>
                         <NoAccountsRound />
@@ -124,7 +124,7 @@
             <td>
               <n-list>
                 <template #header>
-                  <b> {{ translatedWord('community_committees') }} </b>
+                  <b> {{ h.translate('community_committees') }} </b>
                 </template>
                 <n-list-item
                   v-if="data.committees.length > 0"
@@ -136,7 +136,7 @@
                 </n-list-item>
 
                 <n-list-item v-else>
-                  <n-empty :description="translatedWord('no_community_committees')">
+                  <n-empty :description="h.translate('no_community_committees')">
                     <template #icon>
                       <n-icon>
                         <GroupOffRound />
@@ -151,7 +151,7 @@
           <tr>
             <td>
               <n-space :size="10" vertical>
-                <div><b>{{ translatedWord('community_checklists') }}</b></div>
+                <div><b>{{ h.translate('community_checklists') }}</b></div>
 
                 <n-grid :x-gap="10" :y-gap="10" cols="1">
                   <n-gi v-for="chk in s.community.communityChecklists">
@@ -184,15 +184,15 @@
         <tbody>
           <tr>
             <td>
-              <b>{{ translatedWord('created_at') }}</b> &nbsp;
+              <b>{{ h.translate('created_at') }}</b> &nbsp;
               <n-text tag="div" code>{{ data.created_at }}</n-text>
             </td>
             <td>
-              <b>{{ translatedWord('updated_at') }}</b> &nbsp;
+              <b>{{ h.translate('updated_at') }}</b> &nbsp;
               <n-text tag="div" code>{{ data.updated_at }}</n-text>
             </td>
             <td>
-              <b>{{ translatedWord('deleted_at') }}</b> &nbsp;
+              <b>{{ h.translate('deleted_at') }}</b> &nbsp;
               <n-text tag="div" code>{{
                 data.deleted_at ? data.deleted_at : "N/A"
               }}</n-text>
@@ -215,21 +215,10 @@ import {
   GroupOffRound,
 } from "@vicons/material"
 import { useCommunityStore } from "~/stores/useCommunitiesStore"
-import { useLanguagesStore } from "~/stores/useLanguagesStore"
-import { useSettingStore } from "~/stores/useSettingsStore"
 
 const emit = defineEmits(["modalTitle"])
 
-// Language Switching
-const words = useLanguagesStore().words
-const usrPreferLang = useSettingStore().currentPreferredLanguage
-const helpers = useHelpers();
-const translatedWord = (key: string) => {
-  return helpers.getTranslatedWord(usrPreferLang.value.translations, words, key);
-};
-// e.o Language Switching
-
-
+const h = useHelpers();
 
 const s = {
   community: useCommunityStore(),

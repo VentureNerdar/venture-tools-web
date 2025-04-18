@@ -51,7 +51,7 @@
           dashed
           @click="m.handle.click.buttonAdd"
         >
-           {{translatedWord('add')}} {{ p.platform.name }}
+           {{h.translate('add')}} {{ p.platform.name }}
         </n-button>
       </div>
       <div></div>
@@ -82,14 +82,14 @@
             type="default"
             tertiar
             @click="m.handle.click.buttonCancel"
-            >{{ translatedWord('cancel') }}</n-button
+            >{{ h.translate('cancel') }}</n-button
           >
 
           <n-button
             size="small"
             type="primary"
             @click="m.handle.click.buttonSave"
-            >{{ translatedWord('save') }}</n-button
+            >{{ h.translate('save') }}</n-button
           >
         </n-flex>
       </template>
@@ -99,8 +99,6 @@
 
 <script lang="ts" setup>
 import { CloseRound, EditNoteRound } from "@vicons/material"
-import { useLanguagesStore } from "~/stores/useLanguagesStore"
-import { useSettingStore } from "~/stores/useSettingsStore"
 
 const p = defineProps<{
   platform: any
@@ -108,14 +106,7 @@ const p = defineProps<{
 }>()
 
 const emit = defineEmits(["saveClicked", "editClicked", "deleteClicked"])
-// Language Switching
-const words = useLanguagesStore().words
-const usrPreferLang = useSettingStore().currentPreferredLanguage
-const helpers = useHelpers();
-const translatedWord = (key: string) => {
-  return helpers.getTranslatedWord(usrPreferLang.value.translations, words, key);
-};
-// e.o Language Switching
+const h = useHelpers();
 
 const d = reactive({
   value: "",
@@ -132,7 +123,7 @@ const m = {
   handle: {
     click: {
       buttonAdd: () => {
-        d.modal.title = translatedWord('add') + ' ' + p.platform.name
+        d.modal.title = h.translate('add') + ' ' + p.platform.name
         d.show.modal = true
       },
 

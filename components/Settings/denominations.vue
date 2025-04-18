@@ -1,7 +1,7 @@
 <template>
   <GenericsActionBar>
     <template #left>
-      <b>{{ translatedWord('manage_denominations') }}</b>
+      <b>{{ h.translate('manage_denominations') }}</b>
     </template>
 
     <template #right> </template>
@@ -24,14 +24,8 @@ import type { Module } from "~/utils/modules"
 import modules from "~/utils/modules"
 
 const module = modules.denominations as Module
- // Language Switching
-  const words = useLanguagesStore().words
-  const usrPreferLang = useSettingStore().currentPreferredLanguage
-  const helpers = useHelpers();
-  const translatedWord = (key: string) => {
-    return helpers.getTranslatedWord(usrPreferLang.value.translations, words, key);
-  };
-  // e.o Language Switching
+const h = useHelpers()
+
 
 const d = reactive({
   loading: {

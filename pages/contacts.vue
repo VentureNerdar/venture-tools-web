@@ -28,24 +28,12 @@ import type { Module } from "~/utils/modules"
 import modules from "~/utils/modules"
 import { NTag, type DataTableColumns } from "naive-ui"
 import { forEach } from "lodash"
-import { useLanguagesStore } from "~/stores/useLanguagesStore"
 
 const module = modules.contacts as Module
 
 const settingStore = useSettingStore()
-// Language Switching
-const words = useLanguagesStore().words
-const usrPreferLang = settingStore.currentPreferredLanguage
-const helpers = useHelpers();
-const toSnakeCase = (str: string) => {
-  return str
-    .toLowerCase()
-    .replace(/[.\s]+/g, '_')
-    .replace(/^_+|_+$/g, '');
-};
-const translatedWord = (key: string) => {
-  return helpers.getTranslatedWord(usrPreferLang.value.translations, words, key);
-};
+const helper = useHelpers();
+
 // e.o Language Switching
 const d = reactive({
   loading: {
@@ -100,7 +88,8 @@ const m = {
             (cs: any) => cs.id === row.contact_status_id,
           )
           let statusName = status !== undefined ? status.name : "N/A"
-          statusName = translatedWord(toSnakeCase(statusName))
+        
+          statusName = helper.translate(helper.toSnakeCase(statusName))
 
           let tagType = ""
           switch (row.contact_status_id) {

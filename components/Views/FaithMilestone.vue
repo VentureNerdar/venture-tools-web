@@ -4,7 +4,7 @@
       :size="10"
       vertical
     >
-      <h2>{{ translatedWord('denomination.need_to_change') }}</h2>
+      <h2>{{ h.translate('denomination.need_to_change') }}</h2>
 
       <n-alert
         v-if="data.deleted_at !== null"
@@ -15,20 +15,20 @@
             <DeleteRound />
           </n-icon>
         </template>
-        {{ translatedWord('this_denomination_is_in_trash') }}
+        {{ h.translate('this_denomination_is_in_trash') }}
       </n-alert>
 
       <n-table :single-line="false">
         <tbody>
           <tr>
             <td>
-              <b>{{ translatedWord('name') }} :</b> &nbsp; {{ data.name }}
+              <b>{{ h.translate('name') }} :</b> &nbsp; {{ data.name }}
             </td>
           </tr>
 
           <tr>
             <td>
-              <div><b>{{ translatedWord('description') }}</b></div>
+              <div><b>{{ h.translate('description') }}</b></div>
               <p>{{ data.description }}</p>
             </td>
           </tr>
@@ -42,21 +42,21 @@
         <tbody>
           <tr>
             <td>
-              <b>{{ translatedWord('created_at') }}</b> &nbsp;
+              <b>{{ h.translate('created_at') }}</b> &nbsp;
               <n-text
                 tag="div"
                 code
               >{{ data.created_at }}</n-text>
             </td>
             <td>
-              <b>{{ translatedWord('updated_at') }}</b> &nbsp;
+              <b>{{ h.translate('updated_at') }}</b> &nbsp;
               <n-text
                 tag="div"
                 code
               >{{ data.updated_at }}</n-text>
             </td>
             <td>
-              <b>{{ translatedWord('deleted_at') }}</b> &nbsp;
+              <b>{{ h.translate('deleted_at') }}</b> &nbsp;
               <n-text
                 tag="div"
                 code
@@ -76,19 +76,11 @@
 >
   import { DeleteRound } from '@vicons/material'
   import { useLanguagesStore } from '~/stores/useLanguagesStore'
-import { useSettingStore } from '~/stores/useSettingsStore'
   import { useUserStore } from '~/stores/useUsersStore'
 
   const emit = defineEmits(['modalTitle'])
 
-  // Language Switching
-  const words = useLanguagesStore().words
-  const usrPreferLang = useSettingStore().currentPreferredLanguage
-  const helpers = useHelpers();
-  const translatedWord = (key: string) => {
-    return helpers.getTranslatedWord(usrPreferLang.value.translations, words, key);
-  };
-  // e.o Language Switching
+const h = useHelpers()
 
   const p = withDefaults(defineProps<{
     id: number,

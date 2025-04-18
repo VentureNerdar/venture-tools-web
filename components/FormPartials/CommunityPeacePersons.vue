@@ -1,10 +1,10 @@
 <template>
   <n-space :size="10" vertical>
-    <div><b>{{ translatedWord('person_of_peace') }}</b></div>
+    <div><b>{{ h.translate('person_of_peace') }}</b></div>
 
     <n-empty
       v-if="!p.peacePersons || p.peacePersons.length === 0"
-      :description="translatedWord('no_person_of_peace')"
+      :description="h.translate('no_person_of_peace')"
     >
       <template #icon>
         <n-icon>
@@ -69,7 +69,7 @@
         <template #icon>
           <PlusRound />
         </template>
-        {{ translatedWord('add_person_of_peace') }}
+        {{ h.translate('add_person_of_peace') }}
       </n-button>
     </div>
     <!-- e.o Modal Button -->
@@ -82,24 +82,24 @@
   >
     <n-card
       style="width: 600px"
-      :title="translatedWord('person_of_peace')"
+      :title="h.translate('person_of_peace')"
       :bordered="false"
       size="small"
       role="dialog"
       aria-modal="true"
     >
       <n-space :size="10" vertical>
-        <n-input size="small" v-model:value="d.form.name" :placeholder="translatedWord('name')">
+        <n-input size="small" v-model:value="d.form.name" :placeholder="h.translate('name')">
           <template #prefix>
             <n-icon :component="PersonRound" />
           </template>
         </n-input>
-        <n-input size="small" v-model:value="d.form.email" :placeholder="translatedWord('email')">
+        <n-input size="small" v-model:value="d.form.email" :placeholder="h.translate('email')">
           <template #prefix>
             <n-icon :component="EmailRound" />
           </template>
         </n-input>
-        <n-input size="small" v-model:value="d.form.phone" :placeholder="translatedWord('phone')">
+        <n-input size="small" v-model:value="d.form.phone" :placeholder="h.translate('phone')">
           <template #prefix>
             <n-icon :component="LocalPhoneRound" />
           </template>
@@ -112,14 +112,14 @@
             type="default"
             @click="m.handle.click.button.cancel"
             size="small"
-            >{{ translatedWord('cancel') }}</n-button
+            >{{ h.translate('cancel') }}</n-button
           >
 
           <n-button
             type="primary"
             @click="m.handle.click.button.save"
             size="small"
-            >{{ translatedWord('save') }}</n-button
+            >{{ h.translate('save') }}</n-button
           >
         </n-flex>
       </template>
@@ -139,18 +139,9 @@ import {
   PersonRound,
   TranslateRound,
 } from "@vicons/material"
-import { useLanguagesStore } from "~/stores/useLanguagesStore"
-import { useSettingStore } from "~/stores/useSettingsStore"
 
 const emits = defineEmits(["added", "updated", "deleted"])
-// Language Switching
-const words = useLanguagesStore().words
-const usrPreferLang = useSettingStore().currentPreferredLanguage
-const helpers = useHelpers();
-const translatedWord = (key: string) => {
-  return helpers.getTranslatedWord(usrPreferLang.value.translations, words, key);
-};
-// e.o Language Switching
+const h = useHelpers();
 
 const p = defineProps<{
   peacePersons: CommunityPeacePersonFormModel[]

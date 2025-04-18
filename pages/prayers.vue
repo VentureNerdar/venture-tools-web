@@ -4,7 +4,7 @@
       <h4 class="center-vertically">
         <n-icon :component="Church" :size="20" />
 
-        &nbsp; {{ translatedWord('planted_churches_prayers') }} &nbsp;
+        &nbsp; {{ h.translate('planted_churches_prayers') }} &nbsp;
         <n-tag :bordered="false" size="small" type="info">
           {{ d.prayers.churchPlanterPrayers.length }}
         </n-tag>
@@ -36,7 +36,7 @@
     <n-gi>
       <h4 class="center-vertically">
         <n-icon :component="ChurchRound" :size="20" />
-        &nbsp; {{ translatedWord('assigned_churches_prayers') }} &nbsp;
+        &nbsp; {{ h.translate('assigned_churches_prayers') }} &nbsp;
         <n-tag :bordered="false" size="small" type="info">
           {{ d.prayers.assignedToChurchPrayers.length }}
         </n-tag>
@@ -67,7 +67,7 @@
     <n-gi>
       <h4 class="center-vertically">
         <n-icon :component="PersonRound" :size="20" />
-        &nbsp; {{ translatedWord('assigned_contacts_prayers') }} &nbsp;
+        &nbsp; {{ h.translate('assigned_contacts_prayers') }} &nbsp;
         <n-tag :bordered="false" size="small" type="info">
           {{ d.prayers.assignedToContactPrayers.length }}
         </n-tag>
@@ -119,12 +119,7 @@ const consume = {
 }
 
 // Language Switching
-const words = useLanguagesStore().words
-const usrPreferLang = useSettingStore().currentPreferredLanguage
-const helpers = useHelpers();
-const translatedWord = (key: string) => {
-  return helpers.getTranslatedWord(usrPreferLang.value.translations, words, key);
-};
+const h = useHelpers();
 // e.o Language Switching
 
 

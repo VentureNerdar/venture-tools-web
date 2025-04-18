@@ -4,7 +4,7 @@
       <div>
 
         <div class="brand">
-          {{ translatedWord('venture_tool') }}
+          {{ h.translate('venture_tool') }}
         </div>
 
         <span class="page-name">
@@ -23,30 +23,19 @@
   lang="ts"
   setup
 >
-import { useLanguagesStore } from '~/stores/useLanguagesStore'
-import { useSettingStore } from '~/stores/useSettingsStore'
-
-
   const route = useRoute()
-  // Language Switching
-  const words = useLanguagesStore().words
-  const usrPreferLang = useSettingStore().currentPreferredLanguage
-  const helpers = useHelpers();
-  const translatedWord = (key: string) => {
-    return helpers.getTranslatedWord(usrPreferLang.value.translations, words, key);
-  };
-  // e.o Language Switching
-
-
+  
+  const h = useHelpers()
+  
   const pageName = computed(() => {
     const page = route.fullPath.split('/')[1]
 
     if (page.startsWith('settings')) {
       const query = page.split('?')[1]
       const settingType = query.split('=')[1].replaceAll('_', ' ')
-      return `${translatedWord('settings')} > ${translatedWord(settingType.trim())}`
+      return `${h.translate('settings')} > ${h.translate(settingType.trim())}`
     } else {
-      return translatedWord(page)
+      return h.translate(page)
     }
 
   });

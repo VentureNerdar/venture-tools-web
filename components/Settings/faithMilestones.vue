@@ -2,7 +2,7 @@
 
   <GenericsActionBar>
     <template #left>
-      <b>{{ translatedWord('manage_faith_milestones') }}</b>
+      <b>{{ h.translate('manage_faith_milestones') }}</b>
     </template>
 
     <template #right>
@@ -23,21 +23,12 @@
   setup
 >
 
-  import { useLanguagesStore } from '~/stores/useLanguagesStore'
-  import { useSettingStore } from '~/stores/useSettingsStore'
   import type { StoreOptions, FormModalOptions } from '~/types/index.d'
   import type { Module } from '~/utils/modules'
   import modules from '~/utils/modules'
 
   const module = modules.faithMilestones as Module
-  // Language Switching
-  const words = useLanguagesStore().words
-  const usrPreferLang = useSettingStore().currentPreferredLanguage
-  const helpers = useHelpers();
-  const translatedWord = (key: string) => {
-    return helpers.getTranslatedWord(usrPreferLang.value.translations, words, key);
-  };
-  // e.o Language Switching
+const h = useHelpers()
 
   const d = reactive({
     loading: {

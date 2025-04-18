@@ -13,14 +13,14 @@
             <DeleteRound />
           </n-icon>
         </template>
-        {{ translatedWord('this_user_is_in_trash') }}
+        {{ h.translate('this_user_is_in_trash') }}
       </n-alert>
 
       <n-table :single-line="false">
         <tbody>
           <tr>
             <td>
-              <b>{{ translatedWord('name') }} :</b> &nbsp;
+              <b>{{ h.translate('name') }} :</b> &nbsp;
               <n-text type="info">
                 <b>{{ data.name }} </b> &nbsp;
                 <n-tag
@@ -28,7 +28,7 @@
                   :bordered="false"
                   :type="data.is_active ? 'success' : 'default'"
                 >
-                  {{ data.is_active ? translatedWord('active_up') : translatedWord('inactive_up') }}
+                  {{ data.is_active ? h.translate('active_up') : h.translate('inactive_up') }}
                 </n-tag>
               </n-text>
               <div class="wrap-info">
@@ -45,26 +45,26 @@
           </tr>
           <tr>
             <td colspan="2">
-              <div><b>{{ translatedWord('email') }} :</b> {{ data.email ? data.email : 'N/A' }}</div>
+              <div><b>{{ h.translate('email') }} :</b> {{ data.email ? data.email : 'N/A' }}</div>
             </td>
           </tr>
 
           <tr>
             <td colspan="2">
-              <div><b>{{ translatedWord('phone') }} :</b> {{ data.phone_number ? data.phone_number : 'N/A' }}</div>
+              <div><b>{{ h.translate('phone') }} :</b> {{ data.phone_number ? data.phone_number : 'N/A' }}</div>
             </td>
           </tr>
 
           <tr>
             <td colspan="2">
-              <div><b>{{ translatedWord('biography') }}</b></div>
+              <div><b>{{ h.translate('biography') }}</b></div>
               <p>{{ data.biography === '' ? 'N/A' : data.biography }}</p>
             </td>
           </tr>
 
           <tr>
             <td colspan="2">
-              <div><b>{{ translatedWord('language_preference') }}:</b> {{ m.languagePreference(data.preferred_language_id) }}</div>
+              <div><b>{{ h.translate('language_preference') }}:</b> {{ m.languagePreference(data.preferred_language_id) }}</div>
             </td>
           </tr>
 
@@ -78,28 +78,28 @@
         <tbody>
           <tr>
             <td>
-              <b>{{ translatedWord('created_at') }} </b> &nbsp;
+              <b>{{ h.translate('created_at') }} </b> &nbsp;
               <n-text
                 tag="div"
                 code
               >{{ data.created_at }}</n-text>
             </td>
             <td>
-              <b>{{ translatedWord('updated_at') }} </b> &nbsp;
+              <b>{{ h.translate('updated_at') }} </b> &nbsp;
               <n-text
                 tag="div"
                 code
               >{{ data.updated_at }}</n-text>
             </td>
             <td>
-              <b>{{ translatedWord('deleted_at') }} </b> &nbsp;
+              <b>{{ h.translate('deleted_at') }} </b> &nbsp;
               <n-text
                 tag="div"
                 code
               >{{ data.deleted_at ? data.deleted_at : 'N/A' }}</n-text>
             </td>
             <td>
-              <b>{{ translatedWord('created_at') }}</b> &nbsp;
+              <b>{{ h.translate('created_at') }}</b> &nbsp;
               <n-text
                 tag="div"
                 code
@@ -119,18 +119,10 @@
 >
   import { DeleteRound } from '@vicons/material'
   import { useLanguagesStore } from '~/stores/useLanguagesStore'
-import { useSettingStore } from '~/stores/useSettingsStore'
   import { useUserStore } from '~/stores/useUsersStore'
 
   const emit = defineEmits(['modalTitle'])
-  // Language Switching
-  const words = useLanguagesStore().words
-  const usrPreferLang = useSettingStore().currentPreferredLanguage
-  const helpers = useHelpers();
-  const translatedWord = (key: string) => {
-    return helpers.getTranslatedWord(usrPreferLang.value.translations, words, key);
-  };
-  // e.o Language Switching
+  const h = useHelpers()
 
   const p = withDefaults(defineProps<{
     id: number,

@@ -10,7 +10,7 @@
 
     <n-card
       :style="`width: ${formModalOptions.width ? formModalOptions.width : '600px'}; max-height: calc(100vh - 40px);`"
-      :title="`${p.form === false ? translatedWord('create') : translatedWord('edit')} ${translatedModule.moduleName}`"
+      :title="`${p.form === false ? h.translate('create') : h.translate('edit')} ${translatedModule.moduleName}`"
       :bordered="false"
       size="small"
       role="dialog"
@@ -43,7 +43,7 @@
               :disabled="d.disabled.btn.save"
               @click="m.handle.click.buttonCancel"
             >
-              {{ translatedWord('cancel') }}
+              {{ h.translate('cancel') }}
             </n-button>
             <n-button
               type="primary"
@@ -51,7 +51,7 @@
               :disabled="d.disabled.btn.save"
               @click="m.handle.click.buttonSave"
             >
-              {{ translatedWord('save') }}
+              {{ h.translate('save') }}
             </n-button>
           </n-space>
         </n-flex>
@@ -67,19 +67,10 @@
   setup
 >
   import { useMessage, useNotification } from 'naive-ui'
-import { useLanguagesStore } from '~/stores/useLanguagesStore'
-import { useSettingStore } from '~/stores/useSettingsStore'
   import type { FormModalOptions, FormModel, RoutePaths, StoreOptions } from '~/types'
 
   const emit = defineEmits(['closeModal'])
-  // Language Switching
-  const words = useLanguagesStore().words
-  const usrPreferLang = useSettingStore().currentPreferredLanguage
-  const helpers = useHelpers();
-  const translatedWord = (key: string) => {
-    return helpers.getTranslatedWord(usrPreferLang.value.translations, words, key);
-  };
-  // e.o Language Switching
+const h = useHelpers()
 
   const p = withDefaults(defineProps<{
     showModal: boolean
@@ -91,17 +82,15 @@ import { useSettingStore } from '~/stores/useSettingsStore'
     showModal: false
   })
 
-  const toSnakeCase = (str:string) => {
-  return str.toLowerCase().replace(/\s+/g, '_')
-}
+
   const translatedModule = computed(()=> {
     let key
     if(p.formModalOptions.moduleName) {
-       key = toSnakeCase(p.formModalOptions.moduleName)
+       key = h.toSnakeCase(p.formModalOptions.moduleName)
     }
     return {
       ...p.formModalOptions,
-      moduleName: key ? translatedWord(key) : p.formModalOptions.moduleName
+      moduleName: key ? h.translate(key) : p.formModalOptions.moduleName
     }
   })
  

@@ -69,9 +69,6 @@ import {
 import { PrayingHands } from "@vicons/fa"
 
 import { useAuthStore } from "~/stores/useAuthStore"
-import { useLanguagesStore } from "~/stores/useLanguagesStore"
-import { useSettingStore } from "~/stores/useSettingsStore"
-import { storeToRefs } from "pinia"
 
 // Define a type for a navigation item
 interface NavigationItem {
@@ -122,19 +119,14 @@ const navItems = [
   },
 ] as NavigationItem[]
 
-const words = useLanguagesStore().words
-const usrPreferLang = useSettingStore().currentPreferredLanguage
-const helpers = useHelpers();
-const translatedWord = (key: string) => {
-  return helpers.getTranslatedWord(usrPreferLang.value.translations, words, key);
-};
+const h = useHelpers();
 
 const userRoledNavItems = computed(() =>{
   return navItems
     .filter(item => item.roles.includes(auth.authUser.user_role_id))
     .map(item => ({
       ...item,
-      title: translatedWord(item.title.toLowerCase())
+      title: h.translate(item.title.toLowerCase())
     }))
   }
 )
@@ -170,7 +162,7 @@ const userBottomNav = computed(() => {
 
     return {
       ...item,
-      title: translatedWord(translationKey)
+      title: h.translate(translationKey)
     }
   })
 })

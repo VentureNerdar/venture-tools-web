@@ -17,7 +17,7 @@
                   </n-icon>
                 </template>
 
-                {{ translatedWord('quick_filter') }}
+                {{ helper.translate('quick_filter') }}
               </n-tooltip>
               &nbsp;
 
@@ -28,7 +28,7 @@
                 @update:value="m.handle.changed.quickFilter"
                 size="small"
               >
-                <n-radio-button :key="'all'" :value="'all'" :label="translatedWord('all')" />
+                <n-radio-button :key="'all'" :value="'all'" :label="helper.translate('all')" />
 
                 <n-radio-button
                   v-for="filter in translatedFilterValues"
@@ -66,7 +66,7 @@
             <!-- SERACH -->
             <n-input
               size="small"
-              :placeholder="`${translatedWord('search_in')} ${translatedWord(p.module.name.toLowerCase())} ${translatedWord('by')}  ${translatedWord(p.searchByFieldName)}...`"
+              :placeholder="`${helper.translate('search_in')} ${helper.translate(p.module.name.toLowerCase())} ${helper.translate('by')}  ${helper.translate(p.searchByFieldName)}...`"
               v-model:value="d.searchKeyword"
               :clearable="true"
               @keydown="m.handle.keydown.search"
@@ -204,18 +204,11 @@ import GenericRestore from "../Modals/GenericRestore.vue"
 import GenericEdit from "../Modals/GenericEdit.vue"
 import type { Module } from "~/utils/modules"
 import GenericView from "../Modals/GenericView.vue"
-import { useSettingStore } from "~/stores/useSettingsStore"
-import { useLanguagesStore } from "~/stores/useLanguagesStore"
 
 const tableRef = ref<DataTableInst | null>(null)
 const table = tableRef
 
-const words = useLanguagesStore().words
-const usrPreferLang = useSettingStore().currentPreferredLanguage
-const helpers = useHelpers();
-const translatedWord = (key: string) => {
-  return helpers.getTranslatedWord(usrPreferLang.value.translations, words, key);
-};
+const helper = useHelpers();
 const translationTitleMap: Record<string, string> = {
   'Name': 'name',
   'Nickname': 'nickname',
@@ -259,7 +252,7 @@ const translatedFilterValues = computed(() => {
     const key = translationOptionsMap[filter.label]
     return {
       ...filter,
-      label: key ? translatedWord(key) : filter.label,
+      label: key ? helper.translate(key) : filter.label,
     }
   })
 })
@@ -554,7 +547,7 @@ const dataColumns = computed(() => {
     // Look up a translation key based on the original title.
     const translationKey = translationTitleMap[column.title]
     return translationKey
-      ? { ...column, title: translatedWord(translationKey) }
+      ? { ...column, title: helper.translate(translationKey) }
       : column
   })
 

@@ -10,8 +10,6 @@ import type { ConfigProviderProps } from "naive-ui"
 import { RoutePaths } from "~/types/index.d"
 import { createDiscreteApi, darkTheme } from "naive-ui"
 import { NaiveThemeOverrides } from "~/types/NaiveThemeOverrides"
-import { useLanguagesStore } from "~/stores/useLanguagesStore"
-import { useSettingStore } from "~/stores/useSettingsStore"
 
 type ConsumptionType =
   | "browse"
@@ -80,31 +78,18 @@ const request = async (
         errorTexts.push(text as any)
       })
 
-      // Language Switching
-      const words = useLanguagesStore().words
-      const usrPreferLang = useSettingStore().currentPreferredLanguage
-      const helpers = useHelpers();
-       const toSnakeCase = (str: string) => {
-        return str
-          .toLowerCase()
-          .replace(/[.\s]+/g, '_')
-          .replace(/^_+|_+$/g, '');
-      };
-      const translatedWord = (key: string) => {
-        return helpers.getTranslatedWord(usrPreferLang.value.translations, words, key);
-      };
-      // e.o Language Switching
-
+      const helper = useHelpers();
+     
       [...errorTexts.map((text) => {
             let message:string = ""; 
               if(typeof text[0] === 'string') {
                 message = text[0]
               }
-           
+           console.log("Message",message)
           })]
 
       discreteNotificationAPI.notification.error({
-        title: "Aiyo! Something went wrong.",
+        title: helper.translate('something_went_wrong'),
         description:
         "[ STATUS : " +
         error.response.status +
@@ -116,7 +101,7 @@ const request = async (
               if(typeof text[0] === 'string') {
                 message = text[0]
               }
-            return h("div", {}, text)
+            return h("div", {}, helper.translate(helper.toSnakeCase(message)))
           })])
         },
         duration: 3000,

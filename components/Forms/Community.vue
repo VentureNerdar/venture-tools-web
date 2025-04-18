@@ -11,24 +11,24 @@
       <n-grid x-gap="10" :cols="4">
         <!-- Name -->
         <n-gi span="2">
-          <n-form-item path="name" :label="translatedWord('name')">
-            <n-input v-model:value="d.model.name" :placeholder="translatedWord('please_input')" />
+          <n-form-item path="name" :label="h.translate('name')">
+            <n-input v-model:value="d.model.name" :placeholder="h.translate('please_input')" />
           </n-form-item>
         </n-gi>
         <!-- e.o Name -->
 
         <!-- Longitude -->
         <n-gi>
-          <n-form-item path="location_longitude" :label="translatedWord('longitude')">
-            <n-input v-model:value="d.model.location_longitude" :placeholder="translatedWord('please_input')" />
+          <n-form-item path="location_longitude" :label="h.translate('longitude')">
+            <n-input v-model:value="d.model.location_longitude" :placeholder="h.translate('please_input')" />
           </n-form-item>
         </n-gi>
         <!-- e.o Longitude -->
 
         <!-- Latitude -->
         <n-gi>
-          <n-form-item path="location_latitude" :label="translatedWord('latitude')">
-            <n-input v-model:value="d.model.location_latitude" :placeholder="translatedWord('please_input')" />
+          <n-form-item path="location_latitude" :label="h.translate('latitude')">
+            <n-input v-model:value="d.model.location_latitude" :placeholder="h.translate('please_input')" />
           </n-form-item>
         </n-gi>
         <!-- e.o Latitude -->
@@ -70,7 +70,7 @@
               <n-checkbox
                 v-model:checked="d.model.conducted_survey_of_community_needs"
               >
-                {{ translatedWord('conducted_survey_of_community_needs') }}
+                {{ h.translate('conducted_survey_of_community_needs') }}
               </n-checkbox>
 
               <n-input
@@ -78,28 +78,28 @@
                 :disabled="
                   d.model.conducted_survey_of_community_needs ? false : true
                 "
-                :placeholder="translatedWord('community_needs') + ' 1'"
+                :placeholder="h.translate('community_needs') + ' 1'"
               />
               <n-input
                 v-model:value="d.model.community_needs_2"
                 :disabled="
                   d.model.conducted_survey_of_community_needs ? false : true
                 "
-                :placeholder="translatedWord('community_needs') + ' 2'"
+                :placeholder="h.translate('community_needs') + ' 2'"
               />
               <n-input
                 v-model:value="d.model.community_needs_3"
                 :disabled="
                   d.model.conducted_survey_of_community_needs ? false : true
                 "
-                :placeholder="translatedWord('community_needs') + ' 3'"
+                :placeholder="h.translate('community_needs') + ' 3'"
               />
               <n-input
                 v-model:value="d.model.community_needs_4"
                 :disabled="
                   d.model.conducted_survey_of_community_needs ? false : true
                 "
-                :placeholder="translatedWord('community_needs') + ' 4'"
+                :placeholder="h.translate('community_needs') + ' 4'"
               />
               <n-input
                 v-model:value="d.model.community_needs_5"
@@ -107,7 +107,7 @@
                   d.model.conducted_survey_of_community_needs ? false : true
                 "
 
-                :placeholder="translatedWord('community_needs') + ' 5'"
+                :placeholder="h.translate('community_needs') + ' 5'"
               />
             </n-space>
           </n-card>
@@ -118,7 +118,7 @@
             <template #header>
               <div>
                 <b>
-                  {{ translatedWord('churches') }} :
+                  {{ h.translate('churches') }} :
                   {{ d.model.churches ? d.model.churches.length : "" }}
                 </b>
               </div>
@@ -165,12 +165,7 @@ const module = modules.communities
 
 const emit = defineEmits(["formChanged"])
 // Language Switching
-const words = useLanguagesStore().words
-const usrPreferLang = useSettingStore().currentPreferredLanguage
-const helpers = useHelpers();
-const translatedWord = (key: string) => {
-  return helpers.getTranslatedWord(usrPreferLang.value.translations, words, key);
-};
+const h = useHelpers();
 // e.o Language Switching
 
 // props
@@ -200,14 +195,6 @@ const formRef = ref<FormInst | null>(null)
  */
 const rules: FormRules = { ...module.form.rules }
 
- const toSnakeCase = (str: string) => {
-  return str
-    .toLowerCase()
-    .replace(/[.\s]+/g, '_')
-    .replace(/^_+|_+$/g, '');
-};
-
-
 const translatedRules = computed(() => {
   const result: Record<string, any[]> = {};
 
@@ -216,7 +203,7 @@ const translatedRules = computed(() => {
       
       return {
         ...rule,
-        message: translatedWord(toSnakeCase(rule.message)),
+        message: h.translate(h.toSnakeCase(rule.message)),
       };
     });
   }

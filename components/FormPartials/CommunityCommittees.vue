@@ -1,10 +1,10 @@
 <template>
   <n-space :size="10" vertical>
-    <div><b>{{ translatedWord('committees') }}</b></div>
+    <div><b>{{ h.translate('committees') }}</b></div>
 
     <n-empty
       v-if="!p.committees || p.committees.length === 0"
-      :description="translatedWord('no_community_committees')"
+      :description="h.translate('no_community_committees')"
     >
       <template #icon>
         <n-icon>
@@ -61,7 +61,7 @@
         <template #icon>
           <PlusRound />
         </template>
-        {{ translatedWord('add_community_committee') }}
+        {{ h.translate('add_community_committee') }}
       </n-button>
     </div>
     <!-- e.o Modal Button -->
@@ -74,14 +74,14 @@
   >
     <n-card
       style="width: 600px"
-      :title="translatedWord('community_committee')"
+      :title="h.translate('community_committee')"
       :bordered="false"
       size="small"
       role="dialog"
       aria-modal="true"
     >
       <n-space :size="10" vertical>
-        <n-input size="small" v-model:value="d.form.name" :placeholder="translatedWord('name')">
+        <n-input size="small" v-model:value="d.form.name" :placeholder="h.translate('name')">
           <template #prefix>
             <n-icon :component="GroupsRound" />
           </template>
@@ -94,14 +94,14 @@
             type="default"
             @click="m.handle.click.button.cancel"
             size="small"
-            >{{translatedWord('cancel')}}</n-button
+            >{{h.translate('cancel')}}</n-button
           >
 
           <n-button
             type="primary"
             @click="m.handle.click.button.save"
             size="small"
-            >{{ translatedWord('save') }}</n-button
+            >{{ h.translate('save') }}</n-button
           >
         </n-flex>
       </template>
@@ -120,18 +120,9 @@ import {
   EmailRound,
   GroupsRound,
 } from "@vicons/material"
-import { useLanguagesStore } from "~/stores/useLanguagesStore"
-import { useSettingStore } from "~/stores/useSettingsStore"
 
 const emits = defineEmits(["added", "updated", "deleted"])
-// Language Switching
-const words = useLanguagesStore().words
-const usrPreferLang = useSettingStore().currentPreferredLanguage
-const helpers = useHelpers();
-const translatedWord = (key: string) => {
-  return helpers.getTranslatedWord(usrPreferLang.value.translations, words, key);
-};
-// e.o Language Switching
+const h = useHelpers();
 
 const p = defineProps<{
   committees: CommunityCommittee[]

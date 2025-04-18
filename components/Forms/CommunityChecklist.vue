@@ -8,8 +8,8 @@
     label-width="150px"
   >
     <!-- Name -->
-    <n-form-item path="name" :label="translatedWord('name')">
-      <n-input v-model:value="d.model.name" :placeholder="translatedWord('please_input')" />
+    <n-form-item path="name" :label="h.translate('name')">
+      <n-input v-model:value="d.model.name" :placeholder="h.translate('please_input')" />
     </n-form-item>
     <!-- e.o Name -->
   </n-form>
@@ -39,12 +39,7 @@ const module = modules.denominations
 const emit = defineEmits(["formChanged"])
 
 // Language Switching
-const words = useLanguagesStore().words
-const usrPreferLang = useSettingStore().currentPreferredLanguage
-const helpers = useHelpers();
-const translatedWord = (key: string) => {
-  return helpers.getTranslatedWord(usrPreferLang.value.translations, words, key);
-};
+const h = useHelpers();
 // e.o Language Switching
 
 // props
@@ -74,14 +69,6 @@ const formRef = ref<FormInst | null>(null)
  */
 const rules: FormRules = { ...module.form.rules }
 
- const toSnakeCase = (str: string) => {
-  return str
-    .toLowerCase()
-    .replace(/[.\s]+/g, '_')
-    .replace(/^_+|_+$/g, '');
-};
-
-
 const translatedRules = computed(() => {
   const result: Record<string, any[]> = {};
 
@@ -90,7 +77,7 @@ const translatedRules = computed(() => {
       
       return {
         ...rule,
-        message: translatedWord(toSnakeCase(rule.message)),
+        message: h.translate(h.toSnakeCase(rule.message)),
       };
     });
   }
