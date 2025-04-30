@@ -15,10 +15,11 @@ import { useAuthStore } from "~/stores/useAuthStore"
 import { useSettingStore } from "~/stores/useSettingsStore"
 
 // — selected value
-const selectedLanguage = ref<number>(0)
+const selectedLanguage = ref<number>(1)
 const auth = useAuthStore()
 const settingStore = useSettingStore()
 const languageStore = useLanguagesStore()
+const languages = languageStore.languages
 
 if (auth.authUser.preferred_language_id) {
   selectedLanguage.value = auth.authUser.preferred_language_id
@@ -34,6 +35,7 @@ const languageOptions = computed(() =>
 )
 
 onMounted(() => {
+  
   const lang = languageStore.languages.find(
     (l: any) => l.id === selectedLanguage.value,
   )
@@ -49,6 +51,8 @@ watch(selectedLanguage, (id) => {
     settingStore.setUserPreferredLanguage(lang)
   }
 })
+
+
 </script>
 
 <style lang="scss" scoped>

@@ -35,6 +35,7 @@ import { useConsumeApi } from "~/composables/useConsumeApi"
 import {
   RoutePaths,
   type BrowseCondition,
+  type LanguageFormModel,
   type StoreOptions,
 } from "~/types/index.d"
 
@@ -187,6 +188,17 @@ const downloadSequence = async () => {
       key,
       store,
     } as StoreOptions)
+    if (moduleName === 'Languages') {
+      const languages = JSON.parse(localStorage.getItem('languages') || "[]")
+      const settingStore = useSettingStore()
+      let defaultLang
+      if(languages) {
+        defaultLang = languages.find((l:LanguageFormModel) => l.locale === 'en') 
+        settingStore.setUserPreferredLanguage(defaultLang)
+        
+      }
+    }
+
 
     await delay(500) // Wait 3 seconds before moving to the next
 
@@ -200,6 +212,7 @@ const downloadSequence = async () => {
 
 const redirectNextPage = () => {
   const role = useAuthStore().authUser.user_role_id
+  console.log("Role", role)
 
   let page = "/dashboard"
 

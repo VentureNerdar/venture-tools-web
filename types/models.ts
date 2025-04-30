@@ -200,6 +200,14 @@ export interface CommunityFormModel {
   deleted_at?: Date
 }
 
+export interface NotificationFormModel {
+  id?: number
+  name: string | null
+  value: string | null
+  created_at?: Date
+  updated_at?: Date
+}
+
 export type FormModel =
   | UserFormModel
   | UserRoleFormModel
@@ -214,3 +222,4 @@ export type FormModel =
   | FaithMilestoneFormModel
   | CommunicationPlatformFormModel
   | CommunityChecklistFormModel
+  | NotificationFormModel

@@ -71,4 +71,10 @@ export default {
   communityChecklist: {
     name: null,
   } as types.CommunityChecklistFormModel,
+
+  notification: {
+    name: null,
+    value: null,
+  } as types.NotificationFormModel,
+
 } as const

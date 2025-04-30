@@ -27,6 +27,8 @@ export enum RoutePaths {
   SETTINGS_STATUSES = "settings/statuses",
   SETTINGS_PRAYERS = "settings/prayers",
 
+  NOTIFICATIONS = "notifications",
+
   PROFILE_CHANGE_PASSWORD = "profile/change-password",
 }
 
@@ -41,10 +43,10 @@ export type AgeGroups =
 export type StoreOptions =
   | false
   | {
-      storeState: any
-      isPersist: boolean
-      key: string
-    }
+    storeState: any
+    isPersist: boolean
+    key: string
+  }
 
 export type CommonBrowseCondition = {
   search?: string

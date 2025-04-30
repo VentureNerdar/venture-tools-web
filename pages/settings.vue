@@ -43,13 +43,14 @@
       <n-tab-pane name="languages" :tab="h.translate('languages')" class="tab">
         <SettingsLanguages />
       </n-tab-pane>
+      <n-tab-pane name="notifications" tab="Notification" class="tab">
+        <SettingsNotifications />
+      </n-tab-pane>
     </n-tabs>
   </n-space>
 </template>
 
 <script lang="ts" setup>
-import { useLanguagesStore } from '~/stores/useLanguagesStore'
-import { useSettingStore } from '~/stores/useSettingsStore'
 
 const route = useRoute()
 const router = useRouter()

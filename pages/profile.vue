@@ -106,7 +106,6 @@ import { useLanguagesStore } from "~/stores/useLanguagesStore"
 import { CloudUploadRound } from "@vicons/material"
 
 import type { FormInst } from "naive-ui"
-import { useSettingStore } from "~/stores/useSettingsStore"
 
 const auth = useAuthStore()
 const formRef = ref<FormInst | null>(null)

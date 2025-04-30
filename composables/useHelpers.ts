@@ -24,9 +24,13 @@ export function useHelpers() {
       let translate = ""
       let wordId = 0
       const translations = useSettingStore().currentPreferredLanguage.value.translations
+      // const translations = useLanguagesStore().languages[0].translations
       const words = useLanguagesStore().words
+
+
+
       if (words) {
-        const systemWord = words.find((sw:LanguageWordFormModel) => sw.word == key)
+        const systemWord = words.find((sw: LanguageWordFormModel) => sw.word == key)
         if (systemWord && systemWord.id) {
           wordId = systemWord.id
         }
@@ -48,8 +52,8 @@ export function useHelpers() {
       return str
         .toLowerCase()
         .replace(/[.\s]+/g, '_')
-        .replace(/^_+|_+$/g, '');
-    } 
+        .replace(/^_+|_+$/g, '')
+    }
     // e.o snake case for language switching
 
   }
