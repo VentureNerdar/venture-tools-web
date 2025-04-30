@@ -73,36 +73,48 @@ const request = async (
 
   const response = await $fetch(routePath, requestOptions).catch(
     (error: any) => {
+      if (error.response.status === 401) {
+        localStorage.removeItem("Bearer")
+
+        discreteNotificationAPI.notification.error({
+          title: "Please login again.",
+          description: "Your session is expired",
+        })
+
+        navigateTo("/")
+      }
+
       const errorTexts = [] as string[]
       Object.entries(error.response._data.errors).forEach(([name, text]) => {
         errorTexts.push(text as any)
       })
 
-      const helper = useHelpers();
-     
-      [...errorTexts.map((text) => {
-            let message:string = ""; 
-              if(typeof text[0] === 'string') {
-                message = text[0]
-              }
-           console.log("Message",message)
-          })]
+      const helper = useHelpers()
+
+      ;[
+        ...errorTexts.map((text) => {
+          let message: string = ""
+          if (typeof text[0] === "string") {
+            message = text[0]
+          }
+          console.log("Message", message)
+        }),
+      ]
 
       discreteNotificationAPI.notification.error({
-        title: helper.translate('something_went_wrong'),
-        description:
-        "[ STATUS : " +
-        error.response.status +
-        " ] " + '',
+        title: helper.translate("something_went_wrong"),
+        description: "[ STATUS : " + error.response.status + " ] " + "",
         // error.response._data.message,
         content: () => {
-          return h("div", {}, [...errorTexts.map((text) => {
-            let message:string = ""; 
-              if(typeof text[0] === 'string') {
+          return h("div", {}, [
+            ...errorTexts.map((text) => {
+              let message: string = ""
+              if (typeof text[0] === "string") {
                 message = text[0]
               }
-            return h("div", {}, helper.translate(helper.toSnakeCase(message)))
-          })])
+              return h("div", {}, helper.translate(helper.toSnakeCase(message)))
+            }),
+          ])
         },
         duration: 3000,
         keepAliveOnHover: true,
@@ -259,4 +271,3 @@ export function useConsumeApi<T>(path: RoutePaths, id?: number) {
 
   return api
 }
-
