@@ -153,10 +153,8 @@ const respond = (
 ) => {
   // Process store operation
   if (storeOptions !== false) {
-    console.log(storeOptions)
     // Update store state using Pinia's store actions
     if (storeOptions.storeState) {
-      console.log(storeOptions.storeState)
 
       if (Array.isArray(storeOptions.storeState)) {
         // For array states, replace the entire array
