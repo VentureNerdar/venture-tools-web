@@ -1,8 +1,9 @@
 import { defineStore } from "pinia"
-import { useApiFetch } from "~/composables/useApiFetch"
 import { createDiscreteApi, darkTheme } from "naive-ui"
 import { NaiveThemeOverrides } from "~/types/NaiveThemeOverrides"
 import type { ConfigProviderProps } from "naive-ui"
+import { app } from '~/utils/firebase'
+
 
 const configProviderPropsRef = computed<ConfigProviderProps>(() => ({
   theme: darkTheme,
@@ -66,6 +67,70 @@ export const useAuthStore = defineStore("auth", () => {
     }
   }
 
+  async function registerDevice(userId: number) {
+    try {
+      // Generate a unique device ID
+      const deviceId = generateDeviceId()
+      let currentNotificationToken = null
+
+      // Generate FCM Token and initialize Firebase Messaging
+      try {
+        const vapidKey = config.public.firebase.vapidKey
+        const { getMessaging, getToken, onMessage } = await import('firebase/messaging')
+        const messaging = getMessaging(app)
+
+        const permission = await Notification.requestPermission()
+        if (permission === 'granted') {
+          currentNotificationToken = await getToken(messaging, { vapidKey })
+          if (currentNotificationToken) {
+            localStorage.setItem('notificationToken', currentNotificationToken)
+          }
+        }
+
+        onMessage(messaging, (payload) => {
+          console.log('Message received in foreground:', payload)
+          if (payload.notification?.title && payload.notification?.body) {
+            const { title, body } = payload.notification
+            new Notification(title, {
+              body,
+              icon: '/logo-vertical.png',
+            })
+          }
+        })
+      } catch (err) {
+        console.error('FCM error:', err)
+      }
+
+      // Store device ID in localStorage
+      localStorage.setItem('deviceId', deviceId)
+
+      const token = localStorage.getItem("Bearer") || ""
+      const headers = {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: token
+      }
+
+      // Register device with backend
+      await $fetch(`${config.public.apiURL}users/id/${userId}/devices/`, {
+        method: "POST",
+        body: {
+          device_id: deviceId,
+          device_type: "web",
+          device_name: navigator.userAgent,
+          notification_token: currentNotificationToken,
+        },
+        headers: headers
+      })
+    } catch (error: any) {
+      console.error("Error registering device:", error)
+    }
+  }
+
+  function generateDeviceId(): string {
+    return 'web_' + crypto.randomUUID()
+  }
+
   async function login(credentials: Credentials) {
     await $fetch(config.public.rootURL + "sanctum/csrf-cookie", {
       method: "GET",
@@ -94,6 +159,7 @@ export const useAuthStore = defineStore("auth", () => {
     if (response) {
       token.value = "Bearer " + response.token
       localStorage.setItem("Bearer", token.value)
+      await registerDevice(response.user.id)
       await fetchUser()
     }
 
@@ -102,6 +168,7 @@ export const useAuthStore = defineStore("auth", () => {
 
   async function logout() {
     const token = localStorage.getItem("Bearer") || ""
+    const deviceId = localStorage.getItem("deviceId") || ""
 
     let headers = {
       Accept: "application/json",
@@ -115,6 +182,9 @@ export const useAuthStore = defineStore("auth", () => {
     await $fetch(config.public.apiURL + "auth/logout", {
       method: "POST",
       credentials: "include",
+      body: {
+        device_id: deviceId,
+      },
       headers: headers,
     }).catch((error: any) => {
       discreteNotificationAPI.notification.error({

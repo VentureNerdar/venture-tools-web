@@ -1,13 +1,19 @@
 <template>
-  <n-space :size="10" vertical>
+  <n-space
+    :size="10"
+    vertical
+  >
     <div>{{ h.translate('church_planters') }}</div>
     <n-flex justify="space-between">
       <div>
         <n-scrollbar x-scrollable>
           <div style="white-space: nowrap">
-            <n-space :size="10" v-if="p.churchPlanters.length > 0">
+            <n-space
+              :size="10"
+              v-if="p.churchPlanters?.length > 0"
+            >
               <n-tag
-                v-for="cp in p.churchPlanters as any"
+                v-for="cp in churchPlantersList"
                 type="primary"
                 :key="cp.id"
                 closable
@@ -16,7 +22,10 @@
                 {{ cp.name }}
               </n-tag>
             </n-space>
-            <n-text depth="3" v-else><i>{{ h.translate('no_church_planters') }}</i></n-text>
+            <n-text
+              depth="3"
+              v-else
+            ><i>{{ h.translate('no_church_planters') }}</i></n-text>
           </div>
         </n-scrollbar>
       </div>
@@ -50,7 +59,10 @@
     >
       <template #header-extra> </template>
 
-      <n-space vertical :size="10">
+      <n-space
+        vertical
+        :size="10"
+      >
         <n-input
           size="small"
           :placeholder="h.translate('search_church_planters_by_name')"
@@ -66,9 +78,12 @@
           :x-scrollable="false"
           :show-scrollbar="true"
         >
-          <n-space :size="10" vertical>
+          <n-space
+            :size="10"
+            vertical
+          >
             <n-list hoverable>
-              <n-list-item v-for="cpl in d.churchPlantersList as any">
+              <n-list-item v-for="cpl in churchPlantersList">
                 <template #suffix>
                   <n-button
                     v-if="!p.churchPlanters.find((cp: any) => cp.id === cpl.id)"
@@ -125,95 +140,108 @@
   </n-modal>
 </template>
 
-<script lang="ts" setup>
-import { PlusRound, CloseRound } from "@vicons/material"
-import { useConsumeApi } from "~/composables/useConsumeApi"
-import { RoutePaths, type BrowseConditionAll } from "~/types/index.d"
+<script
+  lang="ts"
+  setup
+>
+  import { PlusRound, CloseRound } from "@vicons/material"
+  import { useConsumeApi } from "~/composables/useConsumeApi"
+  import { RoutePaths, type BrowseConditionAll } from "~/types/index.d"
 
-const p = defineProps<{
-  churchPlanters: any[]
-}>()
+  const p = withDefaults(defineProps<{
+    churchPlanters: any[]
+  }>(), {
+    churchPlanters: () => []
+  })
 
-const emit = defineEmits(["addedChurchPlanter", "removedChurchPlanter"])
-const h = useHelpers();
+  const emit = defineEmits(["addedChurchPlanter", "removedChurchPlanter"])
+  const h = useHelpers()
 
-const consume = {
-  churchPlanter: useConsumeApi(RoutePaths.USERS),
-}
+  const consume = {
+    churchPlanter: useConsumeApi(RoutePaths.USERS),
+  }
 
-const d = reactive({
-  value: "",
-  churchPlantersList: [],
-  visibility: {
-    modal: false,
-  },
+  const d = reactive({
+    value: "",
+    churchPlantersList: [],
+    visibility: {
+      modal: false,
+    },
 
-  addedChurchPlanters: [] as any,
+    addedChurchPlanters: [] as any,
 
-  modal: {
-    title: h.translate('add_church_planter'),
-  },
-})
+    modal: {
+      title: h.translate('add_church_planter'),
+    },
+  })
 
-const m = {
-  handle: {
-    click: {
-      btn: {
-        addModel: () => {
-          d.visibility.modal = true
+  // Computed
+  const churchPlantersList = computed(() => {
+    return d.churchPlantersList as any[]
+  })
+
+  const m = {
+    handle: {
+      click: {
+        btn: {
+          addModel: () => {
+            d.visibility.modal = true
+          },
+
+          close: () => {
+            d.value = ""
+            d.visibility.modal = false
+          },
         },
 
-        close: () => {
-          d.value = ""
-          d.visibility.modal = false
-        },
-      },
-
-      list: {
-        users: (user: any, op: "remove" | "add") => {
-          emit(
-            op === "add" ? "addedChurchPlanter" : "removedChurchPlanter",
-            user,
-          )
-
-          if (op === "add") {
-            d.addedChurchPlanters.push(user)
-          } else {
-            d.addedChurchPlanters = d.addedChurchPlanters.filter(
-              (cp: any) => cp.id !== user.id,
+        list: {
+          users: (user: any, op: "remove" | "add") => {
+            emit(
+              op === "add" ? "addedChurchPlanter" : "removedChurchPlanter",
+              user,
             )
-          }
+
+            if (op === "add") {
+              d.addedChurchPlanters.push(user)
+            } else {
+              d.addedChurchPlanters = d.addedChurchPlanters.filter(
+                (cp: any) => cp.id !== user.id,
+              )
+            }
+          },
         },
       },
     },
-  },
 
-  consume: {
-    search: async () => {
-      const bc = {
-        all: true,
-        search: d.value,
-        search_by: "name",
-        limit: 20,
-        where: JSON.stringify([{ key: "user_role_id", value: 4 }]),
-      } as BrowseConditionAll
+    consume: {
+      search: async () => {
+        const bc = {
+          all: true,
+          search: d.value,
+          search_by: "name",
+          limit: 20,
+          where: JSON.stringify([{ key: "user_role_id", value: 4 }]),
+        } as BrowseConditionAll
 
-      d.churchPlantersList = await consume.churchPlanter.browse(bc, false)
+        d.churchPlantersList = await consume.churchPlanter.browse(bc, false)
+      },
+
+      getDefaultChurchPlanters: async () => {
+        const bc = {
+          all: true,
+          limit: 20,
+          where: JSON.stringify([{ key: "user_role_id", value: 4 }]),
+        } as BrowseConditionAll
+
+        d.churchPlantersList = await consume.churchPlanter.browse(bc, false)
+      },
     },
+  }
 
-    getDefaultChurchPlanters: async () => {
-      const bc = {
-        all: true,
-        limit: 20,
-        where: JSON.stringify([{ key: "user_role_id", value: 4 }]),
-      } as BrowseConditionAll
-
-      d.churchPlantersList = await consume.churchPlanter.browse(bc, false)
-    },
-  },
-}
-
-m.consume.getDefaultChurchPlanters()
+  m.consume.getDefaultChurchPlanters()
 </script>
 
-<style lang="scss" scoped></style>
+<style
+  lang="scss"
+  scoped
+></style>

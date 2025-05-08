@@ -91,15 +91,15 @@ const request = async (
 
       const helper = useHelpers()
 
-      ;[
-        ...errorTexts.map((text) => {
-          let message: string = ""
-          if (typeof text[0] === "string") {
-            message = text[0]
-          }
-          console.log("Message", message)
-        }),
-      ]
+        ;[
+          ...errorTexts.map((text) => {
+            let message: string = ""
+            if (typeof text[0] === "string") {
+              message = text[0]
+            }
+            console.log("Message", message)
+          }),
+        ]
 
       discreteNotificationAPI.notification.error({
         title: helper.translate("something_went_wrong"),
@@ -153,9 +153,35 @@ const respond = (
 ) => {
   // Process store operation
   if (storeOptions !== false) {
-    storeOptions.storeState = response
+    console.log(storeOptions)
+    // Update store state using Pinia's store actions
+    if (storeOptions.storeState) {
+      console.log(storeOptions.storeState)
+
+      if (Array.isArray(storeOptions.storeState)) {
+        // For array states, replace the entire array
+        storeOptions.storeState.length = 0
+        if (Array.isArray(response)) {
+          storeOptions.storeState.push(...response)
+        } else if (response && typeof response === 'object') {
+          // Handle case where response might be wrapped in a data property
+          const data = response.data || response
+          if (Array.isArray(data)) {
+            storeOptions.storeState.push(...data)
+          }
+        }
+      } else if (typeof storeOptions.storeState === 'object') {
+        // For object states, update the object
+        if (response && typeof response === 'object') {
+          const data = response.data || response
+          Object.assign(storeOptions.storeState, data)
+        }
+      }
+    }
+
     if (storeOptions.isPersist) {
-      localStorage.setItem(storeOptions.key, JSON.stringify(response))
+      const dataToStore = response.data || response
+      localStorage.setItem(storeOptions.key, JSON.stringify(dataToStore))
     }
   }
 
@@ -263,10 +289,10 @@ export function useConsumeApi<T>(path: RoutePaths, id?: number) {
   }
 
   if (id) {
-    ;(api as any).update = (data: UseFetchOptions<T>) =>
+    ; (api as any).update = (data: UseFetchOptions<T>) =>
       useFetch(routePath, { method: "PUT", body: data, ...fetchOptions })
-    ;(api as any).view = (query: BrowseCondition) =>
-      useFetch(routePath, { method: "GET", query, ...fetchOptions })
+      ; (api as any).view = (query: BrowseCondition) =>
+        useFetch(routePath, { method: "GET", query, ...fetchOptions })
   }
 
   return api

@@ -7,17 +7,29 @@
     size="small"
     label-width="150px"
   >
-    <n-space :size="10" vertical>
+    <n-space
+      :size="10"
+      vertical
+    >
       <n-card size="small">
-        <n-grid x-gap="10" :cols="4">
+        <n-grid
+          x-gap="10"
+          :cols="4"
+        >
           <n-gi>
-            <n-form-item path="is_active" :label="h.translate('is_active')">
+            <n-form-item
+              path="is_active"
+              :label="h.translate('is_active')"
+            >
               <n-switch v-model:value="d.model.is_active"></n-switch>
             </n-form-item>
           </n-gi>
 
           <n-gi>
-            <n-form-item path="assigned_to" :label="h.translate('assigned_to')">
+            <n-form-item
+              path="assigned_to"
+              :label="h.translate('assigned_to')"
+            >
               <n-select
                 :loading="d.loading.assignedTo"
                 filterable
@@ -25,11 +37,13 @@
                 remote
                 @search="m.handle.searchAssignedToOption"
                 v-model:value="d.model.assigned_to"
-                :options="d.options.assignedTo as any[]"
+                :options="assignedToOptions"
               >
                 <template #action>
                   <n-text :depth="3">
-                    {{ h.translate('loading_maximum_20_users._type_in_the_name_of_the_user_to_search') }}
+
+                    <!-- {{ h.translate('loading_maximum_20_users._type_in_the_name_of_the_user_to_search') }} -->
+
                   </n-text>
                 </template>
               </n-select>
@@ -38,7 +52,10 @@
 
           <n-gi>
             <!-- Parent Church -->
-            <n-form-item path="community_id" :label="h.translate('community')">
+            <n-form-item
+              path="community_id"
+              :label="h.translate('community')"
+            >
               <n-select
                 v-model:value="d.model.community_id"
                 :placeholder="h.translate('select_a_community')"
@@ -63,10 +80,16 @@
       </n-card>
 
       <n-card size="small">
-        <n-grid :cols="5" x-gap="10">
+        <n-grid
+          :cols="5"
+          x-gap="10"
+        >
           <n-gi span="2">
             <!-- Name -->
-            <n-form-item path="name" :label="h.translate('church_name')">
+            <n-form-item
+              path="name"
+              :label="h.translate('church_name')"
+            >
               <n-input
                 v-model:value="d.model.name"
                 :placeholder="h.translate('enter_church_name')"
@@ -75,7 +98,10 @@
             <!-- e.o Name -->
 
             <!-- Description -->
-            <n-form-item path="description" :label="h.translate('description')">
+            <n-form-item
+              path="description"
+              :label="h.translate('description')"
+            >
               <n-input
                 v-model:value="d.model.description"
                 type="textarea"
@@ -88,7 +114,10 @@
 
           <n-gi>
             <!-- Parent Church -->
-            <n-form-item path="parent_church_id" :label="h.translate('parent_church')">
+            <n-form-item
+              path="parent_church_id"
+              :label="h.translate('parent_church')"
+            >
               <n-select
                 v-model:value="d.model.parent_church_id"
                 :placeholder="h.translate('select_a_parent_church_if_any')"
@@ -103,7 +132,10 @@
             <!-- e.o Parent Church -->
 
             <!-- Website -->
-            <n-form-item path="website" :label="h.translate('church_website')">
+            <n-form-item
+              path="website"
+              :label="h.translate('church_website')"
+            >
               <n-input
                 v-model:value="d.model.website"
                 :placeholder="h.translate('enter_church_website')"
@@ -112,7 +144,10 @@
             <!-- e.o Website -->
 
             <!-- Founded At -->
-            <n-form-item path="founded_at" :label="h.translate('founded_at')">
+            <n-form-item
+              path="founded_at"
+              :label="h.translate('founded_at')"
+            >
               <n-date-picker
                 v-model:value="d.model.founded_at"
                 value-format="yyyy-MM-dd HH:mm:ss"
@@ -126,7 +161,10 @@
 
           <n-gi>
             <!-- Denomination -->
-            <n-form-item path="denomination" :label="h.translate('denomination')">
+            <n-form-item
+              path="denomination"
+              :label="h.translate('denomination')"
+            >
               <n-select
                 v-model:value="d.model.denomination_id"
                 :placeholder="h.translate('select_a_church_denomination')"
@@ -136,7 +174,10 @@
             <!-- e.o Denomination -->
 
             <!-- Phone -->
-            <n-form-item path="phone_number" :label="h.translate('church_phone_number')">
+            <n-form-item
+              path="phone_number"
+              :label="h.translate('church_phone_number')"
+            >
               <n-input
                 v-model:value="d.model.phone_number"
                 :placeholder="h.translate('enter_church_phone_number')"
@@ -145,7 +186,10 @@
             <!-- e.o Phone -->
 
             <!-- Is Visited -->
-            <n-form-item path="is_visited" :label="h.translate('is_visited')">
+            <n-form-item
+              path="is_visited"
+              :label="h.translate('is_visited')"
+            >
               <n-switch v-model:value="d.model.is_visited"></n-switch>
             </n-form-item>
             <!-- e.o Is Visited -->
@@ -174,15 +218,25 @@
               />
             </n-form-item>
 
-            <n-form-item path="baptized_count" :label="h.translate('baptized_count')">
-              <n-input-number v-model:value="d.model.baptism_count" clearable :placeholder="h.translate('please_input')" />
+            <n-form-item
+              path="baptized_count"
+              :label="h.translate('baptized_count')"
+            >
+              <n-input-number
+                v-model:value="d.model.baptism_count"
+                clearable
+                :placeholder="h.translate('please_input')"
+              />
             </n-form-item>
           </n-gi>
         </n-grid>
       </n-card>
 
       <n-card size="small">
-        <n-form-item path="current_prayers" :label="h.translate('current_prayers')">
+        <n-form-item
+          path="current_prayers"
+          :label="h.translate('current_prayers')"
+        >
           <n-input
             v-model:value="d.model.current_prayers"
             type="textarea"
@@ -195,384 +249,391 @@
   </n-form>
 </template>
 
-<script lang="ts" setup>
-// Imports
-// mandatory . standard imports. need for all forms.
-import type { FormInst, FormRules } from "naive-ui"
-import modules from "~/utils/modules"
+<script
+  lang="ts"
+  setup
+>
+  // Imports
+  // mandatory . standard imports. need for all forms.
+  import type { FormInst, FormRules, SelectOption } from "naive-ui"
+  import modules from "~/utils/modules"
 
-// mandatory . variable form model types.
-import { RoutePaths } from "~/types/index.d"
-import type { ChurchFormModel } from "~/types/index.d"
+  // mandatory . variable form model types.
+  import { RoutePaths } from "~/types/index.d"
+  import type { ChurchFormModel } from "~/types/index.d"
 
-// optional . modular imports based on what the module form need
-// mostly for computes
-import { useConsumeApi } from "~/composables/useConsumeApi"
-import { useAuthStore } from "~/stores/useAuthStore"
-import { useDenominationStore } from "~/stores/useDenominationsStore"
-import { useSettingStore } from "~/stores/useSettingsStore"
-import { useLanguagesStore } from "~/stores/useLanguagesStore"
-// e.o Imports
+  // optional . modular imports based on what the module form need
+  // mostly for computes
+  import { useConsumeApi } from "~/composables/useConsumeApi"
+  import { useAuthStore } from "~/stores/useAuthStore"
+  import { useDenominationStore } from "~/stores/useDenominationsStore"
+  import { useSettingStore } from "~/stores/useSettingsStore"
+  import { useLanguagesStore } from "~/stores/useLanguagesStore"
+  // e.o Imports
 
-// mandatory . defining a model ref type. change the ref
-type ModelRefType = Ref<ChurchFormModel>
+  // mandatory . defining a model ref type. change the ref
+  type ModelRefType = Ref<ChurchFormModel>
 
-// Self Ref : Need to set a module
-const module = modules.churches
+  // Self Ref : Need to set a module
+  const module = modules.churches
 
-const consume = {
-  users: useConsumeApi(RoutePaths.USERS),
-  contacts: useConsumeApi(RoutePaths.CONTACTS),
-  churches: useConsumeApi(RoutePaths.CHURCHES),
-  faithMilestones: useConsumeApi(RoutePaths.FAITH_MILESTONES),
-  communicationPlatforms: useConsumeApi(RoutePaths.COMMUNICATION_PLATFORMS),
-  denomination: useConsumeApi(RoutePaths.DENOMINATIONS),
-  communities: useConsumeApi(RoutePaths.COMMUNITIES),
-}
-
-const emit = defineEmits(["formChanged"])
-
-// Language Switching
-const h = useHelpers();
-// e.o Language Switching
-
-
-
-// props
-// Self Ref : Need to change editData form model type
-// editData: false | < what form model ? >
-const p = withDefaults(
-  defineProps<{
-    editData: false | ChurchFormModel
-    hiddenFieldsOnEdit: string[]
-  }>(),
-  {
-    editData: false,
-    hiddenFieldsOnEdit: () => {
-      return []
-    },
-  },
-) // e.o p
-
-/**
- * formRef for the form
- */
-const formRef = ref<FormInst | null>(null)
-
-/**
- * Form Rules.
- * Its spreaded from the {@link Module}
- */
-const rules: FormRules = { ...module.form.rules }
-
-
-const translatedRules = computed(() => {
-  const result: Record<string, any[]> = {};
-
-  for (const key in rules) {
-    result[key] = (rules[key] as FormRules[]).map((rule:any) => {
-      
-      return {
-        ...rule,
-        message: h.translate(h.toSnakeCase(rule.message)),
-      };
-    });
+  const consume = {
+    users: useConsumeApi(RoutePaths.USERS),
+    contacts: useConsumeApi(RoutePaths.CONTACTS),
+    churches: useConsumeApi(RoutePaths.CHURCHES),
+    faithMilestones: useConsumeApi(RoutePaths.FAITH_MILESTONES),
+    communicationPlatforms: useConsumeApi(RoutePaths.COMMUNICATION_PLATFORMS),
+    denomination: useConsumeApi(RoutePaths.DENOMINATIONS),
+    communities: useConsumeApi(RoutePaths.COMMUNITIES),
   }
 
-  return result;
-});
+  const emit = defineEmits(["formChanged"])
+
+  // Language Switching
+  const h = useHelpers()
+  // e.o Language Switching
 
 
-/** Model Ref
- * It is defined to whether create or edit.
- * If edit , it gets from `p.editData`.
- * If create, it gets from `module.form.model`.
- *
- * SELF REF:
- * Need to change form model type. 2 places.
- * ref<"FORM_MODEL"> and as "FORM_MODEL" at the end
- */
-let modelRefRef = module.form.model as ChurchFormModel
-let existingAssignedTo = {}
-let existingParentChurch = {}
-let existingCommunity = {}
 
-// if the edit data is not false, which means it is an edit form,
-// then format some things to be used in the form.
-if (p.editData !== false) {
-  modelRefRef = p.editData
-
-  if ("assigned_to" in p.editData) {
-    const at = JSON.parse(JSON.stringify(p.editData.assigned_to))
-    existingAssignedTo = { ...at }
-    if (at !== null) {
-      modelRefRef.assigned_to = "id" in (at as any) ? (at as any).id : null
-    }
-  }
-
-  if ("founded_at" in p.editData) {
-    p.editData.founded_at = new Date(p.editData.founded_at).getTime()
-  }
-
-  if ("church_planters" in p.editData) {
-    p.editData.church_planters = p.editData.church_planters.map(
-      (cp: any) => cp.user,
-    )
-  }
-
-  if ("parent_church" in p.editData) {
-    const pc = JSON.parse(JSON.stringify(p.editData.parent_church))
-    existingParentChurch = { ...pc }
-    if (pc !== null) {
-      modelRefRef.parent_church_id = "id" in (pc as any) ? (pc as any).id : null
-    }
-  }
-
-  if ("community" in p.editData) {
-    const community = JSON.parse(JSON.stringify(p.editData.community))
-    existingCommunity = { ...community }
-    if (community !== null) {
-      modelRefRef.community_id =
-        "id" in (community as any) ? (community as any).id : null
-    }
-  }
-} else {
-}
-
-const modelRef: ModelRefType = ref({ ...modelRefRef })
-
-// data
-const d = reactive({
-  model: modelRef,
-  loading: {
-    churches: false,
-    assignedTo: false,
-    coachedBy: false,
-    baptizedBy: false,
-    community: false,
-  },
-  options: {
-    assignedTo: [] as string[],
-    coachedBy: [] as string[],
-    churches: [] as any[],
-    addedChurchPlanters: [] as any[],
-    denominations: [] as any[],
-    communities: [] as any[],
-  },
-}) // e.o d
-
-// Computes that need for the form
-// e.o Computes that need for the form
-//
-
-const m = {
-  handle: {
-    searchAssignedToOption: async (query: string) => {
-      d.loading.assignedTo = true
-
-      const searchResult = await consume.users.browse(
-        {
-          all: true,
-          search_by: "name",
-          search: query,
-          whereNotIn: {
-            key: "user_role_id",
-            value: [1, 2, 5],
-          },
-        },
-        false,
-      )
-
-      d.options.assignedTo = [
-        ...searchResult.map((user: any) => ({
-          label: user.name,
-          value: user.id,
-        })),
-      ]
-      d.loading.assignedTo = false
-    },
-
-    searchChurchesOption: async (query: string) => {
-      d.loading.churches = true
-
-      const searchResult = await consume.churches.browse(
-        {
-          all: true,
-          search_by: "name",
-          search: query,
-        },
-        false,
-      )
-
-      d.options.churches = [
-        ...searchResult.map((church: any) => ({
-          label: church.name,
-          value: church.id,
-        })),
-      ]
-
-      d.loading.churches = false
-    },
-
-    searchCommunityOption: async (query: string) => {
-      d.loading.community = true
-
-      const searchResult = await consume.communities.browse(
-        {
-          all: true,
-          search_by: "name",
-          search: query,
-        },
-        false,
-      )
-
-      d.options.communities = [
-        ...searchResult.map((community: any) => ({
-          label: community.name,
-          value: community.id,
-        })),
-      ]
-
-      d.loading.community = false
-    },
-
-    emit: {
-      addedChurchPlanter: (user: any) => {
-        d.model.church_planters.push(user)
-      },
-
-      removedChurchPlanter: (user: any) => {
-        d.model.church_planters = d.model.church_planters.filter(
-          (cp: any) => cp.id !== user.id,
-        )
+  // props
+  // Self Ref : Need to change editData form model type
+  // editData: false | < what form model ? >
+  const p = withDefaults(
+    defineProps<{
+      editData: false | ChurchFormModel
+      hiddenFieldsOnEdit: string[]
+    }>(),
+    {
+      editData: false,
+      hiddenFieldsOnEdit: () => {
+        return []
       },
     },
-  },
+  ) // e.o p
 
-  consume: {
-    defaultUsersForAssignedToOption: async () => {
-      const users = await consume.users.list({
-        labelOption: "name",
-        limit: 20,
+  /**
+   * formRef for the form
+   */
+  const formRef = ref<FormInst | null>(null)
+
+  /**
+   * Form Rules.
+   * Its spreaded from the {@link Module}
+   */
+  const rules: FormRules = { ...module.form.rules }
+
+
+  const translatedRules = computed(() => {
+    const result: Record<string, any[]> = {}
+
+    for (const key in rules) {
+      result[key] = (rules[key] as FormRules[]).map((rule: any) => {
+
+        return {
+          ...rule,
+          message: h.translate(h.toSnakeCase(rule.message)),
+        }
       })
+    }
 
-      d.options.assignedTo = [...users]
+    return result
+  })
 
-      if (p.editData === false) {
-        const authStore = useAuthStore()
-        const userAlreadyInList = d.options.assignedTo.find(
-          (ou: any) => ou.value === authStore.authUser.id,
+
+  /** Model Ref
+   * It is defined to whether create or edit.
+   * If edit , it gets from `p.editData`.
+   * If create, it gets from `module.form.model`.
+   *
+   * SELF REF:
+   * Need to change form model type. 2 places.
+   * ref<"FORM_MODEL"> and as "FORM_MODEL" at the end
+   */
+  let modelRefRef = module.form.model as ChurchFormModel
+  let existingAssignedTo = {}
+  let existingParentChurch = {}
+  let existingCommunity = {}
+
+  // if the edit data is not false, which means it is an edit form,
+  // then format some things to be used in the form.
+  if (p.editData !== false) {
+    modelRefRef = p.editData
+
+    if ("assigned_to" in p.editData) {
+      const at = JSON.parse(JSON.stringify(p.editData.assigned_to))
+      existingAssignedTo = { ...at }
+      if (at !== null) {
+        modelRefRef.assigned_to = typeof at === 'object' && at !== null && 'id' in at ? at.id : at
+      }
+    }
+
+    if ("founded_at" in p.editData) {
+      p.editData.founded_at = new Date(p.editData.founded_at).getTime()
+    }
+
+    if ("church_planters" in p.editData) {
+      p.editData.church_planters = p.editData.church_planters.map(
+        (cp: any) => cp.user,
+      )
+    }
+
+    if ("parent_church" in p.editData) {
+      const pc = JSON.parse(JSON.stringify(p.editData.parent_church))
+      existingParentChurch = { ...pc }
+      if (pc !== null) {
+        modelRefRef.parent_church_id = "id" in (pc as any) ? (pc as any).id : null
+      }
+    }
+
+    if ("community" in p.editData) {
+      const community = JSON.parse(JSON.stringify(p.editData.community))
+      existingCommunity = { ...community }
+      if (community !== null) {
+        modelRefRef.community_id =
+          "id" in (community as any) ? (community as any).id : null
+      }
+    }
+  } else {
+  }
+
+  const modelRef: ModelRefType = ref({ ...modelRefRef })
+
+  // data
+  const d = reactive({
+    model: modelRef,
+    loading: {
+      churches: false,
+      assignedTo: false,
+      coachedBy: false,
+      baptizedBy: false,
+      community: false,
+    },
+    options: {
+      assignedTo: [] as string[],
+      coachedBy: [] as string[],
+      churches: [] as any[],
+      addedChurchPlanters: [] as any[],
+      denominations: [] as any[],
+      communities: [] as any[],
+    },
+  }) // e.o d
+
+  // Computes that need for the form
+  const assignedToOptions = computed(() => {
+    return d.options.assignedTo as any[]
+  })
+
+  // e.o Computes that need for the form
+  //
+
+  const m = {
+    handle: {
+      searchAssignedToOption: async (query: string) => {
+        d.loading.assignedTo = true
+
+        const searchResult = await consume.users.browse(
+          {
+            all: true,
+            search_by: "name",
+            search: query,
+            whereNotIn: {
+              key: "user_role_id",
+              value: [1, 2, 5],
+            },
+          },
+          false,
         )
 
-        if (userAlreadyInList === undefined) {
-          if ("name" in authStore.authUser && "id" in authStore.authUser) {
-            d.options.assignedTo.push({
-              label: authStore.authUser.name,
-              value: authStore.authUser.id,
-            } as any)
+        d.options.assignedTo = [
+          ...searchResult.map((user: any) => ({
+            label: user.name,
+            value: user.id,
+          })),
+        ]
+        d.loading.assignedTo = false
+      },
+
+      searchChurchesOption: async (query: string) => {
+        d.loading.churches = true
+
+        const searchResult = await consume.churches.browse(
+          {
+            all: true,
+            search_by: "name",
+            search: query,
+          },
+          false,
+        )
+
+        d.options.churches = [
+          ...searchResult.map((church: any) => ({
+            label: church.name,
+            value: church.id,
+          })),
+        ]
+
+        d.loading.churches = false
+      },
+
+      searchCommunityOption: async (query: string) => {
+        d.loading.community = true
+
+        const searchResult = await consume.communities.browse(
+          {
+            all: true,
+            search_by: "name",
+            search: query,
+          },
+          false,
+        )
+
+        d.options.communities = [
+          ...searchResult.map((community: any) => ({
+            label: community.name,
+            value: community.id,
+          })),
+        ]
+
+        d.loading.community = false
+      },
+
+      emit: {
+        addedChurchPlanter: (user: any) => {
+          d.model.church_planters.push(user)
+        },
+
+        removedChurchPlanter: (user: any) => {
+          d.model.church_planters = d.model.church_planters.filter(
+            (cp: any) => cp.id !== user.id,
+          )
+        },
+      },
+    },
+
+    consume: {
+      defaultUsersForAssignedToOption: async () => {
+        const users = await consume.users.list({
+          labelOption: "name",
+          limit: 20,
+        })
+
+        d.options.assignedTo = [...users]
+
+        if (p.editData === false) {
+          const authStore = useAuthStore()
+          const userAlreadyInList = d.options.assignedTo.find(
+            (ou: any) => ou.value === authStore.authUser.id,
+          )
+
+          if (userAlreadyInList === undefined) {
+            if ("name" in authStore.authUser && "id" in authStore.authUser) {
+              d.options.assignedTo.push({
+                label: authStore.authUser.name,
+                value: authStore.authUser.id,
+              } as any)
+            }
+          }
+
+          // set auth user as selected to "Assigned To"
+          d.model.assigned_to = authStore.authUser.id
+        } else {
+          if ("assigned_to" in p.editData) {
+            const label =
+              "name" in (existingAssignedTo as any)
+                ? (existingAssignedTo as any).name
+                : null
+            const value =
+              "id" in (existingAssignedTo as any)
+                ? (existingAssignedTo as any).id
+                : null
+            d.options.assignedTo.push({ label: label, value: value } as any)
           }
         }
+      },
 
-        // set auth user as selected to "Assigned To"
-        d.model.assigned_to = authStore.authUser.id
-      } else {
-        if ("assigned_to" in p.editData) {
-          const label =
-            "name" in (existingAssignedTo as any)
-              ? (existingAssignedTo as any).name
-              : null
-          const value =
-            "id" in (existingAssignedTo as any)
-              ? (existingAssignedTo as any).id
-              : null
-          d.options.assignedTo.push({ label: label, value: value } as any)
+      defaultChurchesForChurchesOption: async () => {
+        const churches = await consume.churches.list({
+          labelOption: "name",
+          limit: 20,
+        })
+
+        d.options.churches = [...churches]
+
+        if (p.editData !== false) {
+          if ("parent_church" in p.editData) {
+            const label =
+              "name" in (existingParentChurch as any)
+                ? (existingParentChurch as any).name
+                : null
+            const value =
+              "id" in (existingParentChurch as any)
+                ? (existingParentChurch as any).id
+                : null
+            d.options.churches.push({ label: label, value: value } as any)
+          }
         }
-      }
-    },
+      },
 
-    defaultChurchesForChurchesOption: async () => {
-      const churches = await consume.churches.list({
-        labelOption: "name",
-        limit: 20,
-      })
+      defaultCommunitiesForCommunityOption: async () => {
+        const communities = await consume.communities.list({
+          labelOption: "name",
+          limit: 20,
+        })
 
-      d.options.churches = [...churches]
+        d.options.communities = [...communities]
 
-      if (p.editData !== false) {
-        if ("parent_church" in p.editData) {
-          const label =
-            "name" in (existingParentChurch as any)
-              ? (existingParentChurch as any).name
-              : null
-          const value =
-            "id" in (existingParentChurch as any)
-              ? (existingParentChurch as any).id
-              : null
-          d.options.churches.push({ label: label, value: value } as any)
+        if (p.editData !== false) {
+          if ("community" in p.editData) {
+            const label =
+              "name" in (existingCommunity as any)
+                ? (existingCommunity as any).name
+                : null
+            const value =
+              "id" in (existingCommunity as any)
+                ? (existingCommunity as any).id
+                : null
+            d.options.communities.push({ label: label, value: value } as any)
+          }
         }
+      },
+
+      getDenominationList: async () => {
+        d.options.denominations = await consume.denomination.list({
+          labelOption: "name",
+          limit: 20,
+        })
+      },
+    },
+  }
+
+  watch(
+    () => d.model,
+    (modelVal) => {
+      // d.model.password_confirmation = d.model.password
+      const payload = { ...modelVal }
+
+      if (payload.founded_at !== undefined) {
+        payload.founded_at = new Date(payload.founded_at)
+          .toISOString()
+          .slice(0, 19)
+          .replace("T", " ")
       }
-    },
 
-    defaultCommunitiesForCommunityOption: async () => {
-      const communities = await consume.communities.list({
-        labelOption: "name",
-        limit: 20,
-      })
-
-      d.options.communities = [...communities]
-
-      if (p.editData !== false) {
-        if ("community" in p.editData) {
-          const label =
-            "name" in (existingCommunity as any)
-              ? (existingCommunity as any).name
-              : null
-          const value =
-            "id" in (existingCommunity as any)
-              ? (existingCommunity as any).id
-              : null
-          d.options.communities.push({ label: label, value: value } as any)
-        }
+      if (payload.church_planters) {
+        payload.church_planters = [
+          ...payload.church_planters.map((c: any) => c.id),
+        ]
       }
+
+      emit("formChanged", payload)
     },
+    { deep: true },
+  )
 
-    getDenominationList: async () => {
-      d.options.denominations = await consume.denomination.list({
-        labelOption: "name",
-        limit: 20,
-      })
-    },
-  },
-}
-
-watch(
-  () => d.model,
-  (modelVal) => {
-    // d.model.password_confirmation = d.model.password
-    const payload = { ...modelVal }
-
-    if (payload.founded_at !== undefined) {
-      payload.founded_at = new Date(payload.founded_at)
-        .toISOString()
-        .slice(0, 19)
-        .replace("T", " ")
-    }
-
-    if (payload.church_planters) {
-      payload.church_planters = [
-        ...payload.church_planters.map((c: any) => c.id),
-      ]
-    }
-
-    emit("formChanged", payload)
-  },
-  { deep: true },
-)
-
-m.consume.defaultUsersForAssignedToOption()
-m.consume.defaultChurchesForChurchesOption()
-m.consume.defaultCommunitiesForCommunityOption()
-m.consume.getDenominationList()
+  m.consume.defaultUsersForAssignedToOption()
+  m.consume.defaultChurchesForChurchesOption()
+  m.consume.defaultCommunitiesForCommunityOption()
+  m.consume.getDenominationList()
 </script>
 
 <style></style>

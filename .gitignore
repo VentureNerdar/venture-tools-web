@@ -10,6 +10,8 @@
 # Node dependencies
 node_modules
 
+.cursorignore
+
 # Logs
 logs
 *.log
