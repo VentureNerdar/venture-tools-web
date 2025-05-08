@@ -24,17 +24,11 @@ export default defineNuxtConfig({
   plugins: ["~/plugins/pinia.ts"],
   runtimeConfig: {
     public: {
-      apiURL: "http://localhost:8000/api/",
-      apiURLUnSlashed: "http://localhost:8000/api",
+      apiURL: process.env.API_URL,
+      apiURLUnSlashed: process.env.API_URL_UNSLASHED,
 
-      rootURL: "http://localhost:8000/",
-      rootURLUnSlashed: "http://localhost:8000",
-
-      // apiURL: "http://api.venture-tools.klonotech.com/api/",
-      // apiURLUnSlashed: "http://api.venture-tools.klonotech.com/api",
-      //
-      // rootURL: "http://api.venture-tools.klonotech.com/",
-      // rootURLUnSlashed: "http://api.venture-tools.klonotech.com",
+      rootURL: process.env.ROOT_URL,
+      rootURLUnSlashed: process.env.ROOT_URL_UNSLASHED,
 
       firebase: {
         apiKey: process.env.FIREBASE_API_KEY,
