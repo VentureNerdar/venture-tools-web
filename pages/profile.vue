@@ -1,7 +1,12 @@
 <template>
-  <n-grid y-gap="10" cols="5">
-    <!-- <n-gi :offset="isChurchPlanter ? 0 : 1" :span="isChurchPlanter ? 2 : 3"> -->
-    <n-gi :offset="1" :span="3">
+  <n-grid
+    y-gap="10"
+    cols="5"
+  >
+    <n-gi
+      :offset="1"
+      :span="3"
+    >
       <n-card size="small">
         <n-form
           ref="formRef"
@@ -14,8 +19,9 @@
             :label="h.translate('name')"
             path="name"
           >
-            <n-input v-model:value="formValue.name" 
-            :placeholder="h.translate('input_name')"
+            <n-input
+              v-model:value="formValue.name"
+              :placeholder="h.translate('input_name')"
             />
           </n-form-item>
 
@@ -46,16 +52,20 @@
             />
           </n-form-item>
 
-          <n-form-item :label="h.translate('phone_number')" 
-              path="phone_number">
+          <n-form-item
+            :label="h.translate('phone_number')"
+            path="phone_number"
+          >
             <n-input
               v-model:value="formValue.phone_number"
               :placeholder="h.translate('input_phone_number')"
             />
           </n-form-item>
 
-          <n-form-item :label="h.translate('biography')" 
-              path="biography">
+          <n-form-item
+            :label="h.translate('biography')"
+            path="biography"
+          >
             <n-input
               v-model:value="formValue.biography"
               type="textarea"
@@ -63,9 +73,10 @@
             />
           </n-form-item>
 
-          <n-form-item 
-          :label="h.translate('preferred_language')" 
-          path="preferred_language_id">
+          <n-form-item
+            :label="h.translate('preferred_language')"
+            path="preferred_language_id"
+          >
             <n-select
               v-model:value="formValue.preferred_language_id"
               clearable
@@ -75,11 +86,13 @@
           </n-form-item>
 
           <n-flex justify="center">
-            <n-button type="warning" secondary size="small">
-              <template #icon
-                ><n-icon :component="CloudUploadRound"
-              /></template>
-              {{h.translate('update')}}
+            <n-button
+              type="warning"
+              secondary
+              size="small"
+            >
+              <template #icon><n-icon :component="CloudUploadRound" /></template>
+              {{ h.translate('update') }}
             </n-button>
           </n-flex>
         </n-form>
@@ -98,62 +111,59 @@
   </n-grid>
 </template>
 
-<script lang="ts" setup>
-import { useAuthStore } from "~/stores/useAuthStore"
-import { useUserStore } from "~/stores/useUsersStore"
-import { useLanguagesStore } from "~/stores/useLanguagesStore"
+<script
+  lang="ts"
+  setup
+>
+  import { useAuthStore } from "~/stores/useAuthStore"
+  import { useUserStore } from "~/stores/useUsersStore"
+  import { useLanguagesStore } from "~/stores/useLanguagesStore"
 
-import { CloudUploadRound } from "@vicons/material"
+  import { CloudUploadRound } from "@vicons/material"
 
-import type { FormInst } from "naive-ui"
+  import type { FormInst } from "naive-ui"
 
-const auth = useAuthStore()
-const formRef = ref<FormInst | null>(null)
-const formValue = ref({ ...(auth.authUser as any) })
+  const auth = useAuthStore()
+  const formRef = ref<FormInst | null>(null)
+  const formValue = ref({ ...(auth.authUser as any) })
 
-const h = useHelpers();
+  const h = useHelpers()
 
 
-const s = {
-  roles: useUserStore().userRoles,
-}
+  const s = {
+    roles: useUserStore(),
+  }
 
-const rules = {
-  user: {
-    name: {
-      required: true,
-      message: "Please input your name",
-      trigger: "blur",
+  const rules = {
+    user: {
+      name: {
+        required: true,
+        message: "Please input your name",
+        trigger: "blur",
+      },
+      age: {
+        required: true,
+        message: "Please input your age",
+        trigger: ["input", "blur"],
+      },
     },
-    age: {
+    phone: {
       required: true,
-      message: "Please input your age",
-      trigger: ["input", "blur"],
+      message: "Please input your number",
+      trigger: ["input"],
     },
-  },
-  phone: {
-    required: true,
-    message: "Please input your number",
-    trigger: ["input"],
-  },
-}
+  }
 
-const languageOptions = computed(() => {
-  return useLanguagesStore().languages.map((language: any) => ({
-    label: language.name,
-    value: language.id,
-  }))
-})
+  const languageOptions = computed(() => {
+    return useLanguagesStore().languages.map((language: any) => ({
+      label: language.name,
+      value: language.id,
+    }))
+  })
 
-const authUserRoleName = computed(() => {
+  const authUserRoleName = computed(() => {
+    return s.roles.userRoles.find((role: any) => role.id === formValue.value.user_role_id)
+      ?.label
+  })
 
-  return s.roles.find((role: any) => role.id === formValue.value.user_role_id)
-    ?.label
-})
-
-const isChurchPlanter = computed(() => {
-  return auth.authUser.user_role_id === 4 ? true : false
-})
-
-console.log(auth.authUser)
 </script>

@@ -191,11 +191,7 @@
   const downloadSequence = async () => {
     for (const [moduleName, model, key, store, query] of tasks) {
       d.currentTaskText = `Fetching ${moduleName}...`
-      const response = await consume(moduleName, model, query, {
-        ...d.defaultStoreOptions,
-        key,
-        store,
-      } as StoreOptions)
+      const response = await consume(moduleName, model, query, store)
 
       if (moduleName === 'Languages') {
         const languages = JSON.parse(localStorage.getItem('languages') || "[]")
@@ -207,6 +203,7 @@
         }
       }
 
+      /*
       if (moduleName === 'Language Words') {
         const languageStore = useLanguagesStore()
         // Ensure the words array is properly initialized and updated
@@ -216,8 +213,9 @@
           localStorage.setItem('languageWords', JSON.stringify(response))
         }
       }
+        */
 
-      await delay(300) // Wait 3 seconds before moving to the next
+      await delay(200)
 
       if (!d.logoLoaded) {
         d.logoLoaded = true
@@ -246,16 +244,14 @@
     storeOptions: StoreOptions,
   ) => {
     const consumer = useConsumeApi(routePaths)
-
-    await consumer.browse(query, storeOptions)
-
+    const response = await consumer.browse(query, storeOptions)
     d.completedModules.push(moduleName)
 
     if (moduleName === "Community Checklists") {
       d.currentTaskText = "Redirecting . . . "
     }
 
-    return consumer.browse(query, storeOptions)
+    return response
   }
 
   downloadSequence()
