@@ -13,7 +13,7 @@
               v-if="p.churchPlanters?.length > 0"
             >
               <n-tag
-                v-for="cp in churchPlantersList"
+                v-for="cp in p.churchPlanters"
                 type="primary"
                 :key="cp.id"
                 closable

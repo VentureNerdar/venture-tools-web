@@ -113,15 +113,29 @@
           </n-card>
         </n-gi>
 
-        <n-gi>
+        <n-gi v-if="p.editData">
           <n-list bordered hoverable>
             <template #header>
-              <div>
+              <div style="display: flex; justify-content: space-between; align-items: center;">
                 <b>
                   {{ h.translate('churches') }} :
                   {{ d.model.churches ? d.model.churches.length : "" }}
                 </b>
+                <n-button @click="m.handle.click.handleChurchAdd" type="primary" >
+                  <n-icon>
+                    <PlusRound />
+                  </n-icon>
+                </n-button>
               </div>
+              <ModalsGenericSaveForm
+                :show-modal="d.visibility.churchForm"
+                :form-modal-options="churchFormModalOptions"
+                :form="false"
+                :store-options="churchStoreOption"
+                :route-path="RoutePaths.CHURCHES"
+                @close-modal="d.visibility.churchForm = false"
+                @saved-form="m.handle.emits.handleSavedChurchForm"
+              />
             </template>
 
             <n-scrollbar style="max-height: 250px">
@@ -132,9 +146,10 @@
           </n-list>
         </n-gi>
 
-        <n-gi>
+        <n-gi v-if="p.editData">
           <FormPartialsCommunityChurchPlanters
             :churchPlanters="d.model.churchPlanters as any[]"
+            :communityID="d.model.id as number"
           />
         </n-gi>
       </n-grid>
@@ -146,12 +161,15 @@
 // Imports
 // mandatory . standard imports. need for all forms.
 import type { FormInst, FormRules } from "naive-ui"
-import modules from "~/utils/modules"
-
+import modules, { type Module } from "~/utils/modules"
+import { RoutePaths } from "~/types/index.d"
+import FormsChurch  from "./Church.vue"
+import {PlusRound} from "@vicons/material"
 // mandatory . variable form model types.
-import type { CommunityChecklistFormModel, CommunityFormModel } from "~/types"
+import type { ChurchFormModel, CommunityChecklistFormModel, CommunityFormModel, StoreOptions } from "~/types"
 import { useLanguagesStore } from "~/stores/useLanguagesStore"
 import { useSettingStore } from "~/stores/useSettingsStore"
+import { useAuthStore } from "~/stores/useAuthStore"
 
 // optional . modular imports based on what the module form need
 // mostly for computes
@@ -166,6 +184,7 @@ const module = modules.communities
 const emit = defineEmits(["formChanged"])
 // Language Switching
 const h = useHelpers();
+const authUser = useAuthStore().authUser
 // e.o Language Switching
 
 // props
@@ -238,13 +257,25 @@ const modelRef: ModelRefType = ref({ ...modelRefRef })
 // data
 const d = reactive({
   model: modelRef,
+  visibility: {
+    churchForm: false
+  }
 }) // e.o d
 
+onMounted(() => {
+  d.model.created_by = authUser.id
+})
 // Computes that need for the form
 // e.o Computes that need for the form
 
 const m = {
   handle: {
+    click: {
+      handleChurchAdd: () => {
+        d.visibility.churchForm = true
+
+      }
+    },
     emits: {
       communityChecklistChanged: (param: { id: number; checked: boolean }) => {
         const checklists = d.model.checklists
@@ -325,9 +356,38 @@ const m = {
           d.model.committees.splice(index, 1)
         }
       },
+
+      handleSavedChurchForm: (form: ChurchFormModel) => {
+        if(form) {
+          d.model.churches?.push(form)
+        }
+      }
     },
   },
 }
+
+ // Add Church Form 
+ const churchModule = modules.churches as Module
+ const churchStoreOption = {
+  storeState: module.store.church,
+  ...module.options.store, 
+ } as StoreOptions
+ const churchFormModalOptions = {
+  moduleName: churchModule.name,
+  components: {
+    formComponent: FormsChurch,
+    buttonIconComponent: churchModule.form.createButtonIconComponent
+  },
+  routePath: churchModule.routePath,
+  width: churchModule.form.modalWidthSize,
+  hiddenFieldsOnEdit: churchModule.dataTable.hiddenFieldsOnEdit,
+  form: churchModule.form.model,
+  communityId: d.model.id
+
+ }
+
+ 
+
 
 watch(
   () => d.model,

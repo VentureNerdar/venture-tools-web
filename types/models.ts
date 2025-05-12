@@ -194,6 +194,7 @@ export interface CommunityFormModel {
 
   churches: ChurchFormModel[] | null
   churchPlanters: [] | null
+  created_by: number
 
   created_at?: Date
   updated_at?: Date

@@ -19,7 +19,7 @@
           <n-gi>
             <n-form-item
               path="is_active"
-              :label="h.translate('is_active')"
+              :label="helpers.translate('is_active')"
             >
               <n-switch v-model:value="d.model.is_active"></n-switch>
             </n-form-item>
@@ -28,7 +28,7 @@
           <n-gi>
             <n-form-item
               path="assigned_to"
-              :label="h.translate('assigned_to')"
+              :label="helpers.translate('assigned_to')"
             >
               <n-select
                 :loading="d.loading.assignedTo"
@@ -51,24 +51,46 @@
           </n-gi>
 
           <n-gi>
-            <!-- Parent Church -->
+            <!-- Community -->
             <n-form-item
               path="community_id"
-              :label="h.translate('community')"
+              :label="helpers.translate('community')"
             >
               <n-select
                 v-model:value="d.model.community_id"
-                :placeholder="h.translate('select_a_community')"
+                :placeholder="helpers.translate('select_a_community')"
                 filterable
                 clearable
                 remote
                 @search="m.handle.searchCommunityOption"
                 :loading="d.loading.community"
-                :options="d.options.communities"
+                :options="computedCommunityOptions"
               />
             </n-form-item>
-          </n-gi>
+            <!-- <n-modal 
+            v-model:show="showCreateCommunityModal" 
+            title="Create Community"
+            transform-origin="center"
+            :mask-closable="false"
+            >
+              <FormsCommunity @created="handleCommunityCreated" />
+            </n-modal> -->
+            <ModalsGenericSaveForm
+              :show-modal="showCreateCommunityModal"
+              :form="false"
+              :form-modal-options="formModalOptions"
+              :store-options="communityStoreOption"
+              :route-path="RoutePaths.COMMUNITIES"
+              @close-modal="showCreateCommunityModal = false"
+              @saved-form="handleSavedCommunityForm"
+              />
+              <!-- @community-id="(id) => d.model.community_id = id" -->
 
+          </n-gi>
+          <!-- e.o Community -->
+
+
+            <!-- Parent Church -->
           <n-gi>
             <ModalsChurchPlanters
               :churchPlanters="d.model.church_planters"
@@ -88,11 +110,11 @@
             <!-- Name -->
             <n-form-item
               path="name"
-              :label="h.translate('church_name')"
+              :label="helpers.translate('church_name')"
             >
               <n-input
                 v-model:value="d.model.name"
-                :placeholder="h.translate('enter_church_name')"
+                :placeholder="helpers.translate('enter_church_name')"
               />
             </n-form-item>
             <!-- e.o Name -->
@@ -100,13 +122,13 @@
             <!-- Description -->
             <n-form-item
               path="description"
-              :label="h.translate('description')"
+              :label="helpers.translate('description')"
             >
               <n-input
                 v-model:value="d.model.description"
                 type="textarea"
                 :rows="4"
-                :placeholder="h.translate('please_input')"
+                :placeholder="helpers.translate('please_input')"
               />
             </n-form-item>
             <!-- e.o Description -->
@@ -116,11 +138,11 @@
             <!-- Parent Church -->
             <n-form-item
               path="parent_church_id"
-              :label="h.translate('parent_church')"
+              :label="helpers.translate('parent_church')"
             >
               <n-select
                 v-model:value="d.model.parent_church_id"
-                :placeholder="h.translate('select_a_parent_church_if_any')"
+                :placeholder="helpers.translate('select_a_parent_church_if_any')"
                 filterable
                 clearable
                 remote
@@ -134,11 +156,11 @@
             <!-- Website -->
             <n-form-item
               path="website"
-              :label="h.translate('church_website')"
+              :label="helpers.translate('church_website')"
             >
               <n-input
                 v-model:value="d.model.website"
-                :placeholder="h.translate('enter_church_website')"
+                :placeholder="helpers.translate('enter_church_website')"
               />
             </n-form-item>
             <!-- e.o Website -->
@@ -146,13 +168,13 @@
             <!-- Founded At -->
             <n-form-item
               path="founded_at"
-              :label="h.translate('founded_at')"
+              :label="helpers.translate('founded_at')"
             >
               <n-date-picker
                 v-model:value="d.model.founded_at"
                 value-format="yyyy-MM-dd HH:mm:ss"
                 format="dd MMM yyyy"
-                :placeholder="h.translate('select_a_date')"
+                :placeholder="helpers.translate('select_a_date')"
                 style="width: 100%"
                 :input-readonly="true"
               />
@@ -163,11 +185,11 @@
             <!-- Denomination -->
             <n-form-item
               path="denomination"
-              :label="h.translate('denomination')"
+              :label="helpers.translate('denomination')"
             >
               <n-select
                 v-model:value="d.model.denomination_id"
-                :placeholder="h.translate('select_a_church_denomination')"
+                :placeholder="helpers.translate('select_a_church_denomination')"
                 :options="d.options.denominations"
               />
             </n-form-item>
@@ -176,11 +198,11 @@
             <!-- Phone -->
             <n-form-item
               path="phone_number"
-              :label="h.translate('church_phone_number')"
+              :label="helpers.translate('church_phone_number')"
             >
               <n-input
                 v-model:value="d.model.phone_number"
-                :placeholder="h.translate('enter_church_phone_number')"
+                :placeholder="helpers.translate('enter_church_phone_number')"
               />
             </n-form-item>
             <!-- e.o Phone -->
@@ -188,7 +210,7 @@
             <!-- Is Visited -->
             <n-form-item
               path="is_visited"
-              :label="h.translate('is_visited')"
+              :label="helpers.translate('is_visited')"
             >
               <n-switch v-model:value="d.model.is_visited"></n-switch>
             </n-form-item>
@@ -198,34 +220,34 @@
           <n-gi>
             <n-form-item
               path="church_members_count"
-              :label="h.translate('church_members_count')"
+              :label="helpers.translate('church_members_count')"
             >
               <n-input-number
                 v-model:value="d.model.church_members_count"
                 clearable
-                :placeholder="h.translate('please_input')"
+                :placeholder="helpers.translate('please_input')"
               />
             </n-form-item>
 
             <n-form-item
               path="confession_of_faith_count"
-              :label="h.translate('confession_of_faith_count')"
+              :label="helpers.translate('confession_of_faith_count')"
             >
               <n-input-number
                 v-model:value="d.model.confession_of_faith_count"
                 clearable
-                :placeholder="h.translate('please_input')"
+                :placeholder="helpers.translate('please_input')"
               />
             </n-form-item>
 
             <n-form-item
               path="baptized_count"
-              :label="h.translate('baptized_count')"
+              :label="helpers.translate('baptized_count')"
             >
               <n-input-number
                 v-model:value="d.model.baptism_count"
                 clearable
-                :placeholder="h.translate('please_input')"
+                :placeholder="helpers.translate('please_input')"
               />
             </n-form-item>
           </n-gi>
@@ -235,12 +257,12 @@
       <n-card size="small">
         <n-form-item
           path="current_prayers"
-          :label="h.translate('current_prayers')"
+          :label="helpers.translate('current_prayers')"
         >
           <n-input
             v-model:value="d.model.current_prayers"
             type="textarea"
-            :placeholder="h.translate('please_input')"
+            :placeholder="helpers.translate('please_input')"
             :rows="4"
           />
         </n-form-item>
@@ -257,10 +279,11 @@
   // mandatory . standard imports. need for all forms.
   import type { FormInst, FormRules, SelectOption } from "naive-ui"
   import modules from "~/utils/modules"
+  import ModalsGenericSaveForm from "../Modals/GenericSaveForm.vue"
 
   // mandatory . variable form model types.
   import { RoutePaths } from "~/types/index.d"
-  import type { ChurchFormModel } from "~/types/index.d"
+  import type { ChurchFormModel, CommunityFormModel, FormModalOptions, StoreOptions } from "~/types/index.d"
 
   // optional . modular imports based on what the module form need
   // mostly for computes
@@ -269,6 +292,7 @@
   import { useDenominationStore } from "~/stores/useDenominationsStore"
   import { useSettingStore } from "~/stores/useSettingsStore"
   import { useLanguagesStore } from "~/stores/useLanguagesStore"
+  import FormCommunity from "./Community.vue"
   // e.o Imports
 
   // mandatory . defining a model ref type. change the ref
@@ -290,7 +314,7 @@
   const emit = defineEmits(["formChanged"])
 
   // Language Switching
-  const h = useHelpers()
+  const helpers = useHelpers()
   // e.o Language Switching
 
 
@@ -331,7 +355,7 @@
 
         return {
           ...rule,
-          message: h.translate(h.toSnakeCase(rule.message)),
+          message: helpers.translate(helpers.toSnakeCase(rule.message)),
         }
       })
     }
@@ -425,6 +449,61 @@
 
   // e.o Computes that need for the form
   //
+  
+  // Add Community Form
+  const communityModule = modules.communities as Module
+  const showCreateCommunityModal = ref(false)
+  const communityStoreOption = {
+    storeState: communityModule.store.communities,
+    ...communityModule.options.store,
+  } as StoreOptions
+  
+    const formModalOptions=  {
+    moduleName: communityModule.name,
+    components: {
+      formComponent: FormCommunity,
+      buttonIconComponent: communityModule.form.createButtonIconComponent,
+    },
+    routePath: communityModule.routePath,
+    width: communityModule.form.modalWidthSize,
+    hiddenFieldsOnEdit: communityModule.dataTable.hiddenFieldsOnEdit,
+    form: communityModule.form.model,
+  } as FormModalOptions
+
+  const handleSavedCommunityForm = (form: CommunityFormModel) => {
+    d.options.communities.push({
+      value: form.id,
+      label: form.name,
+    })
+    d.model.community_id = form.id as number
+
+  }
+
+  const computedCommunityOptions = computed(() => {
+  return [
+    {
+      label: () =>
+        h(
+          'div',
+          {
+            style: 'display: flex; justify-content: space-between; align-items: center; color: #18a058; font-weight: 500; cursor: pointer;',
+            onClick: () => {
+              // Close dropdown if needed manually
+              d.model.community_id = null
+              showCreateCommunityModal.value = true
+            },
+          },
+          ["Create New Community"]
+        ),
+      value: '__create__',
+      disabled: true, // so selecting this won't assign to v-model
+    },
+    ...d.options.communities,
+  ]
+})
+// e.o Add Community Form
+
+
 
   const m = {
     handle: {
@@ -452,7 +531,6 @@
         ]
         d.loading.assignedTo = false
       },
-
       searchChurchesOption: async (query: string) => {
         d.loading.churches = true
 

@@ -66,10 +66,9 @@
   lang="ts"
   setup
 >
-  import { useMessage, useNotification } from 'naive-ui'
   import type { FormModalOptions, FormModel, RoutePaths, StoreOptions } from '~/types'
 
-  const emit = defineEmits(['closeModal'])
+  const emit = defineEmits(['closeModal', 'savedForm', 'setCommunityId'])
 const h = useHelpers()
 
   const p = withDefaults(defineProps<{
@@ -83,6 +82,8 @@ const h = useHelpers()
   })
 
 
+
+
   const translatedModule = computed(()=> {
     let key
     if(p.formModalOptions.moduleName) {
@@ -92,6 +93,9 @@ const h = useHelpers()
       ...p.formModalOptions,
       moduleName: key ? h.translate(key) : p.formModalOptions.moduleName
     }
+  })
+  onMounted(() => {
+    emit('setCommunityId', p.formModalOptions.communityId)
   })
  
 
@@ -108,12 +112,12 @@ const h = useHelpers()
 
     handle: {
       emit: {
-        formChanged: (form: FormModel) => {
+        formChanged: (form: FormModel, communityId: number) => {
           d.form = form
+          p.formModalOptions.communityId = communityId
         },
 
         beingUploaded: (state: boolean) => {
-          console.log('hi')
           d.disabled.btn.save = state
         }
       }, // e.o changed
@@ -121,9 +125,10 @@ const h = useHelpers()
       click: {
         buttonSave: async () => {
           const consume = useConsumeApi(p.routePath, p.form !== false ? d.form.id : undefined)
-          await consume.save(d.form, p.storeOptions)
+          const res = await consume.save(d.form, p.storeOptions)
 
           emit('closeModal', true)
+          emit('savedForm', res)
         },
 
         buttonCancel: () => {

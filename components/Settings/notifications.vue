@@ -14,27 +14,27 @@
       >
         <n-card
           size="small"
-          title="Status"
+          :title="h.translate('status')"
         >
-          Enable Notification &nbsp;
+          {{ h.translate('enable_notification') }} &nbsp;
           <n-switch v-model:value="notiForm.enabled" />
         </n-card>
         <n-card
           size="small"
-          title="Interval"
+          :title="h.translate('interval')"
         >
-          <div class="label">How often should the notifications be sent?</div>
+          <div class="label">{{ h.translate('how_often_should_the_notifications_be_sent') }}</div>
           <div class="noti-container">
-            <div>Once every</div>
+            <div>{{ h.translate('once_every') }}</div>
             <n-input-number
               v-model:value="notiForm.intervalValue"
-              placeholder="Please enter a number"
+              :placeholder="h.translate('please_enter_a_number')"
               :min="1"
               :disabled="!notiForm.enabled"
               class="input"
             />
             <n-select
-              placeholder="Please select unit"
+              :placeholder="h.translate('please_select_unit')"
               v-model:value="notiForm.intervalUnit"
               :options="intervalUnitOptions"
               :disabled="!notiForm.enabled"
@@ -47,14 +47,14 @@
             v-if="notiForm.enabled && notiForm.intervalUnit"
             class="time-container"
           >
-            <div class="label">At what time?</div>
+            <div class="label">{{ h.translate('at_what_time') }}</div>
             <div class="time-selection">
               <!-- Day of Week for Weeks -->
               <template v-if="notiForm.intervalUnit === 'weeks'">
                 <n-select
                   v-model:value="notiForm.time.dayOfWeek"
                   :options="dayOfWeekOptions"
-                  placeholder="Select day"
+                  :placeholder="h.translate('select_day')"
                   class="select"
                 />
               </template>
@@ -64,7 +64,7 @@
                 <n-select
                   v-model:value="notiForm.time.dayOfMonth"
                   :options="dayOfMonthOptions"
-                  placeholder="Select day"
+                  :placeholder="h.translate('select_day')"
                   class="select"
                 />
               </template>
@@ -73,19 +73,19 @@
               <n-select
                 v-model:value="notiForm.time.hour"
                 :options="hourOptions"
-                placeholder="Hour"
+                :placeholder="h.translate('hour')"
                 class="select"
               />
               <n-select
                 v-model:value="notiForm.time.minute"
                 :options="minuteOptions"
-                placeholder="Minute"
+                :placeholder="h.translate('minute')"
                 class="select"
               />
               <n-select
                 v-model:value="notiForm.time.ampm"
                 :options="ampmOptions"
-                placeholder="AM/PM"
+                :placeholder="h.translate('am_pm')"
                 class="select"
               />
             </div>
@@ -94,7 +94,7 @@
 
         <n-card
           size="small"
-          title="Message"
+          :title="h.translate('message')"
         >
           <n-space
             vertical
@@ -105,15 +105,18 @@
               v-for="lang in languagesStore.languages.sort(
                 (a: Language, b: Language) => a.id - b.id,
               )"
-              :title="lang.name"
+              :title="h.translate(h.toSnakeCase(lang.name))"
             >
               <n-space
                 :size="20"
                 vertical
-              >
+                >
+                <!-- :placeholder="`Enter the message title in ${lang.name}`" -->
                 <n-input
                   v-model:value="notiForm.notificationMessage[lang.name].title"
-                  :placeholder="`Enter the message title in ${lang.name}`"
+                  :placeholder="h.translate(h.toSnakeCase(`enter_the_message_title_in_${lang.name}`))"
+
+
                   :disabled="!notiForm.enabled"
                   maxlength="100"
                   show-count
@@ -121,7 +124,7 @@
 
                 <n-input
                   v-model:value="notiForm.notificationMessage[lang.name].body"
-                  :placeholder="`Enter the message body in ${lang.name}`"
+                  :placeholder="h.translate(h.toSnakeCase(`enter_the_message_body_in_${lang.name}`))"
                   :disabled="!notiForm.enabled"
                   type="textarea"
                   maxlength="200"
@@ -181,6 +184,7 @@
 
   // Store
   const languagesStore = useLanguagesStore()
+  const h = useHelpers()
 
   // Constants
   const intervalUnitOptions: SelectOption[] = [

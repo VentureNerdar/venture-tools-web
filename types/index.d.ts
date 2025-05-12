@@ -19,6 +19,7 @@ export enum RoutePaths {
 
   CONTACTS = "contacts",
   CHURCHES = "churches",
+  CHURCH_PLANTERS = "churches/planters",
   COMMUNITIES = "communities",
 
   LANGUAGES = "languages",
@@ -107,4 +108,5 @@ export type FormModalOptions = {
   form: FormModel
   hiddenFieldsOnEdit: string[]
   width?: ModalWidthSize
+  communityId?: number
 }
