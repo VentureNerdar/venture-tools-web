@@ -1,6 +1,5 @@
 <template>
   <n-scrollbar style="max-height: calc(100vh - 120px);">
-
     <n-spin :show="d.loading.page">
       <GenericsActionBar>
         <template #left>
@@ -51,7 +50,6 @@
               {{ h.translate('create_word') }}
             </n-tooltip>
 
-
           </n-input-group>
           <n-table
             :bordered="true"
@@ -100,14 +98,13 @@
                   </div>
                 </td>
                 <td>
-                  <n-input
-                    type="text"
-                    :placeholder="h.translate('input_a_translated_word')"
-                    :value="m.getTranslatedWord(word.id)"
-                    :disabled="!selectedLanguage"
-                    size="small"
+                  <FormPartialsEditTranslationWord
+                    v-memo="[word.translations]"
+                    :word-id="word.id"
+                    :disabled-state="!selectedLanguage"
+                    :selected-language="selectedLanguage"
+                    :translated-word="word.translations"
                   />
-
                 </td>
               </tr>
             </tbody>
@@ -137,8 +134,8 @@
   import type { StoreOptions } from '~/types/index.d'
   import { useLanguagesStore } from '~/stores/useLanguagesStore'
 
-  const selectedLanguage = ref(null)
-  const h = useHelpers();
+  const selectedLanguage = ref<number | undefined>(undefined)
+  const h = useHelpers()
 
   const models = {
     languages: RoutePaths.LANGUAGES,
@@ -165,6 +162,7 @@
       words: [] as any,
       initial_words: [] as any,
       editData: { id: 0, word: '' } as any,
+      translations: {} as Record<string, { translation: string }>,
     },
 
     languagesStoreOptions: {
@@ -193,7 +191,7 @@
 
       const wordResponse = await u.consumeWords.browse({
         all: true,
-        // with: ['translations'],
+        with: JSON.stringify(['translations']),
       }, d.wordsStoreOptions)
 
       d.data.words = wordResponse as any
@@ -215,6 +213,7 @@
         }
       }
 
+      d.data.translations[id] = { translation: translatedWord }
       return translatedWord
     },
 
@@ -229,7 +228,7 @@
       click: {
         createWordButton: () => {
           d.data.editData = false
-          d.data.editData = { id: 0, word: '' }
+          d.data.editData = { id: null, word: '' }
           d.formStoreOptions = d.wordsStoreOptions
           d.show.editModal = true
         }
@@ -261,6 +260,20 @@
       }
     })
   })
+
+  /*
+  watch(() => selectedLanguage.value, (newValue) => {
+    const lang = d.data.languages.find((l: any) => l.id === newValue)
+    d.data.translations = {}
+
+    if (lang && lang.translations) {
+      for (const word of d.data.words) {
+        const wordTranslation = lang.translations.find((t: any) => t.system_language_word_id === word.id)
+        d.data.translations[word.id] = wordTranslation.translation || ''
+      }
+    }
+  })
+    */
 
 </script>
 

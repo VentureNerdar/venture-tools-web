@@ -39,7 +39,7 @@
             size="small"
             @click="m.handleSave"
           >
-            {{h.translate('save')}}
+            {{ h.translate('save') }}
           </n-button>
         </n-flex>
       </template>
@@ -58,7 +58,7 @@
   const model = RoutePaths.LANGUAGE_WORDS
 
   const emit = defineEmits(['modalClosed'])
-const h = useHelpers()
+  const h = useHelpers()
 
   const p = withDefaults(defineProps<{
     showModal: boolean,

@@ -249,9 +249,6 @@ export function useConsumeApi<T>(path: RoutePaths, id?: number) {
         ...fetchOptions,
       }
 
-      console.log(requestOptions)
-      console.log(id)
-
       return await request(routePath, "save", requestOptions, storeOptions, id)
     }, // e.o SAVE
 
