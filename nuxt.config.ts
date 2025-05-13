@@ -5,6 +5,15 @@ export default defineNuxtConfig({
   devtools: { enabled: false },
   app: {
     // pageTransition: { name: 'page', mode: 'out-in' }
+    head: {
+      script: [
+        {
+          src: `https://maps.googleapis.com/maps/api/js?libraries=places&key=${process.env.GOOGLE_MAPS_API_KEY}`,
+          async: true,
+          defer: true,
+        }
+      ]
+    }
   },
   vite: {
     plugins: [
@@ -24,6 +33,7 @@ export default defineNuxtConfig({
   plugins: ["~/plugins/pinia.ts"],
   runtimeConfig: {
     public: {
+      googleMapsApiKey: process.env.GOOGLE_MAPS_API_KEY,
       apiURL: process.env.API_URL,
       apiURLUnSlashed: process.env.API_URL_UNSLASHED,
 

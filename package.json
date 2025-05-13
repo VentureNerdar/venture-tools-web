@@ -12,7 +12,7 @@
   "dependencies": {
     "@nuxtjs/color-mode": "^3.5.2",
     "date-fns": "^4.1.0",
-    "firebase": "^11.6.1",
+    "firebase": "^11.7.1",
     "lodash": "^4.17.21",
     "nuxt": "^3.15.0",
     "pinia": "^2.3.0",

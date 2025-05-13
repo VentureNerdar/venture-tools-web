@@ -14,7 +14,7 @@
       <n-card size="small">
         <n-grid
           x-gap="10"
-          :cols="4"
+          :cols="10"
         >
           <n-gi>
             <n-form-item
@@ -25,7 +25,7 @@
             </n-form-item>
           </n-gi>
 
-          <n-gi>
+          <n-gi span="2">
             <n-form-item
               path="assigned_to"
               :label="helpers.translate('assigned_to')"
@@ -50,7 +50,7 @@
             </n-form-item>
           </n-gi>
 
-          <n-gi>
+          <n-gi span="2">
             <!-- Community -->
             <n-form-item
               path="community_id"
@@ -83,20 +83,44 @@
               :route-path="RoutePaths.COMMUNITIES"
               @close-modal="showCreateCommunityModal = false"
               @saved-form="handleSavedCommunityForm"
-              />
-              <!-- @community-id="(id) => d.model.community_id = id" -->
+            />
+            <!-- @community-id="(id) => d.model.community_id = id" -->
 
           </n-gi>
           <!-- e.o Community -->
 
-
-            <!-- Parent Church -->
-          <n-gi>
+          <!-- Parent Church -->
+          <n-gi span="2">
             <ModalsChurchPlanters
               :churchPlanters="d.model.church_planters"
               @added-church-planter="m.handle.emit.addedChurchPlanter"
               @removed-church-planter="m.handle.emit.removedChurchPlanter"
             />
+          </n-gi>
+
+          <n-gi span="3">
+            <n-form-item :label="h.translate('location') === '' ? 'Location' : h.translate('location')">
+              <n-input-group>
+                <n-input
+                  v-model:value="d.model.location_longitude"
+                  :placeholder="h.translate('longitude')"
+                  size="small"
+                  disabled
+                />
+                <n-input
+                  v-model:value="d.model.location_latitude"
+                  :placeholder="h.translate('latitude')"
+                  size="small"
+                  disabled
+                />
+
+                <FormPartialsSelectLocation
+                  :latitude="Number(d.model.location_latitude)"
+                  :longitude="Number(d.model.location_longitude)"
+                  @update="m.handle.emit.churchLocationUpdated"
+                />
+              </n-input-group>
+            </n-form-item>
           </n-gi>
         </n-grid>
       </n-card>
@@ -301,6 +325,8 @@
   // Self Ref : Need to set a module
   const module = modules.churches
 
+  const h = useHelpers()
+
   const consume = {
     users: useConsumeApi(RoutePaths.USERS),
     contacts: useConsumeApi(RoutePaths.CONTACTS),
@@ -449,7 +475,7 @@
 
   // e.o Computes that need for the form
   //
-  
+
   // Add Community Form
   const communityModule = modules.communities as Module
   const showCreateCommunityModal = ref(false)
@@ -457,8 +483,8 @@
     storeState: communityModule.store.communities,
     ...communityModule.options.store,
   } as StoreOptions
-  
-    const formModalOptions=  {
+
+  const formModalOptions = {
     moduleName: communityModule.name,
     components: {
       formComponent: FormCommunity,
@@ -480,30 +506,28 @@
   }
 
   const computedCommunityOptions = computed(() => {
-  return [
-    {
-      label: () =>
-        h(
-          'div',
-          {
-            style: 'display: flex; justify-content: space-between; align-items: center; color: #18a058; font-weight: 500; cursor: pointer;',
-            onClick: () => {
-              // Close dropdown if needed manually
-              d.model.community_id = null
-              showCreateCommunityModal.value = true
+    return [
+      {
+        label: () =>
+          h(
+            'div',
+            {
+              style: 'display: flex; justify-content: space-between; align-items: center; color: #18a058; font-weight: 500; cursor: pointer;',
+              onClick: () => {
+                // Close dropdown if needed manually
+                d.model.community_id = null
+                showCreateCommunityModal.value = true
+              },
             },
-          },
-          ["Create New Community"]
-        ),
-      value: '__create__',
-      disabled: true, // so selecting this won't assign to v-model
-    },
-    ...d.options.communities,
-  ]
-})
-// e.o Add Community Form
-
-
+            ["Create New Community"]
+          ),
+        value: '__create__',
+        disabled: true, // so selecting this won't assign to v-model
+      },
+      ...d.options.communities,
+    ]
+  })
+  // e.o Add Community Form
 
   const m = {
     handle: {
@@ -584,6 +608,11 @@
           d.model.church_planters = d.model.church_planters.filter(
             (cp: any) => cp.id !== user.id,
           )
+        },
+        churchLocationUpdated: (position: any, place: any) => {
+          d.model.location_latitude = position.lat
+          d.model.location_longitude = position.lng
+          d.model.google_location_data = JSON.stringify(place)
         },
       },
     },
@@ -682,6 +711,7 @@
         })
       },
     },
+
   }
 
   watch(

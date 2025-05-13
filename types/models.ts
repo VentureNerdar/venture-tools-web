@@ -49,6 +49,10 @@ export interface ChurchFormModel {
 
   church_planters?: any | null
 
+  location_longitude: string | null
+  location_latitude: string | null
+  google_location_data: string | null
+
   name: string | null
   description?: string | null
   founded_at?: any | null
@@ -176,6 +180,7 @@ export interface CommunityFormModel {
   name: string | null
   location_longitude: string | null
   location_latitude: string | null
+  google_location_data: string | null
   conducted_survey_of_community_needs: boolean
   community_needs_1: string | null
   community_needs_2: string | null
