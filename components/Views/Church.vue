@@ -4,7 +4,7 @@
       :size="10"
       vertical
     >
-      <h2>{{ h.translate('church.need_to_change') }}</h2>
+      <!-- <h2>{{ h.translate('church.need_to_change') }}</h2> -->
 
       <n-alert
         v-if="data.deleted_at !== null"
@@ -21,17 +21,76 @@
       <n-table :single-line="false">
         <tbody>
           <tr>
-            <td>
+            <td colspan="4">
               <b>{{ h.translate('name') }}:</b> &nbsp; {{ data.name }}
             </td>
           </tr>
 
           <tr>
-            <td>
+            <td colspan="4">
               <div><b>{{ h.translate('description') }}</b></div>
-              <p>{{ data.description }}</p>
+              <p>{{ data.description ? data.description : 'N/A' }}</p>
             </td>
           </tr>
+
+          <tr>
+            <td>
+              <b>{{ h.translate('parent_church') }}</b>  &nbsp;
+              <p>{{ data.parent_church ? data.parent_church.name : 'N/A' }}</p>
+            </td>
+
+            <td>
+              <div><b>{{ h.translate('church_website') }}</b></div>
+              <p>{{ data.website ? data.website : 'N/A' }}</p>
+            </td>
+
+            <td>
+              <div><b>{{ h.translate('founded_at') }}</b></div>
+              <p>{{ data.founded_at ? data.founded_at : 'N/A' }}</p>
+            </td>
+          </tr>
+
+          <tr>
+            <td>
+              <b>{{ h.translate('denomination') }}</b>  &nbsp;
+              <p>{{ data.denomination ? data.denomination.name : 'N/A' }}</p>
+            </td>
+
+            <td>
+              <div><b>{{ h.translate('church_phone_number') }}</b></div>
+              <p>{{ data.phone_number ? data.phone_number : 'N/A' }}</p>
+            </td>
+
+            <td>
+              <div style="margin-bottom: 5px"><b>{{ h.translate('is_active') }}</b></div>
+              <!-- <p>{{ data.is_active ? 'Yes' : 'No' }}</p> -->
+               <n-tag :type="data.is_active ? 'success' : 'error'">
+                {{ data.is_active ? 'Active' : 'Inactive' }}
+               </n-tag>
+            </td>
+          </tr>
+
+          <tr>
+            <td>
+              <p>{{ h.translate('church_members_count') }} : 
+                <span style="padding-left: 5px;">{{ data.church_members_count ? data.church_members_count : '0'}}</span>
+              </p>
+            </td>
+
+            <td>
+              <p>{{ h.translate('confession_of_faith_count') }} : 
+                <span style="padding-left: 5px;">{{ data.confession_of_faith_count ? data.confession_of_faith_count : '0'}}</span>
+              </p>
+            </td>
+
+            <td>
+              <p>{{ h.translate('baptized_count') }} : 
+                <span style="padding-left: 5px;">{{ data.baptism_count ? data.baptism_count : '0'}}</span>
+              </p>
+            </td>
+
+         </tr>
+
         </tbody>
       </n-table>
 
