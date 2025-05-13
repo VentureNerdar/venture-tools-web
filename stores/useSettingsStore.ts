@@ -38,6 +38,20 @@ export const useSettingStore = defineStore('setting', () => {
       JSON.stringify(lang)
     )
   }
+  function setStatuses(statusValues: Status[]) {
+    statuses.value = statusValues
+    localStorage.setItem('statuses', JSON.stringify(statusValues))
+  }
 
-  return { statuses, contactStatuses, groupStatuses, faithStatuses, options, userPreferredLanguage, setUserPreferredLanguage, currentPreferredLanguage }
+  return {
+    statuses,
+    contactStatuses,
+    groupStatuses,
+    faithStatuses,
+    options,
+    userPreferredLanguage,
+    setUserPreferredLanguage,
+    currentPreferredLanguage,
+    setStatuses
+  }
 })

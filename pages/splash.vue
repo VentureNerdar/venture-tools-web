@@ -52,6 +52,7 @@
   import { usePeopleGroupStore } from "~/stores/usePeopleGroupsStore"
   import { useCommunicationPlatformStore } from "~/stores/useCommunicationPlatformsStore"
   import { useCommunityStore } from "~/stores/useCommunitiesStore"
+import { useFaithMilestoneStore } from "~/stores/useFaithMilestonesStore"
 
   type ModuleNameType =
     | "User Roles"
@@ -188,6 +189,17 @@
     ],
   ]
 
+const s = reactive({
+  faithMilestoneStore: useFaithMilestoneStore(),
+  settings: useSettingStore(),
+  peopleGroupStore: usePeopleGroupStore(),
+  languageStore: useLanguagesStore(),
+  communicationPlatformStore: useCommunicationPlatformStore(),
+  userStore: useUserStore()
+})
+
+
+
   const downloadSequence = async () => {
     for (const [moduleName, model, key, store, query] of tasks) {
       d.currentTaskText = `Fetching ${moduleName}...`
@@ -202,18 +214,36 @@
           settingStore.setUserPreferredLanguage(defaultLang)
         }
       }
+          if (moduleName === 'Statuses') {
+      const statuses = JSON.parse(localStorage.getItem('statuses') || "[]")
+      s.settings.setStatuses(statuses)
+    }
+    // if (moduleName === 'Faith Milestones') {
+    //   const faithMilestoneValues = JSON.parse(localStorage.getItem('faithMilestones') || "[]")
+    //   s.faithMilestoneStore.setFaithMilestones(faithMilestoneValues)
+    // }
+    if (moduleName === 'People Groups') {
+      const peopleGroupValues = JSON.parse(localStorage.getItem('peopleGroups') || "[]")
+      s.peopleGroupStore.setPeopleGroups(peopleGroupValues)
+    }
+    if (moduleName === 'Language Words') {
+      const wordValues = JSON.parse(localStorage.getItem('languageWords') || "[]")
+      s.languageStore.setWords(wordValues)
+    }
+    if (moduleName === 'Languages') {
+      const languageValues = JSON.parse(localStorage.getItem('languages') || "[]")
+      s.languageStore.setLanguages(languageValues)
+    }
+    if (moduleName === 'Communication Platforms') {
+      const communicationPlatformValues = JSON.parse(localStorage.getItem('communicationPlatforms') || "[]")
+      s.communicationPlatformStore.setCommunicationPlatforms(communicationPlatformValues)
+    }
+    if (moduleName === 'User Roles') { 
+      const userRoleValues = JSON.parse(localStorage.getItem('userRoles') || "[]")
+      s.userStore.setUserRoles(userRoleValues)
 
-      /*
-      if (moduleName === 'Language Words') {
-        const languageStore = useLanguagesStore()
-        // Ensure the words array is properly initialized and updated
-        if (response && Array.isArray(response)) {
-          languageStore.words.length = 0
-          languageStore.words.push(...response)
-          localStorage.setItem('languageWords', JSON.stringify(response))
-        }
-      }
-        */
+    }
+
 
       await delay(200)
 
