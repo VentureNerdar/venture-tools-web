@@ -21,6 +21,9 @@ const settingStore = useSettingStore()
 const languageStore = useLanguagesStore()
 const languages = languageStore.languages
 
+// Watch for changes in userPreferredLanguage
+
+
 if (auth.authUser.preferred_language_id) {
   selectedLanguage.value = auth.authUser.preferred_language_id
 } else {
@@ -52,6 +55,11 @@ watch(selectedLanguage, (id) => {
   }
 })
 
+watch(() => settingStore.userPreferredLanguage, (newLang) => {
+  if (newLang && newLang.id) {
+    selectedLanguage.value = newLang.id
+  }
+}, { immediate: true })
 
 </script>
 

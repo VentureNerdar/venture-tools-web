@@ -90,6 +90,7 @@
               type="warning"
               secondary
               size="small"
+              @click="handleProfileUpdate"
             >
               <template #icon><n-icon :component="CloudUploadRound" /></template>
               {{ h.translate('update') }}
@@ -120,8 +121,10 @@
   import { useLanguagesStore } from "~/stores/useLanguagesStore"
 
   import { CloudUploadRound } from "@vicons/material"
-
+  import { RoutePaths} from "~/types/index.d"
+  import { useConsumeApi } from "~/composables/useConsumeApi"
   import type { FormInst } from "naive-ui"
+import { useSettingStore } from "~/stores/useSettingsStore"
 
   const auth = useAuthStore()
   const formRef = ref<FormInst | null>(null)
@@ -132,6 +135,8 @@
 
   const s = {
     roles: useUserStore(),
+    languages: useLanguagesStore().languages,
+    settingStore: useSettingStore(),
   }
 
   const rules = {
@@ -160,10 +165,29 @@
       value: language.id,
     }))
   })
-
   const authUserRoleName = computed(() => {
     return s.roles.userRoles.find((role: any) => role.id === formValue.value.user_role_id)
       ?.label
   })
+
+  const handleProfileUpdate = async () => {
+    console.log('handleProfileUpdate', formValue.value)
+    const userConsume = useConsumeApi(RoutePaths.USERS, auth.authUser.id)
+      const res = await userConsume.save(formValue.value)
+      console.log('Profile res', res)
+      const existing = JSON.parse(localStorage.getItem("authUser") || "{}")
+      const updatedUser = {
+        ...existing,
+        ...formValue.value,
+      }
+      useAuthStore().authUser = updatedUser
+      localStorage.setItem("authUser", JSON.stringify(updatedUser))
+      const selected = s.languages.find((l: any) => l.id === formValue.value.preferred_language_id)
+      if(selected) {
+        s.settingStore.setUserPreferredLanguage(selected)
+      }
+  }
+
+
 
 </script>

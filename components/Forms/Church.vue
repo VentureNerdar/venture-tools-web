@@ -99,17 +99,17 @@
           </n-gi>
 
           <n-gi span="3">
-            <n-form-item :label="h.translate('location') === '' ? 'Location' : h.translate('location')">
+            <n-form-item :label="helpers.translate('location') === '' ? 'Location' : helpers.translate('location')">
               <n-input-group>
                 <n-input
                   v-model:value="d.model.location_longitude"
-                  :placeholder="h.translate('longitude')"
+                  :placeholder="helpers.translate('longitude')"
                   size="small"
                   disabled
                 />
                 <n-input
                   v-model:value="d.model.location_latitude"
-                  :placeholder="h.translate('latitude')"
+                  :placeholder="helpers.translate('latitude')"
                   size="small"
                   disabled
                 />
@@ -325,7 +325,7 @@
   // Self Ref : Need to set a module
   const module = modules.churches
 
-  const h = useHelpers()
+  // const h = useHelpers()
 
   const consume = {
     users: useConsumeApi(RoutePaths.USERS),

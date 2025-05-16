@@ -386,8 +386,9 @@ if (p.editData !== false) {
     const at = JSON.parse(JSON.stringify(p.editData.assigned_to))
     existingAssignedTo = { ...at }
     if (at !== null) {
-      modelRefRef.assigned_to = "id" in (at as any) ? (at as any).id : null
-    }
+     modelRefRef.assigned_to = "id" in (at as any) ? (at as any).id : null
+   }
+
   }
 
   if ("coached_by" in p.editData) {
