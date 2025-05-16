@@ -3,6 +3,11 @@ import { NaiveUiResolver } from "unplugin-vue-components/resolvers"
 export default defineNuxtConfig({
   ssr: false,
   devtools: { enabled: false },
+  router: {
+    options: {
+      hashMode: true
+    }
+  },
   app: {
     // pageTransition: { name: 'page', mode: 'out-in' }
     head: {

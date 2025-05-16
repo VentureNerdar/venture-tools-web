@@ -24,20 +24,23 @@
   setup
 >
   const route = useRoute()
-  
+
   const h = useHelpers()
-  
+
   const pageName = computed(() => {
     const page = route.fullPath.split('/')[1]
 
     if (page.startsWith('settings')) {
-      const query = page.split('?')[1]
-      const settingType = query.split('=')[1].replaceAll('_', ' ')
-      return `${h.translate('settings')} > ${h.translate(settingType.trim())}`
-    } else {
-      return h.translate(page)
+      const query = route.query
+
+      if (query && query.settingType) {
+        const settingNameQueryString = query.settingType as string
+        const settingName = settingNameQueryString.replaceAll('_', ' ')
+        return `${h.translate('settings')} > ${h.translate(settingName.trim()) ? settingName.trim() : settingName}`
+      }
     }
 
+    return h.translate(page) === '' ? page : h.translate(page)
   });
 
 </script>
