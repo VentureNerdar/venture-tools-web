@@ -36,13 +36,11 @@
                 v-model:value="d.model.location_longitude"
                 :placeholder="h.translate('longitude')"
                 size="small"
-                disabled
               />
               <n-input
                 v-model:value="d.model.location_latitude"
                 :placeholder="h.translate('latitude')"
                 size="small"
-                disabled
               />
 
               <FormPartialsSelectLocation

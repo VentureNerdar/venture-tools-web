@@ -6,59 +6,10 @@
     <n-gi>
       <h4 class="center-vertically">
         <n-icon
-          :component="Church"
-          :size="20"
-        />
-
-        &nbsp; {{ h.translate('planted_churches_prayers') }} &nbsp;
-        <n-tag
-          :bordered="false"
-          size="small"
-          type="info"
-        >
-          {{ d.prayers.churchPlanterPrayers.length }}
-        </n-tag>
-      </h4>
-
-      <n-space
-        :size="10"
-        vertical
-      >
-        <n-list bordered>
-          <n-list-item v-for="c in d.prayers.churchPlanterPrayers">
-            <n-space
-              :size="10"
-              vertical
-            >
-              <div>
-                <b>{{ c.name }}</b>
-              </div>
-
-              <div>
-                <n-text type="primary">
-                  <n-icon
-                    :component="PrayingHands"
-                    :size="14"
-                  /> &nbsp;
-                </n-text>
-
-                <n-text :depth="3">
-                  {{ c.current_prayers }}
-                </n-text>
-              </div>
-            </n-space>
-          </n-list-item>
-        </n-list>
-      </n-space>
-    </n-gi>
-
-    <n-gi>
-      <h4 class="center-vertically">
-        <n-icon
           :component="ChurchRound"
           :size="20"
         />
-        &nbsp; {{ h.translate('assigned_churches_prayers') }} &nbsp;
+        &nbsp; {{ h.translate('churches_prayers') }} &nbsp;
         <n-tag
           :bordered="false"
           size="small"
@@ -72,7 +23,7 @@
         vertical
       >
         <n-list bordered>
-          <n-list-item v-for="c in d.prayers.assignedToChurchPrayers">
+          <n-list-item v-for="c in churchPrayers">
             <n-space
               :size="10"
               vertical
@@ -190,6 +141,20 @@
     { all: true } as BrowseConditionAll,
     false,
   )) as Prayers
+
+   const churchPrayers = computed(() => {
+  const all = [...d.prayers.churchPlanterPrayers, ...d.prayers.assignedToChurchPrayers]
+  const seen = new Set()
+  return all.filter(c => {
+    if (!c?.id) return false
+    if (seen.has(c.id)) return false
+    seen.add(c.id)
+    return true
+  })
+})
+
+
+  console.log('Prayers:', d.prayers)
 
 </script>
 

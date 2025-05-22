@@ -34,34 +34,34 @@
           </tr>
 
           <tr>
-            <td>
+            <td> 
               <b>{{ h.translate('parent_church') }}</b>  &nbsp;
               <p>{{ data.parent_church ? data.parent_church.name : 'N/A' }}</p>
             </td>
 
-            <td>
+            <!-- <td>
               <div><b>{{ h.translate('church_website') }}</b></div>
               <p>{{ data.website ? data.website : 'N/A' }}</p>
-            </td>
+            </td> -->
 
-            <td>
-              <div><b>{{ h.translate('founded_at') }}</b></div>
+            <td colspan="2">
+              <b>{{ h.translate('founded_at') }}</b>
               <p>{{ data.founded_at ? data.founded_at : 'N/A' }}</p>
             </td>
           </tr>
 
-          <tr>
+          <tr >
             <td>
               <b>{{ h.translate('denomination') }}</b>  &nbsp;
               <p>{{ data.denomination ? data.denomination.name : 'N/A' }}</p>
             </td>
 
-            <td>
+            <!-- <td>
               <div><b>{{ h.translate('church_phone_number') }}</b></div>
               <p>{{ data.phone_number ? data.phone_number : 'N/A' }}</p>
-            </td>
+            </td> -->
 
-            <td>
+            <td colspan="2">
               <div style="margin-bottom: 5px"><b>{{ h.translate('is_active') }}</b></div>
               <!-- <p>{{ data.is_active ? 'Yes' : 'No' }}</p> -->
                <n-tag :type="data.is_active ? 'success' : 'error'">

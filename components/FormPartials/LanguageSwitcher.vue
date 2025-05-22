@@ -25,6 +25,7 @@ const languages = languageStore.languages
 
 
 if (auth.authUser.preferred_language_id) {
+  console.log('auth.authUser.preferred_language_id', auth.authUser.preferred_language_id)
   selectedLanguage.value = auth.authUser.preferred_language_id
 } else {
   selectedLanguage.value = 1
@@ -37,15 +38,28 @@ const languageOptions = computed(() =>
   })),
 )
 
-onMounted(() => {
+// onMounted(() => {
   
-  const lang = languageStore.languages.find(
-    (l: any) => l.id === selectedLanguage.value,
-  )
-  if (lang) {
-    settingStore.setUserPreferredLanguage(lang)
-  }
-})
+//   const lang = languageStore.languages.find(
+//     (l: any) => l.id === selectedLanguage.value,
+//   )
+//   if (lang) {
+//     settingStore.setUserPreferredLanguage(lang)
+//   }
+// })
+
+watch(
+  () => languageStore.languages,
+  (langs) => {
+    if (!langs.length) return
+
+    const lang = langs.find((l: any) => l.id === selectedLanguage.value)
+    if (lang) {
+      settingStore.setUserPreferredLanguage(lang)
+    }
+  },
+  { immediate: true }
+)
 
 watch(selectedLanguage, (id) => {
   if (!id) return
