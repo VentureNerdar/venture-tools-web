@@ -5,7 +5,7 @@
         <n-flex justify="end" style="width: 100%">
           <n-space>
             <div v-if="d.visibility.trash">
-              <n-text type="error" strong> Viewing Trash </n-text>
+              <n-text type="error" strong> {{ helper.translate('viewing_trash') }} </n-text>
             </div>
 
             <!-- QUICK FILTER -->

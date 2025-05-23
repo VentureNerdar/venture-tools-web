@@ -5,6 +5,7 @@ export interface UserFormModel {
   username: string | null
   email: string | null
   user_role_id: string | null
+  movement_id: number | null
   is_active: boolean
   phone_number: string | null
   biography: string | null
@@ -22,6 +23,7 @@ export interface UserFormModel {
 export interface ContactFormModel {
   id?: number
   contact_status_id: number | null
+  is_active: boolean
   assigned_to?: number | null
   faith_status_id: number | null
   coached_by?: number | null
@@ -110,6 +112,16 @@ export interface DenominationFormModel {
   deleted_at?: Date
 }
 
+export interface MovementFormModel {
+  name: string | null
+  description?: string | null
+  id?: number
+  created_at?: Date
+  updated_at?: Date
+  deleted_at?: Date
+}
+
+
 export interface CommunicationPlatformFormModel {
   name: string | null
   id?: number
@@ -176,7 +188,7 @@ export interface CommunityCommittee {
 
 export interface CommunityFormModel {
   id?: number
-
+  is_active: boolean
   name: string | null
   location_longitude: string | null
   location_latitude: string | null
@@ -225,6 +237,7 @@ export type FormModel =
   | LanguageTranslationFormModel
   | LanguageWordFormModel
   | DenominationFormModel
+  | MovementFormModel
   | FaithMilestoneFormModel
   | CommunicationPlatformFormModel
   | CommunityChecklistFormModel

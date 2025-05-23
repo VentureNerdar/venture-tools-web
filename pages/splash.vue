@@ -260,7 +260,7 @@ const s = reactive({
     let page = "/dashboard"
 
     // if user is a church planter
-    if (role === 4) {
+    if (role === 4 || role === 3) {
       page = "/prayers"
     }
 

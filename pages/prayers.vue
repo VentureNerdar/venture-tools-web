@@ -15,7 +15,7 @@
           size="small"
           type="info"
         >
-          {{ d.prayers.assignedToChurchPrayers.length }}
+          {{ d.prayers.churchPrayers.length }}
         </n-tag>
       </h4>
       <n-space
@@ -23,7 +23,7 @@
         vertical
       >
         <n-list bordered>
-          <n-list-item v-for="c in churchPrayers">
+          <n-list-item v-for="c in d.prayers.churchPrayers">
             <n-space
               :size="10"
               vertical
@@ -62,7 +62,7 @@
           size="small"
           type="info"
         >
-          {{ d.prayers.assignedToContactPrayers.length }}
+          {{ d.prayers.contactPrayers.length }}
         </n-tag>
       </h4>
 
@@ -71,7 +71,7 @@
         vertical
       >
         <n-list bordered>
-          <n-list-item v-for="c in d.prayers.assignedToContactPrayers">
+          <n-list-item v-for="c in d.prayers.contactPrayers">
             <n-space
               :size="10"
               vertical
@@ -114,9 +114,8 @@
   import { useSettingStore } from "~/stores/useSettingsStore"
 
   type Prayers = {
-    churchPlanterPrayers: any[]
-    assignedToChurchPrayers: any[]
-    assignedToContactPrayers: any[]
+    churchPrayers: any[]
+    contactPrayers: any[]
   }
 
   const languageStore = useLanguagesStore()
@@ -142,16 +141,16 @@
     false,
   )) as Prayers
 
-   const churchPrayers = computed(() => {
-  const all = [...d.prayers.churchPlanterPrayers, ...d.prayers.assignedToChurchPrayers]
-  const seen = new Set()
-  return all.filter(c => {
-    if (!c?.id) return false
-    if (seen.has(c.id)) return false
-    seen.add(c.id)
-    return true
-  })
-})
+//    const churchPrayers = computed(() => {
+//   const all = [...d.prayers.churchPlanterPrayers, ...d.prayers.assignedToChurchPrayers]
+//   const seen = new Set()
+//   return all.filter(c => {
+//     if (!c?.id) return false
+//     if (seen.has(c.id)) return false
+//     seen.add(c.id)
+//     return true
+//   })
+// })
 
 
   console.log('Prayers:', d.prayers)

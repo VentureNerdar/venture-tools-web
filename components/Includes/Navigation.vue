@@ -85,13 +85,13 @@ const navItems = [
     title: "Dashboard",
     link: "/",
     icon: DashboardRound,
-    roles: [1, 2, 3],
+    roles: [1, 2],
   },
   {
     title: "Prayers",
     link: "/prayers",
     icon: PrayingHands,
-    roles: [4],
+    roles: [3, 4],
   },
   {
     title: "Contacts",

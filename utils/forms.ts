@@ -8,12 +8,14 @@ import Contact from "@/components/Forms/Contact.vue"
 import Church from "@/components/Forms/Church.vue"
 import CommunityChecklist from "@/components/Forms/CommunityChecklist.vue"
 import Community from "@/components/Forms/Community.vue"
+import Movement from "@/components/Forms/Movement.vue"
 
 export default {
   user: User,
   userRole: UserRole,
   peopleGroup: PeopleGroup,
   denomination: Denomination,
+  movement: Movement,
   faithMilestone: FaithMilestone,
   communicationPlatform: CommunicationPlatform,
   contact: Contact,

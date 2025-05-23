@@ -280,7 +280,7 @@ export default {
           title: "Contact Status",
           key: "contact_status_id",
           align: "center",
-          render: (row: any) => {},
+          render: (row: any) => { },
         },
       ],
       fields: ["name", "nickname"],
@@ -383,7 +383,7 @@ export default {
           { required: true, message: "Name is required", trigger: "blur" },
         ],
         community_id: [
-          {required: true, message: "Community is required", trigger: "blur"}
+          { required: true, message: "Community is required", trigger: "blur" }
         ]
       },
       component: shallowRef(forms.church),
@@ -664,6 +664,57 @@ export default {
       filter: false,
     },
   } as Module, // e.o Denominations
+
+  // MOVEMENTS
+  movements: {
+    name: "Movements",
+    hasSoftDelete: true,
+    routePath: RoutePaths.MOVEMENTS,
+    store: stores.movements,
+
+    dataTable: {
+      columns: [
+        {
+          title: "Name",
+          key: "name",
+          sorter: true,
+        },
+        {
+          title: "Description",
+          key: "description",
+        },
+      ],
+      fields: ["name", "description"],
+      hiddenFieldsOnEdit: [],
+    },
+
+    form: {
+      model: {
+        name: null
+      } as models.MovementFormModel,
+      rules: {
+        name: [
+          { required: true, message: "Name is required", trigger: "blur" },
+        ],
+      },
+      component: shallowRef(forms.movement),
+      // createButtonIconComponent: shallowRef(PersonAddAlt1Round),
+      modalWidthSize: "600px",
+    },
+
+    view: {
+      component: views.movement,
+      modalWidthSize: "1000px",
+    },
+
+    options: {
+      store: {
+        isPersist: true,
+        key: "movements",
+      },
+      filter: false,
+    },
+  } as Module, // e.o Movements
 
   // COMMUNITY CHECKLISTS
   communityChecklist: {

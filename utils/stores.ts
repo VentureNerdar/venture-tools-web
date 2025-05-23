@@ -8,6 +8,7 @@ import { useCommunicationPlatformStore } from "~/stores/useCommunicationPlatform
 import { useContactStore } from "~/stores/useContactsStore"
 import { useChurchStore } from "~/stores/useChurchesStore"
 import { useCommunityStore } from "~/stores/useCommunitiesStore"
+import { useMovementsStore } from "~/stores/useMovementsStore"
 
 export const getStores = () => {
   return {
@@ -21,6 +22,7 @@ export const getStores = () => {
     contacts: useContactStore,
     churches: useChurchStore,
     communities: useCommunityStore,
+    movements: useMovementsStore,
   }
 }
 

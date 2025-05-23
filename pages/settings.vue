@@ -66,10 +66,18 @@
 
       <n-tab-pane
         name="notifications"
-        tab="Notification"
+        :tab="h.translate('notifications')"
         class="tab"
       >
         <SettingsNotifications />
+      </n-tab-pane>
+
+      <n-tab-pane
+        name="movements"
+        :tab="h.translate('movements')"
+        class="tab"
+      >
+        <SettingsMovements />
       </n-tab-pane>
     </n-tabs>
   </n-space>
