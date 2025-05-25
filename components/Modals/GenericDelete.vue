@@ -1,6 +1,5 @@
 <template>
   <n-tooltip :delay="400">
-
     <template #trigger>
       <n-button
         type="error"
@@ -9,13 +8,12 @@
         @click="m.handleDelete"
       >
         <template #icon>
-
-          <component :is="p.permanent ? DeleteForeverRound : DeleteRound" />
+          <component :is="p.permanent ? DeleteForeverRound : ArchiveRound" />
         </template>
       </n-button>
     </template>
 
-    {{ p.permanent ? h.translate('delete_permanently') : h.translate('trash') }}
+    {{ p.permanent ? h.translate('delete_permanently') : h.translate('archive') }}
   </n-tooltip>
 </template>
 
@@ -23,7 +21,7 @@
   lang="ts"
   setup
 >
-  import { DeleteRound, DeleteForeverRound } from '@vicons/material'
+  import { DeleteForeverRound, ArchiveRound } from '@vicons/material'
   import { useDialog } from 'naive-ui'
   import { RoutePaths } from '~/types/index.d'
 
@@ -38,15 +36,16 @@
     permanent: true
   })
 
-
   const dialog = useDialog()
 
   const m = {
     handleDelete() {
       dialog.warning({
-        title: h.translate('confirm_deletion') + p.id,
-        content: h.translate('are_you_sure_you_cannot_undo_this_action_afterwards'),
-        positiveText: h.translate('confirm_delete'),
+        title: p.permanent ? h.translate('confirm_deletion') : h.translate('confirm_archive'),
+        content: p.permanent 
+          ? h.translate('are_you_sure_you_cannot_undo_this_action_afterwards')
+          : h.translate('are_you_sure_you_want_to_archive_this_item'),
+        positiveText: p.permanent ? h.translate('confirm_delete') : h.translate('confirm_archive'),
         negativeText: h.translate('cancel'),
         closeOnEsc: true,
         transformOrigin: 'center',
@@ -66,7 +65,6 @@
       })
     }
   }
-
 </script>
 
 <style></style>

@@ -2,7 +2,7 @@ import type * as models from "@/types/models"
 import defaultModelForms from "@/utils/models"
 import type { ModalWidthSize, FilterOptions } from "@/types/index.d"
 import type { DataTableColumn, FormRules } from "naive-ui"
-import { NTag, NAvatar } from "naive-ui"
+import { NTag, NAvatar, NButton } from "naive-ui"
 
 import { RoutePaths } from "@/types/index.d"
 import { getStores } from "@/utils/stores"
@@ -277,10 +277,21 @@ export default {
           key: "nickname",
         },
         {
-          title: "Contact Status",
-          key: "contact_status_id",
+          title: "Status",
+          key: "is_active",
           align: "center",
-          render: (row: any) => { },
+          render(row) {
+            console.log("Render Row", row)
+            // return row.is_active ? "Active" : "Inactive"
+            return h(
+              NTag,
+              {
+                type: row.is_active ? "success" : "default",
+                bordered: false,
+              },
+              { default: () => (row.is_active ? "Active" : "Inactive") }
+            )
+          }
         },
       ],
       fields: ["name", "nickname"],
@@ -326,31 +337,32 @@ export default {
         isPersist: true,
         key: "contacts",
       },
-      filter: {
-        whereFieldIs: "contact_status_id",
-        values: [
-          {
-            label: "Active",
-            value: "1",
-          },
-          {
-            label: "Paused",
-            value: "2",
-          },
-          {
-            label: "Archived",
-            value: "3",
-          },
-          {
-            label: "New Contact",
-            value: "4",
-          },
-          {
-            label: "Not Ready",
-            value: "5",
-          },
-        ],
-      },
+      filter: false,
+      // filter: {
+      //   whereFieldIs: "contact_status_id",
+      //   values: [
+      //     {
+      //       label: "Active",
+      //       value: "1",
+      //     },
+      //     {
+      //       label: "Paused",
+      //       value: "2",
+      //     },
+      //     {
+      //       label: "Archived",
+      //       value: "3",
+      //     },
+      //     {
+      //       label: "New Contact",
+      //       value: "4",
+      //     },
+      //     {
+      //       label: "Not Ready",
+      //       value: "5",
+      //     },
+      //   ],
+      // },
     },
   } as Module,
 

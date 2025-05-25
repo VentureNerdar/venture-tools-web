@@ -5,7 +5,7 @@
         <n-flex justify="end" style="width: 100%">
           <n-space>
             <div v-if="d.visibility.trash">
-              <n-text type="error" strong> {{ helper.translate('viewing_trash') }} </n-text>
+              <n-text type="error" strong> {{ helper.translate('viewing_archive') }} </n-text>
             </div>
 
             <!-- QUICK FILTER -->
@@ -215,7 +215,10 @@ const translationTitleMap: Record<string, string> = {
   'Contact Status': 'contact_status',
   'Description': 'description',
   'Email': 'email',
-  'Active Status': 'active_status'
+  'Active Status': 'active_status',
+  'Active': 'active',
+  'True': 'true',
+  'False': 'false'
 }
 
 const translationOptionsMap: Record<string, string> = {
@@ -293,6 +296,7 @@ const d = reactive({
 
 
 
+
 const u = {
   consume: useConsumeApi(p.module.routePath),
 } // e.o u
@@ -318,6 +322,8 @@ const m = {
         if (!p.getAll) {
           const res = response as { data: any; total?: number }
           d.data = res.data
+          console.log("d data", d.data)
+          console.log("datacolumns", p.module.dataTable.columns)
           
 
           if (res.total !== undefined) {
@@ -637,6 +643,7 @@ if (p.browseOptions !== false) {
     }),
   )
 }
+
 
 m.getData(d.defaultBrowseQuery)
 </script>

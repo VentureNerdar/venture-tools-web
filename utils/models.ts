@@ -20,6 +20,7 @@ export default {
   } as types.UserRoleFormModel,
 
   contact: {
+    is_active: true,
     contact_status_id: 1,
     faith_status_id: 8,
     name: null,
@@ -49,9 +50,14 @@ export default {
 
     parent_church_id: null,
     current_prayers: null,
+
+    location_longitude: null,
+    location_latitude: null,
+    google_location_data: null,
   } as types.ChurchFormModel,
 
   community: {
+    is_active: true,
     name: null,
     location_longitude: null,
     location_latitude: null,
