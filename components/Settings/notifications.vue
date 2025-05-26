@@ -286,7 +286,7 @@
   const handleClick = async () => {
     try {
       const payload = {
-        name: "notification interval",
+        name: "notification_interval",
         value: JSON.stringify(notiForm.value),
       }
 

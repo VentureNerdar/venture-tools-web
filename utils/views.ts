@@ -8,6 +8,7 @@ import Contact from "@/components/Views/Contact.vue"
 import Church from "@/components/Views/Church.vue"
 import CommunityChecklist from "@/components/Views/CommunityChecklist.vue"
 import Community from "@/components/Views/Community.vue"
+import Movement from "@/components/Views/Movement.vue"
 
 export default {
   user: User,
@@ -20,4 +21,5 @@ export default {
   church: Church,
   communityChecklist: CommunityChecklist,
   community: Community,
+  movement: Movement,
 } as const

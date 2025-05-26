@@ -15,6 +15,16 @@
         x-gap="10"
         :cols="4"
       >
+        <!-- Is Active -->
+        <n-gi>
+          <n-form-item
+            path="is_active"
+            :label="h.translate('is_active')"
+          >
+            <n-switch v-model:value="d.model.is_active"></n-switch>
+          </n-form-item>
+        </n-gi>
+        <!-- e.o Is Active -->
         <!-- Name -->
         <n-gi span="2">
           <n-form-item
@@ -36,13 +46,11 @@
                 v-model:value="d.model.location_longitude"
                 :placeholder="h.translate('longitude')"
                 size="small"
-                disabled
               />
               <n-input
                 v-model:value="d.model.location_latitude"
                 :placeholder="h.translate('latitude')"
                 size="small"
-                disabled
               />
 
               <FormPartialsSelectLocation

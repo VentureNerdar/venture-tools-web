@@ -17,7 +17,7 @@
               <n-text
                 type="error"
                 strong
-              > Viewing Trash </n-text>
+              > {{ helper.translate('viewing_archive') }} </n-text>
             </div>
 
             <!-- QUICK FILTER -->
@@ -337,6 +337,7 @@
             const res = response as { data: any; total?: number }
             d.data = res.data
 
+
             if (res.total !== undefined) {
               d.totalItems = res.total
               d.pageCount = Math.ceil(res.total / d.pageSize)
@@ -649,13 +650,6 @@
     d.defaultBrowseQuery = JSON.parse(
       JSON.stringify({
         ...d.defaultBrowseQuery,
-        ...JSON.parse(JSON.stringify(p.browseOptions)),
-      }),
-    )
-
-    d.browseQuery = JSON.parse(
-      JSON.stringify({
-        ...d.browseQuery,
         ...JSON.parse(JSON.stringify(p.browseOptions)),
       }),
     )

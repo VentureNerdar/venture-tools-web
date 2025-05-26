@@ -58,6 +58,19 @@
       </n-flex>
     </n-form-item> <!-- e.o User Role -->
 
+    <!-- Movement -->
+     <n-form-item
+      path="movement"
+      :label="h.translate('movement')"
+     >
+      <n-select
+        v-model:value="d.model.movement_id"
+        clearable
+        :placeholder="h.translate('select_movement')"
+        :options="movementOptions"
+      />
+     </n-form-item> <!-- e.o Movement -->
+
     <!-- Biography -->
     <n-form-item
       path="biography"
@@ -132,6 +145,7 @@
   import { useUserStore } from '~/stores/useUsersStore'
   import { useLanguagesStore } from '~/stores/useLanguagesStore'
   import { useSettingStore } from '~/stores/useSettingsStore'
+  import { useMovementsStore } from '~/stores/useMovementsStore'
   // e.o Imports
 
 
@@ -222,6 +236,12 @@ const h = useHelpers()
 
   })
 
+  const movementOptions = computed(() => {
+    return useMovementsStore().movements.map((movement: any) => ({
+      label: movement.name,
+      value: movement.id,
+    }))
+  })
   // e.o Computes that need for the form
 
   watch(() => d.model, (newVal) => {

@@ -11,16 +11,25 @@
       <n-card size="small">
         <n-grid x-gap="10" :cols="4">
           <!-- Contact Status -->
-          <n-gi>
+          <!-- <n-gi>
             <n-form-item path="contact_status_id" :label="h.translate('contact_status')">
               <n-select
                 v-model:value="d.model.contact_status_id"
                 :options="useSettingStore().options.contact"
               />
             </n-form-item>
-          </n-gi>
+          </n-gi> -->
           <!-- e.o Contact Status -->
-
+           <!-- Is Active -->
+          <n-gi>
+            <n-form-item
+              path="is_active"
+              :label="h.translate('is_active')"
+            >
+              <n-switch v-model:value="d.model.is_active"></n-switch>
+            </n-form-item>
+          </n-gi>
+          <!-- e.o Is Active -->
           <!-- Faith Status -->
           <n-gi>
             <n-form-item path="faith_status_id" :label="h.translate('faith_status')">
@@ -735,6 +744,7 @@ watch(
   },
   { deep: true },
 ) // e.o watch and emit form changes
+
 
 m.consume.defaultUsersForAssignedToOption()
 m.consume.defaultContactsForCoachedByOption()

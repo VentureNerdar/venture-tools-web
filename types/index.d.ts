@@ -13,6 +13,7 @@ export enum RoutePaths {
 
   PEOPLE_GROUPS = "people-groups",
   DENOMINATIONS = "denominations",
+  MOVEMENTS = "movements",
   FAITH_MILESTONES = "faith-milestones",
   COMMUNICATION_PLATFORMS = "communication-platforms",
   COMMUNITY_CHECKLISTS = "community-checklists",

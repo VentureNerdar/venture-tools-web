@@ -105,13 +105,11 @@
                   v-model:value="d.model.location_longitude"
                   :placeholder="helpers.translate('longitude')"
                   size="small"
-                  disabled
                 />
                 <n-input
                   v-model:value="d.model.location_latitude"
                   :placeholder="helpers.translate('latitude')"
                   size="small"
-                  disabled
                 />
 
                 <FormPartialsSelectLocation
@@ -178,7 +176,7 @@
             <!-- e.o Parent Church -->
 
             <!-- Website -->
-            <n-form-item
+            <!-- <n-form-item
               path="website"
               :label="helpers.translate('church_website')"
             >
@@ -186,7 +184,7 @@
                 v-model:value="d.model.website"
                 :placeholder="helpers.translate('enter_church_website')"
               />
-            </n-form-item>
+            </n-form-item> -->
             <!-- e.o Website -->
 
             <!-- Founded At -->
@@ -220,7 +218,7 @@
             <!-- e.o Denomination -->
 
             <!-- Phone -->
-            <n-form-item
+            <!-- <n-form-item
               path="phone_number"
               :label="helpers.translate('church_phone_number')"
             >
@@ -228,7 +226,7 @@
                 v-model:value="d.model.phone_number"
                 :placeholder="helpers.translate('enter_church_phone_number')"
               />
-            </n-form-item>
+            </n-form-item> -->
             <!-- e.o Phone -->
 
             <!-- Is Visited -->
@@ -737,6 +735,7 @@
     },
     { deep: true },
   )
+
 
   m.consume.defaultUsersForAssignedToOption()
   m.consume.defaultChurchesForChurchesOption()

@@ -5,19 +5,19 @@
   >
     <template #trigger>
       <n-button
-        :type="d.trashView ? 'error' : 'default'"
+        :type="d.trashView ? 'primary' : 'default'"
         size="small"
         @click="handleClick"
       >
         <template #icon>
           <n-icon>
-            <DeleteRound />
+            <ArchiveRound />
           </n-icon>
         </template>
       </n-button>
     </template>
 
-    {{ d.trashView ? h.translate('exit_trashed_view') : h.translate('view_trashed_item') }}
+    {{ d.trashView ? h.translate('exit_archive_view') : h.translate('view_archive_item') }}
   </n-tooltip>
 </template>
 
@@ -25,7 +25,7 @@
   lang="ts"
   setup
 >
-  import { DeleteRound } from '@vicons/material'
+  import { ArchiveRound } from '@vicons/material'
 
   const emit = defineEmits(['trashViewToggled'])
   const h = useHelpers()
