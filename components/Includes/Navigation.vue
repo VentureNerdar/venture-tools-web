@@ -64,6 +64,7 @@ import {
   SettingsRound,
   AccountCircleRound,
   LogOutRound,
+CircleNotificationsFilled,
 } from "@vicons/material"
 
 import { PrayingHands } from "@vicons/fa"
@@ -115,6 +116,12 @@ const navItems = [
     title: "Settings",
     link: "/settings?settingType=users",
     icon: SettingsRound,
+    roles: [1, 2, 3],
+  },
+  {
+    title: "Notifications",
+    link: "/notifications",
+    icon: CircleNotificationsFilled,
     roles: [1, 2, 3],
   },
 ] as NavigationItem[]
