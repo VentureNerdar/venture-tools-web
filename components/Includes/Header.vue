@@ -39,8 +39,7 @@
         return `${h.translate('settings')} > ${h.translate(settingName.trim()) ? settingName.trim() : settingName}`
       }
     }
-
-    return h.translate(page) === '' ? page : h.translate(page)
+    return h.translate(h.toSnakeCase(page)) === '' ? page : h.translate(h.toSnakeCase(page) )
   });
 
 </script>

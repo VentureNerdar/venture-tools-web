@@ -16,9 +16,11 @@
 import { useConsumeApi } from '~/composables/useConsumeApi'
 import type { UserFormModel } from '~/types/models'
 import { RoutePaths } from '~/types/index.d'
+import { NSwitch } from 'naive-ui'
 
 const movementUserModel = RoutePaths.MOVEMENT_USERS
 const consumeUser = useConsumeApi(movementUserModel)
+const helpers = useHelpers();
 
 const data = ref<UserFormModel[]>([])
 const loading = ref(false)
@@ -39,25 +41,54 @@ const pagination = reactive({
   }
 })
 
-const columns = [
+const columns = computed(() => [
   {
-    title: 'Name',
-     width: 200,
+    title: helpers.translate('name'),
+    width: 200,
     key: 'name',
   },
   {
-    title: 'Email',
+    title: helpers.translate('email'),
     width: 200,
     key: 'email'
   },
   {
-    title: 'Phone',
+    title: helpers.translate('phone'),
     width: 200,
     key: 'phone_number'
   },
-]
+  {
+    title: helpers.translate('verified'),
+    width: 200,
+    key: 'is_verified',
+    render(row: UserFormModel) {
+      return h(NSwitch, {
+        value: row.is_verified,
+        size: 'small',
+        'onUpdate:value': async (value: boolean) => {
+          if(row.is_verified) {
+            return 
+          }
+          const currentUser = data.value.find(user => user.id === row.id)
+          if (currentUser) {
+            const formData = {
+              user_id: row.id, 
+            }
+            const model = RoutePaths.MOVEMENT_USER_VERIFICATIONS
+            const consume = useConsumeApi(model)
+            const response = await consume.save(formData)
+            if (response) {
+              currentUser.is_verified = response.is_verified
+            }
+          }
+        }
+      })
+    }
+  }
+])
 
 const fetchData = async () => {
+  loading.value = true
   const bc = {
     all: false,
     page: pagination.page,
@@ -77,7 +108,6 @@ const fetchData = async () => {
 }
 
 fetchData()
-
 </script>
 
 <style lang="scss" scoped>

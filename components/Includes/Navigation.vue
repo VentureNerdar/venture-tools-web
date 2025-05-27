@@ -139,7 +139,7 @@ const userRoledNavItems = computed(() =>{
     .filter(item => item.roles.includes(auth.authUser.user_role_id))
     .map(item => ({
       ...item,
-      title: h.translate(item.title.toLowerCase())
+      title: h.translate(h.toSnakeCase(item.title))
     }))
   }
 )

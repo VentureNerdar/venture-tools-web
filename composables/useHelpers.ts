@@ -49,10 +49,13 @@ export function useHelpers() {
 
     // snake case for language switching
     toSnakeCase: (str: string) => {
+      // replace - with _
       return str
         .toLowerCase()
+        .replace(/-/g, '_')
         .replace(/[.\s]+/g, '_')
         .replace(/^_+|_+$/g, '')
+
     }
     // e.o snake case for language switching
 

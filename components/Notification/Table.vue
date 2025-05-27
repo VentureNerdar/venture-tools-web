@@ -27,19 +27,21 @@ const props = defineProps({
 })
 
 const data = ref<MovementNotificationFormModel[]>([])
-const columns = [
+const helpers = useHelpers();
+// computed columns
+const columns = computed(() => [
   {
-    title: 'Title',
+    title: helpers.translate('title'),
      width: 200,
     key: 'title',
   },
   {
-    title: 'Body',
+    title: helpers.translate('body'),
     width: 300,
     key: 'body'
   },
   {
-  title: 'Actions',
+  title: '',
   key: 'actions',
   width: 100,
   render(row: MovementNotificationFormModel) {
@@ -63,9 +65,7 @@ const columns = [
     )
   },
 } 
-  
-  
-]
+])
 
  const rowProps = (row: any) => {
     return {

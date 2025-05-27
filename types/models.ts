@@ -15,6 +15,7 @@ export interface UserFormModel {
   password_confirmation?: string | null
   last_login_at?: Date
   email_verified_at?: Date
+  is_verified?: boolean
   created_at?: Date
   updated_at?: Date
   deleted_at?: Date

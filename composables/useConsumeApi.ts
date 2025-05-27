@@ -190,13 +190,14 @@ const respond = (
       delete: permanent ? "Deleted" : "Trashed",
       restore: "Restored",
     }
+    const helpers = useHelpers()
+    const responseTitle = helpers.translate(helpers.toSnakeCase(responseTitleMap[consumptionType as "save" | "delete" | "restore"]))
 
-    const responseTitle =
-      responseTitleMap[consumptionType as "save" | "delete" | "restore"]
+    const responseContent = helpers.translate(`data_has_been_${consumptionType}d_successfully`)
 
     discreteNotificationAPI.notification.success({
       title: responseTitle,
-      content: `Data has been ${consumptionType}d successfully`,
+      content: responseContent,
       duration: 3000,
     })
   }
