@@ -226,6 +226,15 @@ export interface NotificationFormModel {
   updated_at?: Date
 }
 
+export interface MovementNotificationFormModel {
+  id?: number
+  user_id: number | null
+  title: string | null
+  body: string | null
+  created_at?: Date
+  updated_at?: Date
+}
+
 export type FormModel =
   | UserFormModel
   | UserRoleFormModel
@@ -242,3 +251,4 @@ export type FormModel =
   | CommunicationPlatformFormModel
   | CommunityChecklistFormModel
   | NotificationFormModel
+  | MovementNotificationFormModel

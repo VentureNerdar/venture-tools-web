@@ -116,13 +116,19 @@ const navItems = [
     title: "Settings",
     link: "/settings?settingType=users",
     icon: SettingsRound,
-    roles: [1, 2, 3],
+    roles: [1, 2],
   },
   {
     title: "Notifications",
     link: "/notifications",
     icon: CircleNotificationsFilled,
-    roles: [1, 2, 3],
+    roles: [3],
+  },
+  {
+    title: "Movement Users",
+    link: "/movement-users",
+    icon: PersonRound,
+    roles: [3],
   },
 ] as NavigationItem[]
 

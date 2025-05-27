@@ -7,15 +7,26 @@
         :bordered="false"
         :pagination="false"
         :row-props="rowProps"
+        max-height="calc(100vh - 304px)"
         />
     </div>
   </n-card>
 </template>
 
 <script setup lang="ts">
+import { type MovementNotificationFormModel } from '~/types/index.d'
+import { NButton, NIcon } from 'naive-ui'
+import { DeleteForeverRound } from '@vicons/material'
+const emit = defineEmits(['row-click', 'delete-row'])
+const props = defineProps({
+  data: {
+    type: Array as PropType<MovementNotificationFormModel[]>,
+    required: true,
+    default: () => [],
+  },
+})
 
-const emit = defineEmits(['row-click'])
-
+const data = ref<MovementNotificationFormModel[]>([])
 const columns = [
   {
     title: 'Title',
@@ -26,23 +37,34 @@ const columns = [
     title: 'Body',
     width: 300,
     key: 'body'
-
-  }
-]
-
-const data = [
-  {
-    title: 'Notification 1',
-    body: 'Notification 1 body Example: Do not forget to check Venture Tools and update your church'
   },
   {
-    title: 'Notification 2',
-    body: 'Notification 2 body'
+  title: 'Actions',
+  key: 'actions',
+  width: 100,
+  render(row: MovementNotificationFormModel) {
+    return h(
+      NButton,
+      {
+        size: 'small',
+        type: 'error',
+        strong: true,
+        onClick: (e: MouseEvent) => {
+          e.stopPropagation() // Prevent row click event
+          emit('delete-row', row)
+        },
+      },
+      {
+        icon: () =>
+          h(NIcon, null, {
+            default: () => h(DeleteForeverRound),
+          }),
+      }
+    )
   },
-  {
-    title: 'Notification 3',
-    body: 'Notification 3 body'
-  },
+} 
+  
+  
 ]
 
  const rowProps = (row: any) => {
@@ -53,6 +75,9 @@ const data = [
       }
     }
 }
+watch(() => props.data, (newValue) => {
+  data.value = newValue
+})
 
 </script>
 

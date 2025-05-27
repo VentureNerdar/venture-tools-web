@@ -31,6 +31,9 @@ export enum RoutePaths {
 
   NOTIFICATIONS = "notifications",
 
+  MOVEMENT_NOTIFICATIONS = "movement-notifications",
+  MOVEMENT_USERS = "movements/users",
+
   PROFILE_CHANGE_PASSWORD = "profile/change-password",
 }
 
