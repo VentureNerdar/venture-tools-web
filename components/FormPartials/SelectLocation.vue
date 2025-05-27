@@ -17,7 +17,7 @@
   >
     <n-card
       style="width: 600px"
-      title="Select Location"
+      :title="modalTitle"
       :bordered="false"
       size="small"
       role="dialog"
@@ -35,6 +35,28 @@
           </n-icon>
         </n-button>
       </template>
+
+      <n-text
+        italic
+        depth="3"
+        style="margin-bottom: 10px; display: block;"
+      >
+        {{ modalAddress }}
+      </n-text>
+
+      <n-auto-complete
+        v-model:value="autocompleteValue"
+        :input-props="{
+          autocomplete: 'disabled',
+        }"
+        :options="suggestions"
+        :placeholder="searchInputPlaceholder"
+        clearable
+        @update:value="handleInput"
+        @select="handleSuggestionSelect"
+      />
+
+      <!-- 
       <input
         ref="searchInput"
         type="text"
@@ -52,9 +74,10 @@
           class="suggestion-item"
           @click="handleSuggestionSelect(suggestion)"
         >
-          {{ suggestion.description }}
+          {{ suggestion.text }}
         </div>
       </div>
+      -->
       <div
         id="map"
         ref="mapElement"
@@ -70,80 +93,92 @@
 >
   import { onMounted, ref } from 'vue'
   import { LocationOnRound, CloseRound } from '@vicons/material'
+  import { Google } from '@vicons/fa'
+
+  type FormattedPlace = {
+    place: any,
+    viewport: any,
+    lat: number,
+    lng: number,
+  }
+
+  // @ts-expect-error google maps
+  const { AutocompleteSessionToken, AutocompleteSuggestion, Place } = await google.maps.importLibrary("places")
+  // @ts-expect-error google maps
+  const { AdvancedMarkerElement } = await google.maps.importLibrary("marker") as google.maps.MarkerLibrary
+  // @ts-expect-error google maps
+  const { Geocoder } = await google.maps.importLibrary("geocoding")
+  // @ts-expect-error google maps
+  const { Map } = await google.maps.importLibrary("maps") as google.maps.MapsLibrary
+  // const {Place} = await google.maps.importLibrary("places")
 
   const emit = defineEmits(['update'])
   const searchInput = ref<HTMLInputElement | null>(null)
   const mapElement = ref<HTMLElement | null>(null)
   const suggestions = ref<any[]>([])
+  const autocompleteValue = ref('')
+  // Initialize the map with a default position
+
+  const showModal = ref(false)
+
+  const position = reactive({
+    lat: 0,
+    lng: 0
+  }) as { lat: number, lng: number }
+
+  const modalTitle = ref('Select Location')
+  const modalAddress = ref('')
 
   const h = useHelpers()
 
   const props = defineProps<{
     latitude: number
     longitude: number
+    places?: any
   }>()
-
-  const showModal = ref(false)
 
   // @ts-expect-error google maps
   let map: google.maps.Map
   // @ts-expect-error google maps
-  let marker: google.maps.marker.AdvancedMarkerElement
-  // @ts-expect-error google maps
-  let autocompleteService: google.maps.places.AutocompleteService
+  let mapMarker: google.maps.marker.AdvancedMarkerElement
 
-  const handleInput = async (event: Event) => {
-    const input = event.target as HTMLInputElement
-    const value = input.value.trim()
-
-    if (value.length < 2) {
+  // const handleInput = async (event: Event) => {
+  const handleInput = async (value: string) => {
+    if (typeof value !== 'string' || value.trim() === '') {
+      modalAddress.value = ''
       suggestions.value = []
       return
     }
 
     try {
-      const request = {
+      const token = new AutocompleteSessionToken()
+
+      const suggestionRequest = {
         input: value,
-        types: ['geocode', 'establishment'],
+        includedPrimaryTypes: ['geocode', 'establishment'],
+        sessionToken: token,
       }
 
-      const response = await autocompleteService.getPlacePredictions(request)
-      suggestions.value = response.predictions || []
+      const response = await AutocompleteSuggestion.fetchAutocompleteSuggestions(suggestionRequest)
+      let Gsuggestions = [] as any[]
+      response.suggestions.forEach((sug: any) => {
+        const predict = sug.placePrediction
+        Gsuggestions.push({
+          value: predict.placeId,
+          label: predict.text.text
+        })
+      })
+
+      suggestions.value = Gsuggestions
     } catch (error) {
       console.error('Error fetching suggestions:', error)
       suggestions.value = []
     }
   }
 
-  const handleSuggestionSelect = async (suggestion: any) => {
+  const handleSuggestionSelect = async (placeId: any) => {
     try {
-      // @ts-expect-error google maps
-      const { PlacesService } = await google.maps.importLibrary("places") as google.maps.PlacesLibrary
-      const placesService = new PlacesService(map)
-
-      placesService.getDetails({
-        placeId: suggestion.place_id,
-        fields: ['geometry', 'name', 'formatted_address']
-      }, (place: any, status: string) => {
-        if (status === 'OK' && place && place.geometry) {
-          const position = {
-            lat: place.geometry.location.lat(),
-            lng: place.geometry.location.lng()
-          }
-
-          // Update map and marker
-          map.setCenter(position)
-          map.setZoom(15)
-          marker.position = position
-          marker.title = place.name || 'Selected Location'
-
-          // Clear suggestions
-          suggestions.value = []
-
-          // Emit the selected location
-          emit('update', position, place)
-        }
-      })
+      await getPlaceByPlaceID(placeId)
     } catch (error) {
       console.error('Error selecting place:', error)
     }
@@ -160,45 +195,117 @@
     try {
       console.log('Loading Google Maps libraries...')
       // Load required libraries
-      // @ts-expect-error google maps
-      const { Map } = await google.maps.importLibrary("maps") as google.maps.MapsLibrary
-      // @ts-expect-error google maps
-      const { AdvancedMarkerElement } = await google.maps.importLibrary("marker") as google.maps.MarkerLibrary
-      // @ts-expect-error google maps
-      const { AutocompleteService } = await google.maps.importLibrary("places") as google.maps.PlacesLibrary
-
-      console.log('Libraries loaded successfully')
-
-      // Initialize the map with a default position
       let initialPosition = { lat: 13.7563, lng: 100.5018 } // Bangkok
+      let initialZoom = 5
+
+      // if props have coordinates
       if (props.latitude && props.longitude) {
         initialPosition = { lat: props.latitude, lng: props.longitude }
+        initialZoom = 19
       }
 
-      const mapOptions = {
+      // initialize map
+      map = new Map(mapElement.value as HTMLElement, {
         center: initialPosition,
-        zoom: 5,
+        zoom: initialZoom,
         mapId: '49f84f4fe99b4c959dd7a6e3',
-      }
+      })
 
-      console.log('Initializing map with options:', mapOptions)
-      map = new Map(mapElement.value as HTMLElement, mapOptions)
-      console.log('Map initialized successfully')
+      // setting viewport if places is set
+      if (props.places && props.places.length > 0) {
+        const place = JSON.parse(props.places)
+
+        if (place.viewport) {
+          map.fitBounds(place.viewport)
+        }
+      }
 
       // Initialize a marker
-      marker = new AdvancedMarkerElement({
+      mapMarker = new AdvancedMarkerElement({
         map,
         position: initialPosition,
         title: 'Default Location'
       })
 
-      // Initialize the Autocomplete service
-      autocompleteService = new AutocompleteService()
-      console.log('Autocomplete service initialized')
+      // @ts-expect-error google maps
+      google.maps.event.addListener(map, 'drag', function () {
+        try {
+          mapMarker.position = { lat: map.getCenter().lat(), lng: map.getCenter().lng() }
+          modalTitle.value = 'Latitude: ' + map.getCenter().lat() + ', Longitude: ' + map.getCenter().lng()
+          modalAddress.value = ''
+        } catch (err) {
+          console.log(err)
+        }
+      })
+
+      // @ts-expect-error google maps
+      google.maps.event.addListener(map, 'dragend', function () {
+        position.lat = map.getCenter().lat()
+        position.lng = map.getCenter().lng()
+        modalAddress.value = ''
+        getGeoCode(position)
+      })
+
+      // @ts-expect-error google maps
+      google.maps.event.addListener(map, 'click', async function (event: any) {
+        console.log(event)
+        map.setCenter(event.latLng)
+        mapMarker.position = { lat: event.latLng.lat(), lng: event.latLng.lng() }
+
+        if (event.placeId) {
+          await getPlaceByPlaceID(event.placeId)
+        } else {
+          getGeoCode(event.latLng)
+        }
+      })
     } catch (error) {
       console.error('Error initializing map:', error)
     }
   })
+
+  const setMap = (post: { lat: number, lng: number }, viewport: any) => {
+    map.setCenter(post)
+    map.fitBounds(viewport)
+    mapMarker.position = post
+    suggestions.value = []
+  }
+
+  const getGeoCode = async (position: any) => {
+    const geocoder = new Geocoder()
+    const response = await geocoder.geocode({ location: position })
+    emit('update', position, response)
+  }
+
+  const getPlaceByPlaceID = async (placeID: string, setMapOption: boolean = true, emitOption: boolean = true) => {
+    const place = new Place({ id: placeID })
+    await place.fetchFields({
+      fields: ['displayName', 'adrFormatAddress', 'formattedAddress', 'viewport', 'location', 'addressComponents', 'googleMapsURI', 'types']
+    })
+
+    const lng = place.location.lng()
+    const lat = place.location.lat()
+
+    modalTitle.value = place.displayName
+    modalAddress.value = place.formattedAddress
+
+    position.lat = lat
+    position.lng = lng
+
+    if (setMapOption) {
+      setMap(position, place.viewport)
+    }
+
+    if (emitOption) {
+      emit('update', position, place)
+    }
+
+    return {
+      place: place,
+      viewport: place.viewport,
+      lat: lat,
+      lng: lng
+    } as FormattedPlace
+  }
 </script>
 
 <style scoped>
@@ -241,9 +348,7 @@
   }
 
   .map-container {
-    width: calc(100% - 20px);
     height: 400px;
-    margin-left: 10px;
     margin-top: 16px;
     border: 2px solid #17badf;
     border-radius: 8px;

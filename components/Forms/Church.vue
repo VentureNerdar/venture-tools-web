@@ -115,6 +115,7 @@
                 <FormPartialsSelectLocation
                   :latitude="Number(d.model.location_latitude)"
                   :longitude="Number(d.model.location_longitude)"
+                  :places="d.model.google_location_data"
                   @update="m.handle.emit.churchLocationUpdated"
                 />
               </n-input-group>
@@ -525,6 +526,10 @@
       ...d.options.communities,
     ]
   })
+
+  const computedGoogleLocationData = computed(() => {
+    return d.model.google_location_data ? d.model.google_location_data : [] as any[]
+  })
   // e.o Add Community Form
 
   const m = {
@@ -553,6 +558,7 @@
         ]
         d.loading.assignedTo = false
       },
+
       searchChurchesOption: async (query: string) => {
         d.loading.churches = true
 
@@ -608,8 +614,8 @@
           )
         },
         churchLocationUpdated: (position: any, place: any) => {
-          d.model.location_latitude = position.lat
-          d.model.location_longitude = position.lng
+          d.model.location_latitude = position.lat.toString()
+          d.model.location_longitude = position.lng.toString()
           d.model.google_location_data = JSON.stringify(place)
         },
       },

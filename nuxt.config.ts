@@ -13,10 +13,16 @@ export default defineNuxtConfig({
     head: {
       script: [
         {
-          src: `https://maps.googleapis.com/maps/api/js?libraries=places&key=${process.env.GOOGLE_MAPS_API_KEY}`,
+          src: `https://maps.googleapis.com/maps/api/js?loading=async&libraries=places&key=${process.env.GOOGLE_MAPS_API_KEY}`,
           async: true,
           defer: true,
-        }
+        },
+
+        // {
+        //   src: `https://places.googleapis.com/v1/places/GyuEmsRBfy61i59si0?fields=addressComponents&key=${process.env.GOOGLE_MAPS_API_KEY}`,
+        //   async: true,
+        //   defer: true,
+        // }
       ]
     }
   },
