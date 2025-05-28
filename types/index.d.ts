@@ -94,6 +94,7 @@ export type ListCondition = {
 export type FilterOptions =
   | false
   | { whereFieldIs: string; values: { label: string; value: string }[] }
+  | { name: string; whereFieldIs: string; values: { label: string; value: string }[] }[]
 
 export type ModalWidthSize =
   | "600px"

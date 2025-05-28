@@ -45,6 +45,11 @@ export const NaiveThemeOverrides = {
 
     Tooltip: {
       color: darkBg3,
-    }
+    },
+
+    Popover: {
+      color: darkBg3,
+    },
+
   } as ConfigProviderProps['themeOverrides'],
 }

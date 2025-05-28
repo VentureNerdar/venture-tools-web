@@ -20,20 +20,38 @@
               > {{ helper.translate('viewing_archive') }} </n-text>
             </div>
 
-            <!-- QUICK FILTER -->
-            <div v-if="p.module.options.filter !== false">
-              <n-tooltip>
-                <template #trigger>
+            <!-- CLEAR FILTER-->
+            <div v-if="isFiltered">
+              <n-button
+                type="error"
+                size="small"
+                @click="m.handle.click.clearFilterButton()"
+              >
+                <template #icon>
                   <n-icon>
-                    <FilterAltRound />
+                    <FilterAltOffRound />
                   </n-icon>
                 </template>
+              </n-button>
+            </div>
 
-                {{ helper.translate('quick_filter') }}
-              </n-tooltip>
+            <!-- QUICK FILTER -->
+            <div v-if="p.module.options.filter !== false">
+              <div style="display: inline">
+                <n-tooltip>
+                  <template #trigger>
+                    <n-icon>
+                      <FilterAltRound />
+                    </n-icon>
+                  </template>
+
+                  {{ helper.translate('quick_filter') }}
+                </n-tooltip>
+              </div>
               &nbsp;
 
               <n-radio-group
+                v-if="d.filterType === 'single'"
                 v-model:value="d.selectedFilterOption"
                 name="filterOptionsGroup"
                 default-value="all"
@@ -53,23 +71,47 @@
                   :label="filter.label"
                 />
               </n-radio-group>
+
+              <n-input-group
+                v-else
+                style="display: inline"
+              >
+                <n-popover
+                  trigger="click"
+                  v-for="filter in translatedFilterValues"
+                  placement="bottom"
+                >
+                  <template #trigger>
+                    <n-button
+                      :key="filter.value"
+                      size="small"
+                    >
+                      {{ filter.name }}
+                    </n-button>
+                  </template>
+
+                  <n-radio-group
+                    v-model:value="d.selectedFilterOption"
+                    size="small"
+                  >
+                    <n-radio-button
+                      v-for="fv in filter.values"
+                      :key="fv.value"
+                      :value="fv.value"
+                      size="small"
+                      @change="m.handle.changed.quickFilter({ ...fv, whereFieldIs: filter.whereFieldIs })"
+                    >
+                      <!-- @update:value="m.handle.changed.quickFilter(fv)" -->
+                      {{ fv.label }}
+                    </n-radio-button>
+                  </n-radio-group>
+
+                </n-popover>
+              </n-input-group>
             </div>
             <!-- e.o. QUICK FILTER -->
 
-            <!-- CLEAR FILTER-->
-            <div v-if="isFiltered">
-              <n-button
-                type="error"
-                size="small"
-                @click="m.handle.click.clearFilterButton()"
-              >
-                <template #icon>
-                  <n-icon>
-                    <FilterAltOffRound />
-                  </n-icon>
-                </template>
-              </n-button>
-            </div>
+
 
             <!-- VIEW TRASH TOGGLE -->
             <div v-if="p.module.hasSoftDelete">
@@ -223,8 +265,11 @@
   import type { Module } from "~/utils/modules"
   import GenericView from "../Modals/GenericView.vue"
 
+  type QuickFilterType = "single" | "multiple"
+
   const tableRef = ref<DataTableInst | null>(null)
   const table = tableRef
+
 
   const helper = useHelpers()
   const translationTitleMap: Record<string, string> = {
@@ -266,13 +311,37 @@
   ) // e.o p
 
   const translatedFilterValues = computed(() => {
-    return p.module.options.filter.values.map((filter: any) => {
-      const key = translationOptionsMap[filter.label]
-      return {
-        ...filter,
-        label: key ? helper.translate(key) : filter.label,
-      }
-    })
+    // single filter
+    if (!Array.isArray(p.module.options.filter)) {
+
+      d.filterType = "single"
+
+      return p.module.options.filter.values.map((filter: any) => {
+        const key = translationOptionsMap[filter.label]
+        return {
+          ...filter,
+          label: key ? helper.translate(key) : filter.label,
+        }
+      })
+    } else {
+      d.filterType = "multiple"
+      let filterItems = [] as any[]
+      p.module.options.filter.forEach((filterGroup: any) => {
+        filterItems.push({
+          name: filterGroup.name,
+          whereFieldIs: filterGroup.whereFieldIs,
+          values: filterGroup.values.map((filter: any) => {
+            const key = translationOptionsMap[filter.label]
+            return {
+              ...filter,
+              label: key ? helper.translate(key) : filter.label,
+            }
+          })
+        })
+      })
+
+      return filterItems
+    }
   })
 
 
@@ -297,6 +366,7 @@
       key: string
       value: number[] | boolean[] | string[]
     }[],
+    filterType: "single" as QuickFilterType,
 
     browseQuery: {
       page: 1,
@@ -350,7 +420,6 @@
         d.data = response
       }
 
-
     }, // e.o getData
 
     browse: async () => {
@@ -401,6 +470,7 @@
           if (table !== null && "value" in table) {
             if (table.value) {
               d.filteredOptions = []
+              d.selectedFilterOption = null
               table.value.clearFilters()
               m.handle.changed.filter([])
               m.browse()
@@ -410,25 +480,40 @@
       },
 
       changed: {
-        quickFilter: (value: string) => {
-          if (p.module.options.filter !== false) {
-            if (value === "all") {
-              if ("all" in d.browseQuery === false) {
-                d.browseQuery.page = d.defaultBrowseQuery.page
-                delete d.browseQuery.search_by
-                delete d.browseQuery.search
+        quickFilter: (value: string | { label: string; value: string; whereFieldIs: string }) => {
+          if (d.filterType === "single") {
+            if (p.module.options.filter !== false) {
+              if (value === "all") {
+                if ("all" in d.browseQuery === false) {
+                  d.browseQuery.page = d.defaultBrowseQuery.page
+                  delete d.browseQuery.search_by
+                  delete d.browseQuery.search
+                }
+
+                d.page = 1
+
+                m.browse()
+                return
               }
 
-              d.page = 1
+              // need to check here for filter
+              if (!Array.isArray(p.module.options.filter)) {
+                d.browseQuery.search_by = p.module.options.filter.whereFieldIs
+              }
+
+              d.browseQuery.search = value as string
 
               m.browse()
-              return
             }
+          } else {
+            if (typeof value !== "string") {
+              d.browseQuery.search_by = value.whereFieldIs
+              d.browseQuery.search = value.value
 
-            d.browseQuery.search_by = p.module.options.filter.whereFieldIs
-            d.browseQuery.search = value
-
-            m.browse()
+              d.filteredOptions = []
+              d.filteredOptions.push({ key: value.whereFieldIs, value: [value.value] })
+              m.browse()
+            }
           }
         }, // e.o. quickFilter
 

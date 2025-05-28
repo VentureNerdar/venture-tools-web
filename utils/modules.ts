@@ -162,8 +162,8 @@ export default {
         user_role_id: [{ required: true, message: "User Role is required" }],
         email: [{ required: true, message: "Email is required" }],
       },
-      component: shallowRef(forms.user),
-      createButtonIconComponent: shallowRef(PersonAddAlt1Round),
+      component: markRaw(forms.user),
+      createButtonIconComponent: markRaw(PersonAddAlt1Round),
       modalWidthSize: "600px",
     },
 
@@ -177,23 +177,26 @@ export default {
         isPersist: true,
         key: "users",
       },
-      filter: {
-        whereFieldIs: "user_role_id",
-        values: [
-          {
-            label: "Administrators",
-            value: "3",
-          },
-          {
-            label: "Church Planters",
-            value: "4",
-          },
-          {
-            label: "Guest",
-            value: "5",
-          },
-        ],
-      },
+      filter: [
+        {
+          name: 'User Role',
+          whereFieldIs: "user_role_id",
+          values: [
+            {
+              label: "Movement Leaders",
+              value: "3",
+            },
+            {
+              label: "Church Planters",
+              value: "4",
+            },
+            {
+              label: "Guest",
+              value: "5",
+            },
+          ],
+        },
+      ],
     },
   } as Module, // e.o USERS
 
