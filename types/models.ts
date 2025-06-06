@@ -123,7 +123,6 @@ export interface MovementFormModel {
   deleted_at?: Date
 }
 
-
 export interface CommunicationPlatformFormModel {
   name: string | null
   id?: number
@@ -144,7 +143,7 @@ export interface UserRoleFormModel {
 
 export interface PeopleGroupFormModel {
   name: string | null
-  translations: Object | null
+  translations: object | null
   id?: number
   created_at?: Date
   updated_at?: Date
@@ -202,18 +201,18 @@ export interface CommunityFormModel {
   community_needs_4: string | null
   community_needs_5: string | null
 
-  peace_persons: CommunityPeacePersonFormModel[]
-  committees: CommunityCommittee[]
+  peace_persons?: CommunityPeacePersonFormModel[]
+  committees?: CommunityCommittee[]
 
   checklists?:
-  | CommunityChecklistFormModel[]
-  | { id: number; checked: boolean }[]
-  | number[]
-  | null
+    | CommunityChecklistFormModel[]
+    | { id: number; checked: boolean }[]
+    | number[]
+    | null
 
   churches: ChurchFormModel[] | null
   churchPlanters: [] | null
-  created_by: number
+  created_by?: number | null
 
   created_at?: Date
   updated_at?: Date
@@ -237,6 +236,15 @@ export interface MovementNotificationFormModel {
   updated_at?: Date
 }
 
+export interface PrayerPromptFormModel {
+  id?: number
+  prompt_text: string | null
+  user_id: number | null
+  created_at?: Date
+  updated_at?: Date
+  deleted_at?: Date
+}
+
 export type FormModel =
   | UserFormModel
   | UserRoleFormModel
@@ -254,3 +262,4 @@ export type FormModel =
   | CommunityChecklistFormModel
   | NotificationFormModel
   | MovementNotificationFormModel
+  | PrayerPromptFormModel

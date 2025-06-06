@@ -2,7 +2,7 @@ import type * as models from "@/types/models"
 import defaultModelForms from "@/utils/models"
 import type { ModalWidthSize, FilterOptions } from "@/types/index.d"
 import type { DataTableColumn, FormRules } from "naive-ui"
-import { NTag, NAvatar, NButton } from "naive-ui"
+import { NTag, NAvatar } from "naive-ui"
 
 import { RoutePaths } from "@/types/index.d"
 import { getStores } from "@/utils/stores"
@@ -53,13 +53,13 @@ export type Module = {
   form: {
     model: models.FormModel
     rules: FormRules
-    component: Object
-    createButtonIconComponent?: Object
+    component: object
+    createButtonIconComponent?: object
     modalWidthSize: ModalWidthSize
   }
 
   view?: {
-    component: Object
+    component: object
     modalWidthSize: ModalWidthSize
   }
 
@@ -179,7 +179,7 @@ export default {
       },
       filter: [
         {
-          name: 'User Role',
+          name: "User Role",
           whereFieldIs: "user_role_id",
           values: [
             {
@@ -292,9 +292,9 @@ export default {
                 type: row.is_active ? "success" : "default",
                 bordered: false,
               },
-              { default: () => (row.is_active ? "Active" : "Inactive") }
+              { default: () => (row.is_active ? "Active" : "Inactive") },
             )
-          }
+          },
         },
       ],
       fields: ["name", "nickname"],
@@ -398,8 +398,8 @@ export default {
           { required: true, message: "Name is required", trigger: "blur" },
         ],
         community_id: [
-          { required: true, message: "Community is required", trigger: "blur" }
-        ]
+          { required: true, message: "Community is required", trigger: "blur" },
+        ],
       },
       component: shallowRef(forms.church),
       // createButtonIconComponent: shallowRef(PersonAddAlt1Round),
@@ -705,7 +705,7 @@ export default {
 
     form: {
       model: {
-        name: null
+        name: null,
       } as models.MovementFormModel,
       rules: {
         name: [
@@ -777,9 +777,58 @@ export default {
     },
   } as Module, // e.o Community Checklists
 
+  // PRAYER PROMPTS
+  prayerPrompts: {
+    name: "Prayer Prompts",
+    hasSoftDelete: true,
+    routePath: RoutePaths.PRAYER_PROMPTS,
+    store: stores.prayerPrompts,
+
+    dataTable: {
+      columns: [
+        {
+          title: "Prompt Text",
+          key: "prompt_text",
+          sorter: true,
+        },
+      ],
+      fields: ["prompt_text"],
+      hiddenFieldsOnEdit: [],
+    },
+
+    form: {
+      model: {
+        prompt_text: null,
+      } as models.PrayerPromptFormModel,
+      rules: {
+        prompt_text: [
+          {
+            required: true,
+            message: "Prompt Text is required",
+            trigger: "blur",
+          },
+        ],
+      },
+      component: shallowRef(forms.denomination),
+      // createButtonIconComponent: shallowRef(PersonAddAlt1Round),
+      modalWidthSize: "600px",
+    },
+
+    view: {
+      component: views.denomination,
+      modalWidthSize: "1000px",
+    },
+
+    options: {
+      store: {
+        isPersist: true,
+        key: "denominations",
+      },
+      filter: false,
+    },
+  } as Module, // e.o Prayer Prompts
+
   systemLanguages: {},
 
   systemLanguageWords: {},
 }
-
-

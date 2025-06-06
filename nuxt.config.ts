@@ -66,7 +66,7 @@ export default defineNuxtConfig({
 
   compatibilityDate: "2025-01-04",
 
-  modules: ["@nuxtjs/color-mode"],
+  modules: ["@nuxtjs/color-mode", "@nuxt/eslint"],
 
   alias: {
     "@/stores": "~/stores",

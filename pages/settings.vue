@@ -79,6 +79,14 @@
       >
         <SettingsMovements />
       </n-tab-pane>
+
+      <n-tab-pane
+        name="prayer_prompts"
+        :tab="h.translate('prayer_prompts') !== '' ? h.translate('prayer_prompts') : 'Prayer Prompts'"
+        class="tab"
+      >
+        <SettingsPrayerPrompts />
+      </n-tab-pane>
     </n-tabs>
   </n-space>
 </template>

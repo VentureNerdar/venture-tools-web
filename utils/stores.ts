@@ -9,6 +9,7 @@ import { useContactStore } from "~/stores/useContactsStore"
 import { useChurchStore } from "~/stores/useChurchesStore"
 import { useCommunityStore } from "~/stores/useCommunitiesStore"
 import { useMovementsStore } from "~/stores/useMovementsStore"
+import { usePrayerPromptStore } from "~/stores/usePrayerPromptsStore"
 
 export const getStores = () => {
   return {
@@ -23,6 +24,7 @@ export const getStores = () => {
     churches: useChurchStore,
     communities: useCommunityStore,
     movements: useMovementsStore,
+    prayerPrompts: usePrayerPromptStore,
   }
 }
 

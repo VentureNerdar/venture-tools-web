@@ -61,17 +61,17 @@ export default {
     name: null,
     location_longitude: null,
     location_latitude: null,
+    google_location_data: [] as any[],
     conducted_survey_of_community_needs: false,
     community_needs_1: null,
     community_needs_2: null,
     community_needs_3: null,
     community_needs_4: null,
     community_needs_5: null,
-    peace_persons: [],
-    committees: [],
-    churchPlanters: [],
-
-    churches: [],
+    peace_persons: [] as any[],
+    committees: [] as any[],
+    churchPlanters: [] as any[],
+    churches: [] as any[],
   },
 
   communityChecklist: {
@@ -82,5 +82,4 @@ export default {
     name: null,
     value: null,
   } as types.NotificationFormModel,
-
 } as const

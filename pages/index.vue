@@ -49,7 +49,8 @@
                     type="primary"
                     secondary
                     @click="handleLogin"
-                  >LOGIN</n-button>
+                    >LOGIN</n-button
+                  >
                 </n-space>
               </n-form>
             </n-space>
@@ -61,102 +62,100 @@
 </template>
 
 <script setup>
-  import { ref } from "vue"
-  import { useMessage, useNotification, useLoadingBar } from "naive-ui"
-  import { useAuthStore } from "~/stores/useAuthStore"
-  import { useRouter } from "vue-router"
+import { ref } from "vue"
+import { useMessage, useLoadingBar } from "naive-ui"
+import { useAuthStore } from "~/stores/useAuthStore"
 
-  import { darkTheme } from "naive-ui"
-  import { NaiveThemeOverrides } from "~/types/NaiveThemeOverrides"
-  const darkThemeOverrides = { ...NaiveThemeOverrides.darkTheme }
+import { useRouter } from "vue-router"
 
-  definePageMeta({
-    middleware: "guest",
-    // layout: ,
-    layout: false,
-    // layout: 'non-app'
-  })
+import { darkTheme } from "naive-ui"
+import { NaiveThemeOverrides } from "~/types/NaiveThemeOverrides"
+const darkThemeOverrides = { ...NaiveThemeOverrides.darkTheme }
 
-  // constants
-  const formRef = ref(null)
-  const message = useMessage()
-  const loadingBar = useLoadingBar()
-  const auth = useAuthStore()
-  const router = useRouter()
-  const form = ref({
-    email: "seb@demo.com",
-    password: "demodemo",
-  })
+definePageMeta({
+  middleware: "guest",
+  // layout: ,
+  layout: false,
+  // layout: 'non-app'
+})
 
-  const rules = {
-    email: [
-      {
-        required: true,
-        message: "Please input your email address",
-        trigger: "blur",
-      },
-      {
-        type: "email",
-        message: "Please input a valid email address",
-        trigger: ["blur", "change"],
-      },
-    ],
-    password: [
-      { required: true, message: "Please input your password", trigger: "blur" },
-    ],
-  }
+// constants
+const formRef = ref(null)
+const message = useMessage()
+const loadingBar = useLoadingBar()
+const auth = useAuthStore()
+const router = useRouter()
+const form = ref({
+  email: "seb@demo.com",
+  password: "demodemo",
+})
 
-  // methods
-  function handleLogin(e) {
-    e.preventDefault()
+const rules = {
+  email: [
+    {
+      required: true,
+      message: "Please input your email address",
+      trigger: "blur",
+    },
+    {
+      type: "email",
+      message: "Please input a valid email address",
+      trigger: ["blur", "change"],
+    },
+  ],
+  password: [
+    { required: true, message: "Please input your password", trigger: "blur" },
+  ],
+}
 
-    formRef.value?.validate(async (errors) => {
-      if (!errors) {
-        loadingBar.start()
-        const response = await auth.login(form.value)
+// methods
+function handleLogin(e) {
+  e.preventDefault()
 
-        if (response) {
-          loadingBar.finish()
-          message.create(`Welcome back ${response.user.name}!`, {
-            type: "success",
-          })
+  formRef.value?.validate(async (errors) => {
+    if (!errors) {
+      loadingBar.start()
+      const response = await auth.login(form.value)
 
-          setTimeout(() => {
-            router.push("/splash")
-          }, 500)
-        }
-      } else {
-        message.error("Please input your credentials.")
+      if (response) {
+        loadingBar.finish()
+        message.create(`Welcome back ${response.user.name}!`, {
+          type: "success",
+        })
+
+        setTimeout(() => {
+          router.push("/splash")
+        }, 500)
       }
-    })
-  }
+    } else {
+      message.error("Please input your credentials.")
+    }
+  })
+}
 </script>
 
-<style
-  lang="scss"
-  scoped
->
-  body {
-    padding: 0px;
-    margin: 0px;
-    background: blue;
-  }
+<style lang="scss" scoped>
+body {
+  padding: 0px;
+  margin: 0px;
+  background: blue;
+}
 
-  .login-box {
-    width: 300px;
-    padding: 20px 40px 40px 40px;
+.login-box {
+  width: 300px;
+  padding: 20px 40px 40px 40px;
 
-    .n-button {
-      width: 100%;
-    }
+  .n-button {
+    width: 100%;
   }
+}
 
-  .container {
-    background: #021526;
-    /* const darkBg = "#021526" */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-  }
+.container {
+  background: #021526;
+  /* const darkBg = "#021526" */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
 </style>

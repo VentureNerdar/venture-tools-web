@@ -36,6 +36,8 @@ export enum RoutePaths {
   MOVEMENT_USER_VERIFICATIONS = "movements/verify-user",
 
   PROFILE_CHANGE_PASSWORD = "profile/change-password",
+
+  PRAYER_PROMPTS = "prayer-prompts",
 }
 
 export type GenderTypes = "male" | "female"
