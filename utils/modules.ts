@@ -745,6 +745,13 @@ export default {
           key: "name",
           sorter: true,
         },
+        {
+          title: "Order",
+          key: "order",
+          sorter: true,
+        },
+
+
       ],
       fields: ["name"],
       hiddenFieldsOnEdit: [],
@@ -809,13 +816,13 @@ export default {
           },
         ],
       },
-      component: shallowRef(forms.denomination),
+      component: shallowRef(forms.prayerPrompt),
       // createButtonIconComponent: shallowRef(PersonAddAlt1Round),
       modalWidthSize: "600px",
     },
 
     view: {
-      component: views.denomination,
+      component: views.prayerPrompt,
       modalWidthSize: "1000px",
     },
 

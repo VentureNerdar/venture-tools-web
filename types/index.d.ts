@@ -17,6 +17,7 @@ export enum RoutePaths {
   FAITH_MILESTONES = "faith-milestones",
   COMMUNICATION_PLATFORMS = "communication-platforms",
   COMMUNITY_CHECKLISTS = "community-checklists",
+  COMMUNITY_CHECKLIST_UPDATE = "community-checklists/update-all",
 
   CONTACTS = "contacts",
   CHURCHES = "churches",

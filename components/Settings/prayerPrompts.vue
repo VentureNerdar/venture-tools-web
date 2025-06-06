@@ -21,7 +21,7 @@ import type { StoreOptions, FormModalOptions } from "~/types/index.d"
 import type { Module } from "~/utils/modules"
 import modules from "~/utils/modules"
 
-const module = modules.denominations as Module
+const module = modules.prayerPrompts as Module
 const h = useHelpers()
 
 const d = reactive({
@@ -30,13 +30,13 @@ const d = reactive({
   },
 
   // Change to the field that you want to search.
-  searchByFieldName: "name",
+  searchByFieldName: "prompt_text",
 
   // All store options getting from module.
   // Need to change storeState
 
   storeOptions: {
-    storeState: module.store.denominations,
+    storeState: module.store.prayerPrompts,
     ...module.options.store,
   } as StoreOptions,
 

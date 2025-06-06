@@ -24,10 +24,10 @@
                 label-placement="left"
                 label-width="0"
               >
-                <n-form-item path="email">
+                <n-form-item path="identifier">
                   <n-input
-                    v-model:value="form.email"
-                    placeholder="Email"
+                    v-model:value="form.identifier"
+                    placeholder="Email or Username"
                     @keydown.enter="handleLogin"
                   />
                 </n-form-item>
@@ -61,11 +61,10 @@
   </n-config-provider>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref } from "vue"
-import { useMessage, useLoadingBar } from "naive-ui"
+import { useMessage, useNotification, useLoadingBar } from "naive-ui"
 import { useAuthStore } from "~/stores/useAuthStore"
-
 import { useRouter } from "vue-router"
 
 import { darkTheme } from "naive-ui"
@@ -86,21 +85,17 @@ const loadingBar = useLoadingBar()
 const auth = useAuthStore()
 const router = useRouter()
 const form = ref({
-  email: "seb@demo.com",
+  identifier: "seb@demo.com",
   password: "demodemo",
+  platform: "web",
 })
 
 const rules = {
-  email: [
+  identifier: [
     {
       required: true,
-      message: "Please input your email address",
+      message: "Please input your email or username",
       trigger: "blur",
-    },
-    {
-      type: "email",
-      message: "Please input a valid email address",
-      trigger: ["blur", "change"],
     },
   ],
   password: [

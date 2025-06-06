@@ -161,6 +161,7 @@ export interface FaithMilestoneFormModel {
 
 export interface CommunityChecklistFormModel {
   name: string | null
+  order: number
   id?: number
   created_at?: Date
   updated_at?: Date
@@ -205,10 +206,10 @@ export interface CommunityFormModel {
   committees?: CommunityCommittee[]
 
   checklists?:
-    | CommunityChecklistFormModel[]
-    | { id: number; checked: boolean }[]
-    | number[]
-    | null
+  | CommunityChecklistFormModel[]
+  | { id: number; checked: boolean }[]
+  | number[]
+  | null
 
   churches: ChurchFormModel[] | null
   churchPlanters: [] | null

@@ -9,12 +9,14 @@ import Church from "@/components/Views/Church.vue"
 import CommunityChecklist from "@/components/Views/CommunityChecklist.vue"
 import Community from "@/components/Views/Community.vue"
 import Movement from "@/components/Views/Movement.vue"
+import PrayerPrompt from "@/components/Views/PrayerPrompt.vue"
 
 export default {
   user: User,
   userRole: UserRole,
   peopleGroup: PeopleGroup,
   denomination: Denomination,
+  prayerPrompt: PrayerPrompt,
   faithMilestone: FaithMilestone,
   communicationPlatform: CommunicationPlatform,
   contact: Contact,

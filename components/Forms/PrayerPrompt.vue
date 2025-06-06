@@ -9,18 +9,17 @@
   >
     <!-- Name -->
     <n-form-item
-      path="name"
-      :label="h.translate('name')"
+      path="prompt_text"
+      :label="h.translate('prompt_text')"
     >
       <n-input
-        v-model:value="d.model.name"
+        v-model:value="d.model.prompt_text"
         :placeholder="h.translate('please_input')"
       />
     </n-form-item>
     <!-- e.o Name -->
   </n-form>
 </template>
-
 <script lang="ts" setup>
 // Imports
 // mandatory . standard imports. need for all forms.
@@ -28,36 +27,33 @@ import type { FormInst, FormRules } from "naive-ui"
 import modules from "~/utils/modules"
 
 // mandatory . variable form model types.
-import {
-  type CommunityChecklistFormModel,
-  type DenominationFormModel,
-} from "~/types"
-import { RoutePaths } from "~/types/index.d"
-import { useCommunityStore } from "~/stores/useCommunitiesStore"
-import { storeToRefs } from "pinia"
+import type { PrayerPromptFormModel } from "~/types"
 
 // optional . modular imports based on what the module form need
 // mostly for computes
+import { useUserStore } from "~/stores/useUsersStore"
+import { useLanguagesStore } from "~/stores/useLanguagesStore"
+import { useSettingStore } from "~/stores/useSettingsStore"
+import { useAuthStore } from "~/stores/useAuthStore"
 // e.o Imports
 
 // mandatory . defining a model ref type. change the ref
-type ModelRefType = Ref<CommunityChecklistFormModel>
+type ModelRefType = Ref<PrayerPromptFormModel>
 
 // Self Ref : Need to set a module
-const module = modules.communityChecklist
+const module = modules.prayerPrompts
 
 const emit = defineEmits(["formChanged"])
 
-// Language Switching
 const h = useHelpers()
-// e.o Language Switching
+const authStore = useAuthStore()
 
 // props
 // Self Ref : Need to change editData form model type
 // editData: false | < what form model ? >
 const p = withDefaults(
   defineProps<{
-    editData: false | CommunityChecklistFormModel
+    editData: false | PrayerPromptFormModel
     hiddenFieldsOnEdit: string[]
   }>(),
   {
@@ -103,30 +99,47 @@ const translatedRules = computed(() => {
  * Need to change form model type. 2 places.
  * ref<"FORM_MODEL"> and as "FORM_MODEL" at the end
  */
-const model = RoutePaths.COMMUNITY_CHECKLISTS
-const consume = useConsumeApi(model)
-const communityChecklist = await consume.browse({ all: true })
+// add user_id to the form
 const modelRef: ModelRefType = ref({
-  // add default order number if editData is false
   ...(p.editData !== false
     ? p.editData
     : ({
         ...module.form.model,
-        order: communityChecklist.length,
-      } as CommunityChecklistFormModel)),
+        user_id: authStore.authUser?.id,
+      } as PrayerPromptFormModel)),
 })
+console.log("Model Ref", modelRef)
+console.log("user_id", authStore.authUser?.id)
 // data
 const d = reactive({
   model: modelRef,
 }) // e.o d
 
 // Computes that need for the form
+
+const userRoleOptions = computed(() => {
+  return useUserStore()
+    .userRoles.map((role: any) => ({
+      label: role.label,
+      value: role.id,
+    }))
+    .reverse()
+})
+
+const languageOptions = computed(() => {
+  return useLanguagesStore().languages.map((language: any) => ({
+    label: language.name,
+    value: language.id,
+  }))
+})
+
 // e.o Computes that need for the form
 
 watch(
   () => d.model,
-  () => {
+  (newVal) => {
     // d.model.password_confirmation = d.model.password
+
     emit("formChanged", d.model)
   },
   { deep: true },
