@@ -285,7 +285,7 @@
       <n-card size="small">
         <n-form-item
           path="prayer_prompt"
-          :label="helpers.translate('prayer_prompt')"
+          :label="helpers.translate('prayer_prompts')"
         >
           <n-select
             :loading="d.loading.prayerPrompt"

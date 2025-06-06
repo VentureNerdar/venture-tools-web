@@ -344,7 +344,7 @@
         <!-- Prayer prompt -->
         <n-form-item
           path="prayer_prompt"
-          :label="h.translate('prayer_prompt')"
+          :label="h.translate('prayer_prompts')"
         >
           <n-select
             :loading="d.loading.prayerPrompt"
