@@ -7,7 +7,10 @@
         style="height: calc(100vh - 50px)"
       >
         <n-flex justify="center">
-          <n-flex vertical justify="center">
+          <n-flex
+            vertical
+            justify="center"
+          >
             <div
               v-for="ni in userRoledNavItems"
               :key="ni.title"
@@ -16,10 +19,16 @@
               @click="navigateTo(ni.link)"
             >
               <!-- :style="`visibility: ${ni.roles && item.roles.includes(auth.authUser.user_role_id) ? 'visible' : 'hidden'}`" -->
-              <n-tooltip trigger="hover" placement="right">
+              <n-tooltip
+                trigger="hover"
+                placement="right"
+              >
                 <template #trigger>
                   <div class="link">
-                    <component :is="ni.icon" class="icon" />
+                    <component
+                      :is="ni.icon"
+                      class="icon"
+                    />
                   </div>
                 </template>
 
@@ -29,8 +38,14 @@
           </n-flex>
         </n-flex>
 
-        <n-flex justify="center" style="margin-bottom: 10px">
-          <n-flex vertical justify="center">
+        <n-flex
+          justify="center"
+          style="margin-bottom: 10px"
+        >
+          <n-flex
+            vertical
+            justify="center"
+          >
             <div
               v-for="item in userBottomNav"
               :key="item.title"
@@ -38,10 +53,16 @@
               :icon="item.icon"
               @click="item.onClick ? item.onClick() : null"
             >
-              <n-tooltip trigger="hover" placement="right">
+              <n-tooltip
+                trigger="hover"
+                placement="right"
+              >
                 <template #trigger>
                   <div class="link">
-                    <component :is="item.icon" class="icon" />
+                    <component
+                      :is="item.icon"
+                      class="icon"
+                    />
                   </div>
                 </template>
 
@@ -64,7 +85,7 @@ import {
   SettingsRound,
   AccountCircleRound,
   LogOutRound,
-CircleNotificationsFilled,
+  CircleNotificationsFilled,
 } from "@vicons/material"
 
 import { PrayingHands } from "@vicons/fa"
@@ -92,7 +113,7 @@ const navItems = [
     title: "Prayers",
     link: "/prayers",
     icon: PrayingHands,
-    roles: [3, 4],
+    roles: [1, 3, 4],
   },
   {
     title: "Contacts",
@@ -132,20 +153,18 @@ const navItems = [
   },
 ] as NavigationItem[]
 
-const h = useHelpers();
+const h = useHelpers()
 
-const userRoledNavItems = computed(() =>{
+const userRoledNavItems = computed(() => {
   return navItems
-    .filter(item => item.roles.includes(auth.authUser.user_role_id))
-    .map(item => ({
+    .filter((item) => item.roles.includes(auth.authUser.user_role_id))
+    .map((item) => ({
       ...item,
-      title: h.translate(h.toSnakeCase(item.title))
+      title: h.translate(h.toSnakeCase(item.title)),
     }))
-  }
-)
+})
 
 const handleLogout = async () => {
-
   await auth.logout()
 }
 
@@ -166,16 +185,13 @@ const bottomNavigation = shallowRef([
   },
 ])
 const userBottomNav = computed(() => {
-  return bottomNavigation.value.map(item => {
- 
+  return bottomNavigation.value.map((item) => {
     const translationKey =
-      item.title === 'Logout'
-        ? 'log_out'
-        : item.title.toLowerCase()
+      item.title === "Logout" ? "log_out" : item.title.toLowerCase()
 
     return {
       ...item,
-      title: h.translate(translationKey)
+      title: h.translate(translationKey),
     }
   })
 })

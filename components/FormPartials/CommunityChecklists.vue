@@ -1,7 +1,12 @@
 <template>
   <n-card size="small">
-    <n-space :size="10" vertical>
-      <div><b>{{ h.translate('community_checklist') }}</b></div>
+    <n-space
+      :size="10"
+      vertical
+    >
+      <div>
+        <b>{{ h.translate("community_checklist") }}</b>
+      </div>
       <div
         v-for="checklist in s.community.communityChecklists"
         :key="checklist.id"
@@ -26,7 +31,7 @@ import { useCommunityStore } from "~/stores/useCommunitiesStore"
 const emits = defineEmits(["changed"])
 
 // Language Switching
-const h = useHelpers();
+const h = useHelpers()
 // e.o Language Switching
 
 const s = {

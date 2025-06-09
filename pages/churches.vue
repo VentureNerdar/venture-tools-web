@@ -83,7 +83,6 @@ const m = {
             (cs: any) => cs.id === row.contact_status_id,
           )
           const statusName = status !== undefined ? status.name : "N/A"
-          
 
           let tagType = ""
           switch (row.contact_status_id) {
