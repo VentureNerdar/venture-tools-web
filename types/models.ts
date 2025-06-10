@@ -194,7 +194,7 @@ export interface CommunityFormModel {
   name: string | null
   location_longitude: string | number | null
   location_latitude: string | number | null
-  google_location_data: string | any[]
+  google_location_data: string | any[] | null
   conducted_survey_of_community_needs: boolean
   community_needs_1: string | null
   community_needs_2: string | null

@@ -330,20 +330,26 @@ const translatedFilterValues = computed(() => {
     })
   } else {
     d.filterType = "multiple"
-    let filterItems = [] as any[]
-    p.module.options.filter.forEach((filterGroup: any) => {
-      filterItems.push({
-        name: filterGroup.name,
-        whereFieldIs: filterGroup.whereFieldIs,
-        values: filterGroup.values.map((filter: any) => {
-          const key = translationOptionsMap[filter.label]
-          return {
-            ...filter,
-            label: key ? helper.translate(key) : filter.label,
-          }
-        }),
-      })
+    const filters = JSON.parse(JSON.stringify(p.module.options.filter))
+    const filterItemsMap = new Map<string, any>()
+
+    filters.forEach((filterGroup: any) => {
+      if (!filterItemsMap.has(filterGroup.whereFieldIs)) {
+        filterItemsMap.set(filterGroup.whereFieldIs, {
+          name: filterGroup.name,
+          whereFieldIs: filterGroup.whereFieldIs,
+          values: filterGroup.values.map((filter: any) => {
+            const key = translationOptionsMap[filter.label]
+            return {
+              ...filter,
+              label: key ? helper.translate(key) : filter.label,
+            }
+          }),
+        })
+      }
     })
+
+    const filterItems = Array.from(filterItemsMap.values())
 
     return filterItems
   }

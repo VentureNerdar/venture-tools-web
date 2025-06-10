@@ -61,7 +61,7 @@ export default {
     name: null,
     location_longitude: null,
     location_latitude: null,
-    google_location_data: [] as any[],
+    google_location_data: null,
     conducted_survey_of_community_needs: false,
     community_needs_1: null,
     community_needs_2: null,
