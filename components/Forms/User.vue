@@ -7,22 +7,29 @@
     size="small"
     label-width="150px"
   >
-
     <!-- Name -->
     <n-form-item
       path="name"
       :label="h.translate('name')"
     >
-      <n-input v-model:value="d.model.name" :placeholder="h.translate('please_input')" />
-    </n-form-item> <!-- e.o Name -->
+      <n-input
+        v-model:value="d.model.name"
+        :placeholder="h.translate('please_input')"
+      />
+    </n-form-item>
+    <!-- e.o Name -->
 
     <!-- Username -->
     <n-form-item
       path="username"
       :label="h.translate('username')"
     >
-      <n-input v-model:value="d.model.username" :placeholder="h.translate('please_input')" />
-    </n-form-item> <!-- e.o Username -->
+      <n-input
+        v-model:value="d.model.username"
+        :placeholder="h.translate('please_input')"
+      />
+    </n-form-item>
+    <!-- e.o Username -->
 
     <!-- Password -->
     <n-form-item
@@ -36,7 +43,8 @@
         type="password"
         :placeholder="h.translate('please_input')"
       />
-    </n-form-item> <!-- e.o Password -->
+    </n-form-item>
+    <!-- e.o Password -->
 
     <!-- User Role -->
     <n-form-item
@@ -56,20 +64,50 @@
           />
         </n-radio-group>
       </n-flex>
-    </n-form-item> <!-- e.o User Role -->
+    </n-form-item>
+    <!-- e.o User Role -->
 
     <!-- Movement -->
-     <n-form-item
+    <n-form-item
       path="movement"
       :label="h.translate('movement')"
-     >
+    >
       <n-select
         v-model:value="d.model.movement_id"
         clearable
         :placeholder="h.translate('select_movement')"
         :options="movementOptions"
       />
-     </n-form-item> <!-- e.o Movement -->
+    </n-form-item>
+    <!-- e.o Movement -->
+
+    <!-- Contact -->
+    <n-form-item
+      path="contact_id"
+      :label="h.translate('contact')"
+    >
+      <n-select
+        :loading="d.loading.contacts"
+        filterable
+        clearable
+        remote
+        @search="m.handle.searchContactsOption"
+        v-model:value="d.model.contact_id"
+        :options="contactOptions"
+        :placeholder="h.translate('please_select')"
+      >
+        <template #action>
+          <n-text :depth="3">
+            {{
+              h.translate(
+                "loading_maximum_20_users._type_in_the_name_of_the_user_to_search",
+              )
+            }}
+          </n-text>
+        </template>
+      </n-select>
+    </n-form-item>
+    <!-- e.o Contact -->
 
     <!-- Biography -->
     <n-form-item
@@ -81,7 +119,8 @@
         type="textarea"
         :placeholder="h.translate('please_input')"
       />
-    </n-form-item> <!-- e.o Biography -->
+    </n-form-item>
+    <!-- e.o Biography -->
 
     <!-- Preferred Language -->
     <n-form-item
@@ -94,23 +133,32 @@
         :placeholder="h.translate('select_preferred_language')"
         :options="languageOptions"
       />
-    </n-form-item> <!-- e.o Preferred Language -->
+    </n-form-item>
+    <!-- e.o Preferred Language -->
 
     <!-- Email -->
     <n-form-item
       path="email"
       :label="h.translate('email')"
     >
-      <n-input v-model:value="d.model.email" :placeholder="h.translate('please_input')" />
-    </n-form-item> <!-- e.o Email -->
+      <n-input
+        v-model:value="d.model.email"
+        :placeholder="h.translate('please_input')"
+      />
+    </n-form-item>
+    <!-- e.o Email -->
 
     <!-- Phone Number -->
     <n-form-item
       path="phone_number"
       :label="h.translate('phone_number')"
     >
-      <n-input v-model:value="d.model.phone_number" :placeholder="h.translate('please_input')" />
-    </n-form-item> <!-- e.o Phone Number -->
+      <n-input
+        v-model:value="d.model.phone_number"
+        :placeholder="h.translate('please_input')"
+      />
+    </n-form-item>
+    <!-- e.o Phone Number -->
 
     <!-- Is Active -->
     <n-form-item
@@ -119,137 +167,178 @@
       @change="console.log(d.model.is_active)"
     >
       <n-switch v-model:value="d.model.is_active" />
-    </n-form-item> <!-- e.o Is Active -->
-
+    </n-form-item>
+    <!-- e.o Is Active -->
   </n-form>
 </template>
 
-<script
-  lang="ts"
-  setup
->
+<script lang="ts" setup>
+// Imports
+// mandatory . standard imports. need for all forms.
+import type { FormInst, FormRules } from "naive-ui"
+import modules from "~/utils/modules"
 
-  // Imports
-  // mandatory . standard imports. need for all forms.
-  import type {
-    FormInst,
-    FormRules,
-  } from 'naive-ui'
-  import modules from '~/utils/modules'
+// mandatory . variable form model types.
+import type { UserFormModel } from "~/types"
 
-  // mandatory . variable form model types.
-  import type { UserFormModel } from '~/types'
+// optional . modular imports based on what the module form need
+// mostly for computes
+import { useUserStore } from "~/stores/useUsersStore"
+import { useLanguagesStore } from "~/stores/useLanguagesStore"
+import { useContactStore } from "~/stores/useContactsStore"
+import { useMovementsStore } from "~/stores/useMovementsStore"
+import { useConsumeApi } from "~/composables/useConsumeApi"
+import { RoutePaths, type ContactFormModel } from "~/types/index.d"
+// e.o Imports
 
-  // optional . modular imports based on what the module form need 
-  // mostly for computes
-  import { useUserStore } from '~/stores/useUsersStore'
-  import { useLanguagesStore } from '~/stores/useLanguagesStore'
-  import { useSettingStore } from '~/stores/useSettingsStore'
-  import { useMovementsStore } from '~/stores/useMovementsStore'
-  // e.o Imports
+// mandatory . defining a model ref type. change the ref
+type ModelRefType = Ref<UserFormModel>
 
+// Self Ref : Need to set a module
+const module = modules.users
 
-
-  // mandatory . defining a model ref type. change the ref
-  type ModelRefType = Ref<UserFormModel>
-
-  // Self Ref : Need to set a module
-  const module = modules.users
-
-  const emit = defineEmits(['formChanged'])
+const emit = defineEmits(["formChanged"])
 
 const h = useHelpers()
 
-
-  // props
-  // Self Ref : Need to change editData form model type
-  // editData: false | < what form model ? >
-  const p = withDefaults(defineProps<{
-    editData: false | UserFormModel,
+// props
+// Self Ref : Need to change editData form model type
+// editData: false | < what form model ? >
+const p = withDefaults(
+  defineProps<{
+    editData: false | UserFormModel
     hiddenFieldsOnEdit: string[]
-  }>(), {
+  }>(),
+  {
     editData: false,
     hiddenFieldsOnEdit: () => {
       return []
-    }
-  }) // e.o p
+    },
+  },
+) // e.o p
 
-  /**
-   * formRef for the form
-   */
-  const formRef = ref<FormInst | null>(null)
+/**
+ * formRef for the form
+ */
+const formRef = ref<FormInst | null>(null)
 
-  /**
-   * Form Rules.
-   * Its spreaded from the {@link Module}
-   */
-  const rules: FormRules = { ...module.form.rules }
+/**
+ * Form Rules.
+ * Its spreaded from the {@link Module}
+ */
+const rules: FormRules = { ...module.form.rules }
 
-    const translatedRules = computed(() => {
-      const result: Record<string, any[]> = {};
+const translatedRules = computed(() => {
+  const result: Record<string, any[]> = {}
 
-      for (const key in rules) {
-        result[key] = (rules[key] as FormRules[]).map((rule:any) => {
-          
-          return {
-            ...rule,
-            message: h.translate(h.toSnakeCase(rule.message)),
-          };
-        });
+  for (const key in rules) {
+    result[key] = (rules[key] as FormRules[]).map((rule: any) => {
+      return {
+        ...rule,
+        message: h.translate(h.toSnakeCase(rule.message)),
       }
+    })
+  }
 
-      return result;
-    });
+  return result
+})
 
-  /** Model Ref
-   * It is defined to whether create or edit.
-   * If edit , it gets from `p.editData`.
-   * If create, it gets from `module.form.model`.
-   * 
-   * SELF REF:
-   * Need to change form model type. 2 places.
-   * ref<"FORM_MODEL"> and as "FORM_MODEL" at the end
-   */
-  const modelRef: ModelRefType = ref({ ...p.editData !== false ? p.editData : module.form.model as UserFormModel })
+/** Model Ref
+ * It is defined to whether create or edit.
+ * If edit , it gets from `p.editData`.
+ * If create, it gets from `module.form.model`.
+ *
+ * SELF REF:
+ * Need to change form model type. 2 places.
+ * ref<"FORM_MODEL"> and as "FORM_MODEL" at the end
+ */
+const modelRef: ModelRefType = ref({
+  ...(p.editData !== false ? p.editData : (module.form.model as UserFormModel)),
+})
 
-  // data
-  const d = reactive({
-    model: modelRef,
-  }) // e.o d
+const consume = {
+  contacts: useConsumeApi(RoutePaths.CONTACTS),
+}
 
- 
-  const userRoleOptions = computed(() => {
+// data
+const d = reactive({
+  model: modelRef,
+  loading: {
+    contacts: false,
+  },
+  options: {
+    contacts: [] as string[],
+  },
+}) // e.o d
 
-    return useUserStore().userRoles.map((role: any) => ({
+const m = {
+  handle: {
+    searchContactsOption: async (query: string) => {
+      d.loading.contacts = true
+      const res = await consume.contacts.browse(
+        {
+          all: true,
+          search_by: "name",
+          search: query,
+        },
+        false,
+      )
+
+      console.log("Res", res)
+
+      contactOptions.value = [
+        ...res.map((contact: any) => ({
+          label: contact.name,
+          value: contact.id,
+        })),
+      ]
+      d.loading.contacts = false
+    },
+  },
+}
+
+const contactOptions = ref(
+  useContactStore().contacts.map((contact: any) => ({
+    label: contact.name,
+    value: contact.id,
+  })),
+)
+
+const userRoleOptions = computed(() => {
+  return useUserStore()
+    .userRoles.map((role: any) => ({
       label: h.translate(h.toSnakeCase(role.label)),
-      value: role.id
-    })).reverse()
-
-  })
-
-  const languageOptions = computed(() => {
-
-    return useLanguagesStore().languages.map((language: any) => ({
-      label: language.name,
-      value: language.id,
+      value: role.id,
     }))
+    .reverse()
+})
 
-  })
+const languageOptions = computed(() => {
+  return useLanguagesStore().languages.map((language: any) => ({
+    label: language.name,
+    value: language.id,
+  }))
+})
 
-  const movementOptions = computed(() => {
-    return useMovementsStore().movements.map((movement: any) => ({
-      label: movement.name,
-      value: movement.id,
-    }))
-  })
-  // e.o Computes that need for the form
+const movementOptions = computed(() => {
+  return useMovementsStore().movements.map((movement: any) => ({
+    label: movement.name,
+    value: movement.id,
+  }))
+})
+// e.o Computes that need for the form
 
-  watch(() => d.model, (newVal) => {
+console.log("Model ++++", d.model)
+
+watch(
+  () => d.model,
+  (newVal) => {
     d.model.password_confirmation = d.model.password
 
-    emit('formChanged', d.model)
-  }, { deep: true })
-
+    emit("formChanged", d.model)
+  },
+  { deep: true },
+)
 </script>
 
 <style></style>

@@ -187,6 +187,34 @@
               />
             </n-form-item>
           </n-gi>
+
+          <n-gi>
+            <n-form-item
+              path="user_profile_id"
+              :label="h.translate('user_profile')"
+            >
+              <n-select
+                :loading="d.loading.userProfiles"
+                filterable
+                clearable
+                remote
+                @search="m.handle.searchUserProfilesOption"
+                v-model:value="d.model.user_profile_id"
+                :options="userProfilesOptions"
+                :placeholder="h.translate('please_select')"
+              >
+                <template #action>
+                  <n-text :depth="3">
+                    {{
+                      h.translate(
+                        "loading_maximum_20_users._type_in_the_name_of_the_user_to_search",
+                      )
+                    }}
+                  </n-text>
+                </template>
+              </n-select>
+            </n-form-item>
+          </n-gi>
         </n-grid>
 
         <n-grid :cols="4">
@@ -472,12 +500,12 @@ let modelRefRef = module.form.model as ContactFormModel
 let existingAssignedTo = {}
 let existingCoachedBy = {}
 let existingBaptizedBy = {}
+let existingUserProfiles = {}
 
 const s = {
   settings: useSettingStore(),
   communicationPlatforms: useCommunicationPlatformStore(),
 }
-
 // if the edit data is not false, which means it is an edit form,
 // then format some things to be used in the form.
 if (p.editData !== false) {
@@ -494,6 +522,14 @@ if (p.editData !== false) {
     existingAssignedTo = { ...at }
     if (at !== null) {
       modelRefRef.assigned_to = "id" in (at as any) ? (at as any).id : null
+    }
+  }
+
+  if ("user_profile" in p.editData) {
+    const up = JSON.parse(JSON.stringify(p.editData.user_profile))
+    existingUserProfiles = { ...up }
+    if (up !== null) {
+      modelRefRef.user_profile = "id" in (up as any) ? (up as any).id : null
     }
   }
 
@@ -572,6 +608,7 @@ const d = reactive({
   model: modelRef,
   options: {
     assignedTo: [] as string[],
+    userProfiles: [] as string[],
     coachedBy: [] as string[],
     baptizedBy: [] as string[],
     faithMilestones: [] as any[],
@@ -581,6 +618,7 @@ const d = reactive({
 
   loading: {
     assignedTo: false,
+    userProfiles: false,
     coachedBy: false,
     baptizedBy: false,
     prayerPrompt: false,
@@ -613,6 +651,31 @@ const m = {
         })),
       ]
       d.loading.assignedTo = false
+    },
+
+    searchUserProfilesOption: async (query: string) => {
+      d.loading.userProfiles = true
+
+      const searchResult = await consume.users.browse(
+        {
+          all: true,
+          search_by: "name",
+          search: query,
+          // whereNotIn: {
+          //   key: "user_role_id",
+          //   value: [1, 2, 5],
+          // },
+        },
+        false,
+      )
+
+      d.options.userProfiles = [
+        ...searchResult.map((user: any) => ({
+          label: user.name,
+          value: user.id,
+        })),
+      ]
+      d.loading.userProfiles = false
     },
 
     searchCoachedByOption: async (query: string) => {
@@ -723,6 +786,7 @@ const m = {
       })
 
       d.options.assignedTo = [...users]
+      d.options.userProfiles = [...users]
 
       const prayerPrompt = await consume.prayerPrompts.list({
         labelOption: "prompt_text",
@@ -745,7 +809,6 @@ const m = {
             } as any)
           }
         }
-
         // set auth user as selected to "Assigned To"
         d.model.assigned_to = authStore.authUser.id
       } else {
@@ -759,6 +822,18 @@ const m = {
               ? (existingAssignedTo as any).id
               : null
           d.options.assignedTo.push({ label: label, value: value } as any)
+        }
+
+        if ("user_profile" in p.editData) {
+          const label =
+            "name" in (existingUserProfiles as any)
+              ? (existingUserProfiles as any).name
+              : null
+          const value =
+            "id" in (existingUserProfiles as any)
+              ? (existingUserProfiles as any).id
+              : null
+          d.options.userProfiles.push({ label: label, value: value } as any)
         }
 
         if ("coached_by" in p.editData) {
@@ -827,6 +902,10 @@ const m = {
 // Computes that need for the form
 const assignedToOptions = computed(() => {
   return d.options.assignedTo as any[]
+})
+
+const userProfilesOptions = computed(() => {
+  return d.options.userProfiles as any[]
 })
 
 const coachedByOptions = computed(() => {

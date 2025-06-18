@@ -11,6 +11,7 @@ export interface UserFormModel {
   biography: string | null
   preferred_language_id: number | null
   id?: number
+  contact_id?: number | null
   password?: string | null
   password_confirmation?: string | null
   last_login_at?: Date
@@ -40,6 +41,8 @@ export interface ContactFormModel {
   faith_milestones?: number[] | null
   people_group?: number[] | null
   contact_communication_platforms?: { [key: number]: any[] } | null
+  user_profile_id?: number | null
+  user_profile?: UserFormModel | null
 
   created_at?: Date
   updated_at?: Date
