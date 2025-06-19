@@ -105,12 +105,12 @@
             >
               <n-input-group>
                 <n-input
-                  v-model:value="d.model.location_longitude"
+                  v-model:value="d.model.location_longitude as string"
                   :placeholder="helpers.translate('longitude')"
                   size="small"
                 />
                 <n-input
-                  v-model:value="d.model.location_latitude"
+                  v-model:value="d.model.location_latitude as string"
                   :placeholder="helpers.translate('latitude')"
                   size="small"
                 />
@@ -247,17 +247,6 @@
 
           <n-gi>
             <n-form-item
-              path="church_members_count"
-              :label="helpers.translate('church_members_count')"
-            >
-              <n-input-number
-                v-model:value="d.model.church_members_count"
-                clearable
-                :placeholder="helpers.translate('please_input')"
-              />
-            </n-form-item>
-
-            <n-form-item
               path="confession_of_faith_count"
               :label="helpers.translate('confession_of_faith_count')"
             >
@@ -274,6 +263,69 @@
             >
               <n-input-number
                 v-model:value="d.model.baptism_count"
+                clearable
+                :placeholder="helpers.translate('please_input')"
+              />
+            </n-form-item>
+          </n-gi>
+        </n-grid>
+      </n-card>
+
+      <n-card size="small">
+        <n-grid
+          :cols="1"
+          x-gap="10"
+        >
+          <n-gi>
+            <n-form-item
+              path="member_count_by_people_group"
+              :label="helpers.translate('member_count_by_people_group')"
+            >
+              <n-switch
+                v-model:value="d.model.member_count_by_people_group as boolean"
+              ></n-switch>
+            </n-form-item>
+            <n-grid
+              :cols="4"
+              x-gap="10"
+              v-if="d.model.member_count_by_people_group"
+            >
+              <n-gi v-for="peopleGroup in d.peopleGroup">
+                <n-form-item
+                  path="church_members_count"
+                  :label="peopleGroup.name || ''"
+                >
+                  <n-input-number
+                    :value="
+                      m.handle.getPeopleGroupCount(peopleGroup.id as number)
+                    "
+                    @update:value="
+                      m.handle.setPeopleGroupCount(
+                        peopleGroup.id as number,
+                        $event as number,
+                      )
+                    "
+                    clearable
+                    :show-button="false"
+                    :placeholder="helpers.translate('please_input')"
+                  />
+                  <!-- <n-input-number
+                    v-model:value="groupAmountModels[peopleGroup.id as number]"
+                    clearable
+                    :show-button="false"
+                    :placeholder="helpers.translate('please_input')"
+                  /> -->
+                </n-form-item>
+              </n-gi>
+            </n-grid>
+          </n-gi>
+          <n-gi v-if="!d.model.member_count_by_people_group">
+            <n-form-item
+              path="church_members_count"
+              :label="helpers.translate('church_members_count')"
+            >
+              <n-input-number
+                v-model:value="d.model.church_members_count"
                 clearable
                 :placeholder="helpers.translate('please_input')"
               />
@@ -327,6 +379,7 @@ import type {
   CommunityFormModel,
   FormModalOptions,
   StoreOptions,
+  PeopleGroupFormModel,
 } from "~/types/index.d"
 
 // optional . modular imports based on what the module form need
@@ -356,6 +409,7 @@ const consume = {
   denomination: useConsumeApi(RoutePaths.DENOMINATIONS),
   communities: useConsumeApi(RoutePaths.COMMUNITIES),
   prayerPrompts: useConsumeApi(RoutePaths.PRAYER_PROMPTS),
+  peopleGroups: useConsumeApi(RoutePaths.PEOPLE_GROUPS),
 }
 
 const emit = defineEmits(["formChanged"])
@@ -485,6 +539,7 @@ const d = reactive({
     communities: [] as any[],
     prayerPrompt: [] as any[],
   },
+  peopleGroup: [] as PeopleGroupFormModel[],
 }) // e.o d
 
 // Computes that need for the form
@@ -632,6 +687,42 @@ const m = {
       d.model.current_prayers = option ? option.label : value
     },
 
+    getPeopleGroupCount: (groupID: number) => {
+      const pg = d.model.member_count_list_by_people_group?.find(
+        (pg: any) => pg.people_group_id === groupID,
+      )
+      return pg ? pg.amount : 0
+    },
+
+    setPeopleGroupCount: (groupID: number, amount: number) => {
+      // const pgIndex = d.model.member_count_list_by_people_group?.findIndex(
+      //   (pg: any) => pg.people_group_id === groupID,
+      // ) as number
+      // if (pgIndex !== -1 && d.model.member_count_list_by_people_group) {
+      //   d.model.member_count_list_by_people_group[pgIndex].amount = amount
+      // } else {
+      //   d.model.member_count_list_by_people_group = [
+      //     ...(d.model.member_count_list_by_people_group || []),
+      //   ]
+      //   d.model.member_count_list_by_people_group.push({
+      //     people_group_id: groupID,
+      //     amount: amount,
+      //   })
+      // }
+      const list = d.model.member_count_list_by_people_group || []
+      const existingIndex = list.findIndex(
+        (pg) => pg.people_group_id === groupID,
+      )
+
+      if (existingIndex !== -1) {
+        list[existingIndex].amount = amount
+      } else {
+        list.push({ people_group_id: groupID, amount })
+      }
+
+      d.model.member_count_list_by_people_group = [...list]
+    },
+
     emit: {
       addedChurchPlanter: (user: any) => {
         d.model.church_planters.push(user)
@@ -750,7 +841,32 @@ const m = {
         limit: 20,
       })
     },
+    getPeopleGroupList: async () => {
+      d.peopleGroup = await consume.peopleGroups.browse({
+        all: true,
+      })
+      console.log(d.peopleGroup)
+    },
   },
+}
+
+if (
+  p.editData !== false &&
+  "member_count_by_people_group" in p.editData &&
+  p.editData.member_count_by_people_group == true
+) {
+  m.consume.getPeopleGroupList()
+
+  if (
+    "church_members" in p.editData &&
+    p.editData.church_members !== undefined
+  ) {
+    const list = p.editData.church_members.map((member: any) => ({
+      people_group_id: member.people_group_id,
+      amount: member.amount,
+    }))
+    modelRef.value.member_count_list_by_people_group = list
+  }
 }
 
 watch(
@@ -775,6 +891,15 @@ watch(
     emit("formChanged", payload)
   },
   { deep: true },
+)
+watch(
+  () => d.model.member_count_by_people_group,
+  () => {
+    console.log(d.model.member_count_by_people_group)
+    if (d.model.member_count_by_people_group) {
+      m.consume.getPeopleGroupList()
+    }
+  },
 )
 
 m.consume.defaultUsersForAssignedToOption()

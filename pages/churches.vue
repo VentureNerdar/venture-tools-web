@@ -63,7 +63,7 @@ const d = reactive({
   } as FormModalOptions,
 
   browseOptions: {
-    with: `["assignedTo", "churchPlanters.user", "parentChurch", "community"]`,
+    with: `["assignedTo", "churchPlanters.user", "parentChurch", "community", "churchMembers"]`,
   } as BrowseCondition,
 })
 
