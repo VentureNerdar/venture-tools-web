@@ -74,6 +74,44 @@
           </n-form-item>
 
           <n-form-item
+            :label="h.translate('movement')"
+            path="movement_id"
+          >
+            <n-select
+              v-model:value="formValue.movement_id"
+              clearable
+              :placeholder="h.translate('select_movement')"
+              :options="movementOptions"
+            />
+          </n-form-item>
+
+          <n-form-item
+            path="contact_id"
+            :label="h.translate('contact')"
+          >
+            <n-select
+              :loading="contactLoading"
+              filterable
+              clearable
+              remote
+              @search="handleSearchContactsOption"
+              v-model:value="formValue.contact_id"
+              :options="contactOptions"
+              :placeholder="h.translate('please_select')"
+            >
+              <template #action>
+                <n-text :depth="3">
+                  {{
+                    h.translate(
+                      "loading_maximum_20_users._type_in_the_name_of_the_user_to_search",
+                    )
+                  }}
+                </n-text>
+              </template>
+            </n-select>
+          </n-form-item>
+
+          <n-form-item
             :label="h.translate('preferred_language')"
             path="preferred_language_id"
           >
@@ -92,8 +130,10 @@
               size="small"
               @click="handleProfileUpdate"
             >
-              <template #icon><n-icon :component="CloudUploadRound" /></template>
-              {{ h.translate('update') }}
+              <template #icon
+                ><n-icon :component="CloudUploadRound"
+              /></template>
+              {{ h.translate("update") }}
             </n-button>
           </n-flex>
         </n-form>
@@ -112,82 +152,120 @@
   </n-grid>
 </template>
 
-<script
-  lang="ts"
-  setup
->
-  import { useAuthStore } from "~/stores/useAuthStore"
-  import { useUserStore } from "~/stores/useUsersStore"
-  import { useLanguagesStore } from "~/stores/useLanguagesStore"
+<script lang="ts" setup>
+import { useAuthStore } from "~/stores/useAuthStore"
+import { useUserStore } from "~/stores/useUsersStore"
+import { useLanguagesStore } from "~/stores/useLanguagesStore"
 
-  import { CloudUploadRound } from "@vicons/material"
-  import { RoutePaths} from "~/types/index.d"
-  import { useConsumeApi } from "~/composables/useConsumeApi"
-  import type { FormInst } from "naive-ui"
+import { CloudUploadRound } from "@vicons/material"
+import { RoutePaths } from "~/types/index.d"
+import { useConsumeApi } from "~/composables/useConsumeApi"
+import type { FormInst } from "naive-ui"
 import { useSettingStore } from "~/stores/useSettingsStore"
+import { useMovementsStore } from "~/stores/useMovementsStore"
+import { useContactStore } from "~/stores/useContactsStore"
 
-  const auth = useAuthStore()
-  const formRef = ref<FormInst | null>(null)
-  const formValue = ref({ ...(auth.authUser as any) })
+const auth = useAuthStore()
+const formRef = ref<FormInst | null>(null)
+const formValue = ref({ ...(auth.authUser as any) })
+const contactLoading = ref(false)
 
-  const h = useHelpers()
+const h = useHelpers()
 
+const s = {
+  roles: useUserStore(),
+  languages: useLanguagesStore().languages,
+  settingStore: useSettingStore(),
+  movements: useMovementsStore().movements,
+  contacts: useContactStore().contacts,
+}
 
-  const s = {
-    roles: useUserStore(),
-    languages: useLanguagesStore().languages,
-    settingStore: useSettingStore(),
-  }
+const consume = {
+  contacts: useConsumeApi(RoutePaths.CONTACTS),
+}
 
-  const rules = {
-    user: {
-      name: {
-        required: true,
-        message: "Please input your name",
-        trigger: "blur",
-      },
-      age: {
-        required: true,
-        message: "Please input your age",
-        trigger: ["input", "blur"],
-      },
-    },
-    phone: {
+const rules = {
+  user: {
+    name: {
       required: true,
-      message: "Please input your number",
-      trigger: ["input"],
+      message: "Please input your name",
+      trigger: "blur",
     },
+    age: {
+      required: true,
+      message: "Please input your age",
+      trigger: ["input", "blur"],
+    },
+  },
+  phone: {
+    required: true,
+    message: "Please input your number",
+    trigger: ["input"],
+  },
+}
+
+const languageOptions = computed(() => {
+  return useLanguagesStore().languages.map((language: any) => ({
+    label: language.name,
+    value: language.id,
+  }))
+})
+
+const contactOptions = ref(
+  s.contacts.map((contact: any) => ({
+    label: contact.name,
+    value: contact.id,
+  })),
+)
+
+const authUserRoleName = computed(() => {
+  return s.roles.userRoles.find(
+    (role: any) => role.id === formValue.value.user_role_id,
+  )?.label
+})
+
+const movementOptions = computed(() => {
+  return s.movements.map((movement: any) => ({
+    label: movement.name,
+    value: movement.id,
+  }))
+})
+
+const handleSearchContactsOption = async (query: string) => {
+  contactLoading.value = true
+  const res = await consume.contacts.browse(
+    {
+      all: true,
+      search_by: "name",
+      search: query,
+    },
+    false,
+  )
+
+  contactOptions.value = [
+    ...res.map((contact: any) => ({
+      label: contact.name,
+      value: contact.id,
+    })),
+  ]
+  contactLoading.value = false
+}
+
+const handleProfileUpdate = async () => {
+  const userConsume = useConsumeApi(RoutePaths.USERS, auth.authUser.id)
+  const res = await userConsume.save(formValue.value)
+  const existing = JSON.parse(localStorage.getItem("authUser") || "{}")
+  const updatedUser = {
+    ...existing,
+    ...formValue.value,
   }
-
-  const languageOptions = computed(() => {
-    return useLanguagesStore().languages.map((language: any) => ({
-      label: language.name,
-      value: language.id,
-    }))
-  })
-  const authUserRoleName = computed(() => {
-    return s.roles.userRoles.find((role: any) => role.id === formValue.value.user_role_id)
-      ?.label
-  })
-
-  const handleProfileUpdate = async () => {
-    console.log('handleProfileUpdate', formValue.value)
-    const userConsume = useConsumeApi(RoutePaths.USERS, auth.authUser.id)
-      const res = await userConsume.save(formValue.value)
-      console.log('Profile res', res)
-      const existing = JSON.parse(localStorage.getItem("authUser") || "{}")
-      const updatedUser = {
-        ...existing,
-        ...formValue.value,
-      }
-      useAuthStore().authUser = updatedUser
-      localStorage.setItem("authUser", JSON.stringify(updatedUser))
-      const selected = s.languages.find((l: any) => l.id === formValue.value.preferred_language_id)
-      if(selected) {
-        s.settingStore.setUserPreferredLanguage(selected)
-      }
+  useAuthStore().authUser = updatedUser
+  localStorage.setItem("authUser", JSON.stringify(updatedUser))
+  const selected = s.languages.find(
+    (l: any) => l.id === formValue.value.preferred_language_id,
+  )
+  if (selected) {
+    s.settingStore.setUserPreferredLanguage(selected)
   }
-
-
-
+}
 </script>
