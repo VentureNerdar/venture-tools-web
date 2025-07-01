@@ -10,11 +10,11 @@
     <!-- Name -->
     <n-form-item
       path="name"
-      :label="h.translate('name')"
+      :label="helpers.translate('name')"
     >
       <n-input
         v-model:value="d.model.name"
-        :placeholder="h.translate('please_input')"
+        :placeholder="helpers.translate('please_input')"
       />
     </n-form-item>
     <!-- e.o Name -->
@@ -22,11 +22,11 @@
     <!-- Username -->
     <n-form-item
       path="username"
-      :label="h.translate('username')"
+      :label="helpers.translate('username')"
     >
       <n-input
         v-model:value="d.model.username"
-        :placeholder="h.translate('please_input')"
+        :placeholder="helpers.translate('please_input')"
       />
     </n-form-item>
     <!-- e.o Username -->
@@ -35,13 +35,13 @@
     <n-form-item
       v-if="p.editData === false"
       path="password"
-      :label="h.translate('password')"
+      :label="helpers.translate('password')"
     >
       <n-input
         v-model:value="d.model.password"
         show-password-on="click"
         type="password"
-        :placeholder="h.translate('please_input')"
+        :placeholder="helpers.translate('please_input')"
       />
     </n-form-item>
     <!-- e.o Password -->
@@ -49,7 +49,7 @@
     <!-- User Role -->
     <n-form-item
       path="user_role_id"
-      :label="h.translate('user_role')"
+      :label="helpers.translate('user_role')"
     >
       <n-flex justify="center">
         <n-radio-group
@@ -70,12 +70,12 @@
     <!-- Movement -->
     <n-form-item
       path="movement"
-      :label="h.translate('movement')"
+      :label="helpers.translate('movement')"
     >
       <n-select
         v-model:value="d.model.movement_id"
         clearable
-        :placeholder="h.translate('select_movement')"
+        :placeholder="helpers.translate('select_movement')"
         :options="movementOptions"
       />
     </n-form-item>
@@ -84,7 +84,7 @@
     <!-- Contact -->
     <n-form-item
       path="contact_id"
-      :label="h.translate('contact')"
+      :label="helpers.translate('contact')"
     >
       <n-select
         :loading="d.loading.contacts"
@@ -93,13 +93,15 @@
         remote
         @search="m.handle.searchContactsOption"
         v-model:value="d.model.contact_id"
-        :options="contactOptions"
-        :placeholder="h.translate('please_select')"
+        :options="d.options.contacts"
+        :render-label="m.handle.userRenderLabel"
+        :placeholder="helpers.translate('please_select')"
+        size="large"
       >
         <template #action>
           <n-text :depth="3">
             {{
-              h.translate(
+              helpers.translate(
                 "loading_maximum_20_users._type_in_the_name_of_the_user_to_search",
               )
             }}
@@ -112,12 +114,12 @@
     <!-- Biography -->
     <n-form-item
       path="biography"
-      :label="h.translate('biography')"
+      :label="helpers.translate('biography')"
     >
       <n-input
         v-model:value="d.model.biography"
         type="textarea"
-        :placeholder="h.translate('please_input')"
+        :placeholder="helpers.translate('please_input')"
       />
     </n-form-item>
     <!-- e.o Biography -->
@@ -125,12 +127,12 @@
     <!-- Preferred Language -->
     <n-form-item
       path="preferred_language_id"
-      :label="h.translate('preferred_language')"
+      :label="helpers.translate('preferred_language')"
     >
       <n-select
         v-model:value="d.model.preferred_language_id"
         clearable
-        :placeholder="h.translate('select_preferred_language')"
+        :placeholder="helpers.translate('select_preferred_language')"
         :options="languageOptions"
       />
     </n-form-item>
@@ -139,11 +141,11 @@
     <!-- Email -->
     <n-form-item
       path="email"
-      :label="h.translate('email')"
+      :label="helpers.translate('email')"
     >
       <n-input
         v-model:value="d.model.email"
-        :placeholder="h.translate('please_input')"
+        :placeholder="helpers.translate('please_input')"
       />
     </n-form-item>
     <!-- e.o Email -->
@@ -151,11 +153,11 @@
     <!-- Phone Number -->
     <n-form-item
       path="phone_number"
-      :label="h.translate('phone_number')"
+      :label="helpers.translate('phone_number')"
     >
       <n-input
         v-model:value="d.model.phone_number"
-        :placeholder="h.translate('please_input')"
+        :placeholder="helpers.translate('please_input')"
       />
     </n-form-item>
     <!-- e.o Phone Number -->
@@ -163,7 +165,7 @@
     <!-- Is Active -->
     <n-form-item
       path="is_active"
-      :label="h.translate('is_active')"
+      :label="helpers.translate('is_active')"
       @change="console.log(d.model.is_active)"
     >
       <n-switch v-model:value="d.model.is_active" />
@@ -177,6 +179,7 @@
 // mandatory . standard imports. need for all forms.
 import type { FormInst, FormRules } from "naive-ui"
 import modules from "~/utils/modules"
+import { NText } from "naive-ui"
 
 // mandatory . variable form model types.
 import type { UserFormModel } from "~/types"
@@ -199,7 +202,7 @@ const module = modules.users
 
 const emit = defineEmits(["formChanged"])
 
-const h = useHelpers()
+const helpers = useHelpers()
 
 // props
 // Self Ref : Need to change editData form model type
@@ -235,7 +238,7 @@ const translatedRules = computed(() => {
     result[key] = (rules[key] as FormRules[]).map((rule: any) => {
       return {
         ...rule,
-        message: h.translate(h.toSnakeCase(rule.message)),
+        message: helpers.translate(helpers.toSnakeCase(rule.message)),
       }
     })
   }
@@ -267,9 +270,28 @@ const d = reactive({
     contacts: false,
   },
   options: {
-    contacts: [] as string[],
+    contacts: [] as any[],
   },
 }) // e.o d
+
+onMounted(async () => {
+  const contacts = await consume.contacts.browse(
+    {
+      all: true,
+      search_by: "name",
+      search: "",
+      with: JSON.stringify(["assignedTo", "assignedTo.movement"]),
+    },
+    false,
+  )
+
+  d.options.contacts = contacts.map((contact: any) => ({
+    label: contact.name,
+    verifier: contact.assigned_to?.name,
+    movement: contact.assigned_to?.movement?.name,
+    value: contact.id,
+  }))
+})
 
 const m = {
   handle: {
@@ -280,34 +302,56 @@ const m = {
           all: true,
           search_by: "name",
           search: query,
+          with: JSON.stringify(["assignedTo", "assignedTo.movement"]),
         },
         false,
       )
 
-      console.log("Res", res)
-
-      contactOptions.value = [
+      d.options.contacts = [
         ...res.map((contact: any) => ({
           label: contact.name,
+          verifier: contact.assigned_to?.name,
+          movement: contact.assigned_to?.movement?.name,
           value: contact.id,
         })),
-      ]
+      ] as any
       d.loading.contacts = false
+    },
+    userRenderLabel: (option: any) => {
+      const verifier = option.verifier || ""
+      const movement = option.movement || ""
+      const description = verifier
+        ? movement
+          ? `${verifier} (${movement})`
+          : verifier
+        : movement
+
+      return h(
+        "div",
+        {
+          style: {
+            display: "flex",
+            flexDirection: "column",
+            lineHeight: 1.2,
+          },
+        },
+        [
+          h("span", { style: { fontWeight: "500" } }, option.label as string),
+          h(
+            NText,
+            { depth: 3, tag: "span", style: { marginBottom: "8px" } },
+            { default: () => description },
+          ),
+        ],
+      )
     },
   },
 }
 
-const contactOptions = ref(
-  useContactStore().contacts.map((contact: any) => ({
-    label: contact.name,
-    value: contact.id,
-  })),
-)
-
 const userRoleOptions = computed(() => {
   return useUserStore()
     .userRoles.map((role: any) => ({
-      label: h.translate(h.toSnakeCase(role.label)),
+      label: helpers.translate(helpers.toSnakeCase(role.label)),
       value: role.id,
     }))
     .reverse()
@@ -327,8 +371,6 @@ const movementOptions = computed(() => {
   }))
 })
 // e.o Computes that need for the form
-
-console.log("Model ++++", d.model)
 
 watch(
   () => d.model,

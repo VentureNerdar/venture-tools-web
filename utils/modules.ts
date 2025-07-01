@@ -284,7 +284,6 @@ export default {
           key: "is_active",
           align: "center",
           render(row) {
-            console.log("Render Row", row)
             // return row.is_active ? "Active" : "Inactive"
             return h(
               NTag,

@@ -38,6 +38,8 @@
                 @search="m.handle.searchAssignedToOption"
                 v-model:value="d.model.assigned_to"
                 :options="assignedToOptions"
+                :render-label="m.handle.userRenderLabel"
+                size="large"
               >
                 <template #action>
                   <n-text :depth="3">
@@ -369,6 +371,7 @@
 // Imports
 // mandatory . standard imports. need for all forms.
 import type { FormInst, FormRules, SelectOption } from "naive-ui"
+import { NText } from "naive-ui"
 import modules from "~/utils/modules"
 import ModalsGenericSaveForm from "../Modals/GenericSaveForm.vue"
 
@@ -623,6 +626,7 @@ const m = {
             key: "user_role_id",
             value: [1, 2, 5],
           },
+          with: JSON.stringify(["verifier", "movement"]),
         },
         false,
       )
@@ -631,6 +635,8 @@ const m = {
         ...searchResult.map((user: any) => ({
           label: user.name,
           value: user.id,
+          verifier: user.verifier?.name,
+          movement: user.movement?.name,
         })),
       ]
       d.loading.assignedTo = false
@@ -722,6 +728,34 @@ const m = {
 
       d.model.member_count_list_by_people_group = [...list]
     },
+    userRenderLabel: (option: any) => {
+      const verifier = option.verifier || ""
+      const movement = option.movement || ""
+      const description = verifier
+        ? movement
+          ? `${verifier} (${movement})`
+          : verifier
+        : movement
+
+      return h(
+        "div",
+        {
+          style: {
+            display: "flex",
+            flexDirection: "column",
+            lineHeight: 1.2,
+          },
+        },
+        [
+          h("span", { style: { fontWeight: "500" } }, option.label as string),
+          h(
+            NText,
+            { depth: 3, tag: "span", style: { marginBottom: "8px" } },
+            { default: () => description },
+          ),
+        ],
+      )
+    },
 
     emit: {
       addedChurchPlanter: (user: any) => {
@@ -743,10 +777,20 @@ const m = {
 
   consume: {
     defaultUsersForAssignedToOption: async () => {
-      const users = await consume.users.list({
-        labelOption: "name",
-        limit: 20,
-      })
+      const usersWithVerifiersAndMovements = await consume.users.browse(
+        {
+          all: true,
+          limit: 20,
+          with: JSON.stringify(["verifier", "movement"]),
+        },
+        false,
+      )
+      const users = usersWithVerifiersAndMovements.map((user: any) => ({
+        label: user.name,
+        value: user.id,
+        verifier: user.verifier?.name,
+        movement: user.movement?.name,
+      }))
 
       d.options.assignedTo = [...users]
 

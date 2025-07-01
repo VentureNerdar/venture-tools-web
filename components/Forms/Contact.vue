@@ -20,7 +20,7 @@
           <n-gi>
             <n-form-item
               path="is_active"
-              :label="h.translate('is_active')"
+              :label="helpers.translate('is_active')"
             >
               <n-switch v-model:value="d.model.is_active"></n-switch>
             </n-form-item>
@@ -31,7 +31,7 @@
           <n-gi>
             <n-form-item
               path="faith_status_id"
-              :label="h.translate('faith_status')"
+              :label="helpers.translate('faith_status')"
             >
               <n-select
                 v-model:value="d.model.faith_status_id"
@@ -45,7 +45,7 @@
           <n-gi>
             <n-form-item
               path="assigned_to"
-              :label="h.translate('assigned_to')"
+              :label="helpers.translate('assigned_to')"
             >
               <n-select
                 :loading="d.loading.assignedTo"
@@ -54,13 +54,15 @@
                 remote
                 @search="m.handle.searchAssignedToOption"
                 v-model:value="d.model.assigned_to"
+                :render-label="m.handle.userRenderLabel"
                 :options="assignedToOptions"
-                :placeholder="h.translate('please_select')"
+                :placeholder="helpers.translate('please_select')"
+                size="large"
               >
                 <template #action>
                   <n-text :depth="3">
                     {{
-                      h.translate(
+                      helpers.translate(
                         "loading_maximum_20_users._type_in_the_name_of_the_user_to_search",
                       )
                     }}
@@ -75,22 +77,24 @@
           <n-gi>
             <n-form-item
               path="coached_by"
-              :label="h.translate('coached_by')"
+              :label="helpers.translate('coached_by')"
             >
               <n-select
                 :loading="d.loading.coachedBy"
                 filterable
                 clearable
                 remote
-                :placeholder="h.translate('please_select')"
+                :placeholder="helpers.translate('please_select')"
                 @search="m.handle.searchCoachedByOption"
                 v-model:value="d.model.coached_by"
+                :render-label="m.handle.userRenderLabel"
                 :options="coachedByOptions"
+                size="large"
               >
                 <template #action>
                   <n-text :depth="3">
                     {{
-                      h.translate(
+                      helpers.translate(
                         "loading_maximum_20_contacts._type_in_the_name_of_the_contact_to_search",
                       )
                     }}
@@ -112,11 +116,11 @@
           <n-gi>
             <n-form-item
               path="name"
-              :label="h.translate('name')"
+              :label="helpers.translate('name')"
             >
               <n-input
                 v-model:value="d.model.name"
-                :placeholder="h.translate('please_input')"
+                :placeholder="helpers.translate('please_input')"
               />
             </n-form-item>
           </n-gi>
@@ -126,11 +130,11 @@
           <n-gi>
             <n-form-item
               path="nickname"
-              :label="h.translate('nickname')"
+              :label="helpers.translate('nickname')"
             >
               <n-input
                 v-model:value="d.model.nickname"
-                :placeholder="h.translate('please_input')"
+                :placeholder="helpers.translate('please_input')"
               />
             </n-form-item>
           </n-gi>
@@ -140,7 +144,7 @@
           <n-gi>
             <n-form-item
               path="gender"
-              :label="h.translate('gender')"
+              :label="helpers.translate('gender')"
             >
               <n-radio-group
                 v-model:value="d.model.gender"
@@ -163,12 +167,12 @@
           <n-gi>
             <n-form-item
               path="age"
-              :label="h.translate('age')"
+              :label="helpers.translate('age')"
             >
               <n-select
                 v-model:value="d.model.age"
                 :options="useSettingStore().options.ageGroups"
-                :placeholder="h.translate('please_select')"
+                :placeholder="helpers.translate('please_select')"
               />
             </n-form-item>
           </n-gi>
@@ -177,13 +181,13 @@
           <n-gi>
             <n-form-item
               path="people_group"
-              :label="h.translate('people_group')"
+              :label="helpers.translate('people_group')"
             >
               <n-select
                 v-model:value="d.model.people_group"
                 multiple
                 :options="usePeopleGroupStore().options"
-                :placeholder="h.translate('please_select')"
+                :placeholder="helpers.translate('please_select')"
               />
             </n-form-item>
           </n-gi>
@@ -191,22 +195,24 @@
           <n-gi>
             <n-form-item
               path="user_profile_id"
-              :label="h.translate('user_profile')"
+              :label="helpers.translate('user_profile')"
             >
               <n-select
                 :loading="d.loading.userProfiles"
                 filterable
                 clearable
                 remote
+                :render-label="m.handle.userRenderLabel"
                 @search="m.handle.searchUserProfilesOption"
                 v-model:value="d.model.user_profile_id"
                 :options="userProfilesOptions"
-                :placeholder="h.translate('please_select')"
+                :placeholder="helpers.translate('please_select')"
+                size="large"
               >
                 <template #action>
                   <n-text :depth="3">
                     {{
-                      h.translate(
+                      helpers.translate(
                         "loading_maximum_20_users._type_in_the_name_of_the_user_to_search",
                       )
                     }}
@@ -221,7 +227,7 @@
           <n-gi span="4">
             <n-card size="small">
               <n-space vertical>
-                <b>{{ h.translate("contact_platforms") }}</b>
+                <b>{{ helpers.translate("contact_platforms") }}</b>
 
                 <n-grid
                   x-gap="10"
@@ -265,7 +271,7 @@
             <!-- Faith Milestones -->
             <n-form-item
               path="asdf"
-              :label="h.translate('faith_milestones')"
+              :label="helpers.translate('faith_milestones')"
             >
               <n-flex>
                 <n-button
@@ -308,22 +314,24 @@
             <n-form-item
               v-if="baptizedByFromContact"
               path="baptized_by"
-              :label="h.translate('baptized_by')"
+              :label="helpers.translate('baptized_by')"
             >
               <n-select
                 v-model:value="d.model.baptized_by"
                 :loading="d.loading.baptizedBy"
+                :render-label="m.handle.userRenderLabel"
                 :options="baptizedByOptions"
                 filterable
                 clearable
                 remote
                 @search="m.handle.searchCoachedByOption"
-                :placeholder="h.translate('please_select')"
+                :placeholder="helpers.translate('please_select')"
+                size="large"
               >
                 <template #action>
                   <n-text :depth="3">
                     {{
-                      h.translate(
+                      helpers.translate(
                         "loading_maximum_20_contacts._type_in_the_name_of_the_contact_to_search",
                       )
                     }}
@@ -335,11 +343,11 @@
             <n-form-item
               v-if="!baptizedByFromContact"
               path="baptized_by_name"
-              label="Baptized by Name"
+              :label="helpers.translate('baptized_by_name')"
             >
               <n-input
                 v-model:value="d.model.baptized_by_name"
-                :placeholder="h.translate('please_input')"
+                :placeholder="helpers.translate('please_input')"
               />
             </n-form-item>
           </n-gi>
@@ -349,7 +357,7 @@
           <n-gi>
             <n-form-item
               path="baptism_date"
-              :label="h.translate('baptism_date')"
+              :label="helpers.translate('baptism_date')"
             >
               <n-date-picker
                 v-model:value="d.model.baptism_date"
@@ -358,7 +366,7 @@
                 :input-readonly="true"
                 type="date"
                 style="width: 100%"
-                :placeholder="h.translate('please_input')"
+                :placeholder="helpers.translate('please_input')"
               />
             </n-form-item>
           </n-gi>
@@ -372,7 +380,7 @@
         <!-- Prayer prompt -->
         <n-form-item
           path="prayer_prompt"
-          :label="h.translate('prayer_prompts')"
+          :label="helpers.translate('prayer_prompts')"
         >
           <n-select
             :loading="d.loading.prayerPrompt"
@@ -380,20 +388,20 @@
             clearable
             remote
             :options="d.options.prayerPrompt"
-            :placeholder="h.translate('please_select')"
+            :placeholder="helpers.translate('please_select')"
             @update:value="m.handle.setPrayerPrompt"
           />
         </n-form-item>
 
         <n-form-item
           path="current_prayers"
-          :label="h.translate('current_prayers')"
+          :label="helpers.translate('current_prayers')"
         >
           <n-input
             type="textarea"
             :autosize="{ minRows: 3 }"
             v-model:value="d.model.current_prayers"
-            :placeholder="h.translate('please_input')"
+            :placeholder="helpers.translate('please_input')"
           />
         </n-form-item>
         <!-- e.o Current Prayers -->
@@ -406,6 +414,7 @@
 // Imports
 // mandatory . standard imports. need for all forms.
 import type { FormInst, FormRules } from "naive-ui"
+import { NAvatar, NText } from "naive-ui"
 import modules from "~/utils/modules"
 
 // mandatory . variable form model types.
@@ -423,7 +432,7 @@ import { useLanguagesStore } from "~/stores/useLanguagesStore"
 // e.o Imports
 
 // helpers
-const helpers = {}
+// const helpers = {}
 
 // mandatory . defining a model ref type. change the ref
 type ModelRefType = Ref<ContactFormModel>
@@ -440,7 +449,7 @@ const consume = {
 
 const emit = defineEmits(["formChanged", "beingUploaded"])
 
-const h = useHelpers()
+const helpers = useHelpers()
 
 // props
 // Self Ref : Need to change editData form model type
@@ -478,7 +487,7 @@ const translatedRules = computed(() => {
     result[key] = (rules[key] as FormRules[]).map((rule: any) => {
       return {
         ...rule,
-        message: h.translate(h.toSnakeCase(rule.message)),
+        message: helpers.translate(helpers.toSnakeCase(rule.message)),
       }
     })
   }
@@ -640,6 +649,7 @@ const m = {
             key: "user_role_id",
             value: [1, 2, 5],
           },
+          with: JSON.stringify(["verifier", "movement"]),
         },
         false,
       )
@@ -648,6 +658,8 @@ const m = {
         ...searchResult.map((user: any) => ({
           label: user.name,
           value: user.id,
+          verifier: user.verifier?.name,
+          movement: user.movement?.name,
         })),
       ]
       d.loading.assignedTo = false
@@ -661,6 +673,7 @@ const m = {
           all: true,
           search_by: "name",
           search: query,
+          with: JSON.stringify(["verifier", "movement"]),
           // whereNotIn: {
           //   key: "user_role_id",
           //   value: [1, 2, 5],
@@ -673,6 +686,8 @@ const m = {
         ...searchResult.map((user: any) => ({
           label: user.name,
           value: user.id,
+          verifier: user.verifier?.name,
+          movement: user.movement?.name,
         })),
       ]
       d.loading.userProfiles = false
@@ -687,6 +702,7 @@ const m = {
           all: true,
           search_by: "name",
           search: query,
+          with: JSON.stringify(["assignedTo", "assignedTo.movement"]),
         },
         false,
       )
@@ -694,12 +710,16 @@ const m = {
       d.options.coachedBy = [
         ...searchResult.map((contact: any) => ({
           label: contact.name,
+          verifier: contact.assigned_to?.name,
+          movement: contact.assigned_to?.movement?.name,
           value: contact.id,
         })),
       ]
       d.options.baptizedBy = [
         ...searchResult.map((contact: any) => ({
           label: contact.name,
+          verifier: contact.assigned_to?.name,
+          movement: contact.assigned_to?.movement?.name,
           value: contact.id,
         })),
       ]
@@ -727,6 +747,35 @@ const m = {
         (opt: any) => opt.value === value,
       )
       d.model.current_prayers = option ? option.label : value
+    },
+
+    userRenderLabel: (option: any) => {
+      const verifier = option.verifier || ""
+      const movement = option.movement || ""
+      const description = verifier
+        ? movement
+          ? `${verifier} (${movement})`
+          : verifier
+        : movement
+
+      return h(
+        "div",
+        {
+          style: {
+            display: "flex",
+            flexDirection: "column",
+            lineHeight: 1.2,
+          },
+        },
+        [
+          h("span", { style: { fontWeight: "500" } }, option.label as string),
+          h(
+            NText,
+            { depth: 3, tag: "span", style: { marginBottom: "8px" } },
+            { default: () => description },
+          ),
+        ],
+      )
     },
 
     change: {
@@ -780,10 +829,20 @@ const m = {
 
   consume: {
     defaultUsersForAssignedToOption: async () => {
-      const users = await consume.users.list({
-        labelOption: "name",
-        limit: 20,
-      })
+      const usersWithVerifiersAndMovements = await consume.users.browse(
+        {
+          all: true,
+          limit: 20,
+          with: JSON.stringify(["verifier", "movement"]),
+        },
+        false,
+      )
+      const users = usersWithVerifiersAndMovements.map((user: any) => ({
+        label: user.name,
+        value: user.id,
+        verifier: user.verifier?.name,
+        movement: user.movement?.name,
+      }))
 
       d.options.assignedTo = [...users]
       d.options.userProfiles = [...users]
@@ -865,10 +924,20 @@ const m = {
     },
 
     defaultContactsForCoachedByOption: async () => {
-      const contacts = await consume.contacts.list({
-        labelOption: "name",
-        limit: 20,
-      })
+      const contactWithAssignedTo = await consume.contacts.browse(
+        {
+          all: true,
+          limit: 20,
+          with: JSON.stringify(["assignedTo", "assignedTo.movement"]),
+        },
+        false,
+      )
+      const contacts = contactWithAssignedTo.map((contact: any) => ({
+        label: contact.name,
+        verifier: contact.assigned_to?.name,
+        movement: contact.assigned_to?.movement?.name,
+        value: contact.id,
+      }))
 
       d.options.coachedBy = [...contacts]
       d.options.baptizedBy = [...contacts]

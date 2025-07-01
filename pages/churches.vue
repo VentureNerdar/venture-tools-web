@@ -74,7 +74,6 @@ const m = {
       const contactStatusColumn = module.dataTable.columns.find(
         (c: any) => c.title === "Contact Status",
       )
-      console.log("contactStatusColumn", module.dataTable.columns)
       // const contactStatusColumn: DataTableColumns<any> = foundColumn ? [foundColumn] : []
 
       if (contactStatusColumn !== undefined) {
