@@ -11,16 +11,39 @@
         </span>
       </div>
 
-      <div class="controls"></div>
-      <FormPartialsLanguageSwitcher />
+      <div class="controls">
+        <div>
+          <FormPartialsLanguageSwitcher />
+        </div>
+        <div>
+          <n-switch
+            v-model:value="darkMode"
+            size="medium"
+          >
+            <template #icon>
+              <n-icon>
+                <Moon />
+              </n-icon>
+            </template>
+          </n-switch>
+        </div>
+      </div>
     </n-flex>
   </div>
 </template>
 
 <script lang="ts" setup>
+import { Moon } from "@vicons/fa"
+import { useThemeStore } from "~/stores/theme"
 const route = useRoute()
 
 const h = useHelpers()
+const themeStore = useThemeStore()
+
+const darkMode = computed({
+  get: () => themeStore.darkMode,
+  set: (value) => themeStore.setDarkMode(value),
+})
 
 const pageName = computed(() => {
   const page = route.fullPath.split("/")[1]
@@ -45,9 +68,15 @@ html {
   .header {
     height: 40px;
     line-height: 40px;
-    background: #eee;
+    // background: #eee;
     padding: 0 10px;
     padding-left: 5px;
+    .controls {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding-right: 10px;
+    }
 
     .brand {
       font-size: 16px;
@@ -77,7 +106,7 @@ html {
 html.dark {
   .header {
     height: 39px;
-    background: #021526;
+    // background: #021526;
     border-bottom: 1px solid rgba(255, 255, 25, 0.08);
   }
 }

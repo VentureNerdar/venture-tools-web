@@ -27,11 +27,11 @@
               <n-button
                 type="error"
                 size="small"
-                @click="m.handle.click.clearFilterButton()"
+                @click="m.handle.click.clearfilterbutton()"
               >
                 <template #icon>
                   <n-icon>
-                    <FilterAltOffRound />
+                    <filterAltOffRound />
                   </n-icon>
                 </template>
               </n-button>

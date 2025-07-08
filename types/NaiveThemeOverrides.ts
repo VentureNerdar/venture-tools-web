@@ -52,4 +52,52 @@ export const NaiveThemeOverrides = {
     },
 
   } as ConfigProviderProps['themeOverrides'],
+
+  lightTheme: {
+    common: {
+      fontFamily: "'Exo2-Regular', sans-serif",
+      fontSize: "14px",
+      primaryColor: "#17badf",
+      primaryColorHover: "#4acbf9",
+      primaryColorPressed: "#008fc4",
+      primaryColorSuppl: "#0085b6",
+
+      bodyColor: "#f8f9fa",
+      baseColor: "#ffffff",
+      tableColor: "#ffffff",
+      cardColor: "#ffffff",
+      borderRadius: "4px",
+      modalColor: "#ffffff",
+      scrollbarColor: "rgba(0, 0, 0, 0.1)",
+      scrollbarWidth: "8px",
+    },
+
+    Notification: {
+      color: "#f0f2f5",
+    },
+
+    Select: {
+      peers: {
+        InternalSelectMenu: {
+          color: "#ffffff",
+        },
+      },
+      common: {
+        baseColor: "#ffffff",
+      },
+    },
+
+    Tooltip: {
+      color: "#0f2a3f",
+      textColor: "#ffffff",
+    },
+
+    Popover: {
+
+      color: "#fff",
+      textColor: "#000"
+    },
+  } as ConfigProviderProps['themeOverrides']
+
+
 }

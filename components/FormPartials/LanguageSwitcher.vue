@@ -23,9 +23,11 @@ const languages = languageStore.languages
 
 // Watch for changes in userPreferredLanguage
 
-
 if (auth.authUser.preferred_language_id) {
-  console.log('auth.authUser.preferred_language_id', auth.authUser.preferred_language_id)
+  console.log(
+    "auth.authUser.preferred_language_id",
+    auth.authUser.preferred_language_id,
+  )
   selectedLanguage.value = auth.authUser.preferred_language_id
 } else {
   selectedLanguage.value = 1
@@ -39,7 +41,7 @@ const languageOptions = computed(() =>
 )
 
 // onMounted(() => {
-  
+
 //   const lang = languageStore.languages.find(
 //     (l: any) => l.id === selectedLanguage.value,
 //   )
@@ -58,7 +60,7 @@ watch(
       settingStore.setUserPreferredLanguage(lang)
     }
   },
-  { immediate: true }
+  { immediate: true },
 )
 
 watch(selectedLanguage, (id) => {
@@ -69,12 +71,15 @@ watch(selectedLanguage, (id) => {
   }
 })
 
-watch(() => settingStore.userPreferredLanguage, (newLang) => {
-  if (newLang && newLang.id) {
-    selectedLanguage.value = newLang.id
-  }
-}, { immediate: true })
-
+watch(
+  () => settingStore.userPreferredLanguage,
+  (newLang) => {
+    if (newLang && newLang.id) {
+      selectedLanguage.value = newLang.id
+    }
+  },
+  { immediate: true },
+)
 </script>
 
 <style lang="scss" scoped>
