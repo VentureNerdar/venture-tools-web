@@ -9,7 +9,7 @@ export default defineNuxtConfig({
     }
   },
   app: {
-    // pageTransition: { name: 'page', mode: 'out-in' }
+    pageTransition: { name: 'page', mode: 'out-in' },
     head: {
       script: [
         {
@@ -66,7 +66,10 @@ export default defineNuxtConfig({
 
   compatibilityDate: "2025-01-04",
 
-  modules: ["@nuxtjs/color-mode", "@nuxt/eslint"],
+  modules: [
+    "@nuxtjs/color-mode",
+    "@nuxt/eslint"
+  ],
 
   alias: {
     "@/stores": "~/stores",
