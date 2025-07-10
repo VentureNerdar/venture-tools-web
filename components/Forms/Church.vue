@@ -771,6 +771,10 @@ const m = {
         d.model.location_latitude = position.lat.toString()
         d.model.location_longitude = position.lng.toString()
         d.model.google_location_data = JSON.stringify(place)
+        if (place.adminLevels) {
+          d.model.province_name = place.adminLevels.administrative_area_level_1
+          d.model.district_name = place.adminLevels.administrative_area_level_2
+        }
       },
     },
   },

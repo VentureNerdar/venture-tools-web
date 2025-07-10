@@ -90,7 +90,9 @@
 <script lang="ts" setup>
 import { onMounted, ref } from "vue"
 import { LocationOnRound, CloseRound } from "@vicons/material"
-import { Google } from "@vicons/fa"
+// import { Google } from "@vicons/fa"
+
+declare const google: any
 
 type FormattedPlace = {
   place: any
@@ -99,16 +101,12 @@ type FormattedPlace = {
   lng: number
 }
 
-// @ts-expect-error google maps
 const { AutocompleteSessionToken, AutocompleteSuggestion, Place } =
   await google.maps.importLibrary("places")
-// @ts-expect-error google maps
 const { AdvancedMarkerElement } = (await google.maps.importLibrary(
   "marker",
 )) as google.maps.MarkerLibrary
-// @ts-expect-error google maps
 const { Geocoder } = await google.maps.importLibrary("geocoding")
-// @ts-expect-error google maps
 const { Map } = (await google.maps.importLibrary(
   "maps",
 )) as google.maps.MapsLibrary
@@ -139,9 +137,7 @@ const props = defineProps<{
   places?: any
 }>()
 
-// @ts-expect-error google maps
 let map: google.maps.Map
-// @ts-expect-error google maps
 let mapMarker: google.maps.marker.AdvancedMarkerElement
 
 // const handleInput = async (event: Event) => {
@@ -284,10 +280,58 @@ const setMap = (post: { lat: number; lng: number }, viewport: any) => {
   suggestions.value = []
 }
 
+// const getGeoCode = async (position: any) => {
+//   const geocoder = new Geocoder()
+//   const response = await geocoder.geocode({ location: position })
+//   emit("update", position, response)
+// }
 const getGeoCode = async (position: any) => {
   const geocoder = new Geocoder()
   const response = await geocoder.geocode({ location: position })
-  emit("update", position, response)
+
+  if (!response.results || response.results.length === 0) return
+
+  const result = response.results[0]
+  const components = result.address_components
+
+  const adminLevels = {
+    administrative_area_level_1: "",
+    administrative_area_level_2: "",
+    administrative_area_level_3: "",
+    locality: "",
+    sublocality: "",
+    country: "",
+    postal_code: "",
+  }
+
+  components.forEach((component: any) => {
+    const types = component.types
+
+    if (types.includes("administrative_area_level_1")) {
+      adminLevels.administrative_area_level_1 = component.long_name
+    } else if (types.includes("administrative_area_level_2")) {
+      adminLevels.administrative_area_level_2 = component.long_name
+    } else if (types.includes("administrative_area_level_3")) {
+      adminLevels.administrative_area_level_3 = component.long_name
+    } else if (types.includes("locality")) {
+      adminLevels.locality = component.long_name
+    } else if (types.includes("sublocality")) {
+      adminLevels.sublocality = component.long_name
+    } else if (types.includes("country")) {
+      adminLevels.country = component.long_name
+    } else if (types.includes("postal_code")) {
+      adminLevels.postal_code = component.long_name
+    }
+  })
+
+  modalTitle.value = `Latitude: ${position.lat}, Longitude: ${position.lng}`
+  modalAddress.value = result.formatted_address
+
+  emit("update", position, {
+    formatted_address: result.formatted_address,
+    adminLevels,
+    raw: result,
+  })
 }
 
 const getPlaceByPlaceID = async (
@@ -311,6 +355,37 @@ const getPlaceByPlaceID = async (
 
   const lng = place.location.lng()
   const lat = place.location.lat()
+  const components =
+    place.addressComponents as google.maps.places.AddressComponent[]
+  const adminLevels = {
+    administrative_area_level_1: "",
+    administrative_area_level_2: "",
+    administrative_area_level_3: "",
+    locality: "",
+    sublocality: "",
+    country: "",
+    postal_code: "",
+  }
+
+  components.forEach((component) => {
+    const types = component.types
+
+    if (types.includes("administrative_area_level_1")) {
+      adminLevels.administrative_area_level_1 = component.longText
+    } else if (types.includes("administrative_area_level_2")) {
+      adminLevels.administrative_area_level_2 = component.longText
+    } else if (types.includes("administrative_area_level_3")) {
+      adminLevels.administrative_area_level_3 = component.longText
+    } else if (types.includes("locality")) {
+      adminLevels.locality = component.longText
+    } else if (types.includes("sublocality")) {
+      adminLevels.sublocality = component.longText
+    } else if (types.includes("country")) {
+      adminLevels.country = component.longText
+    } else if (types.includes("postal_code")) {
+      adminLevels.postal_code = component.longText
+    }
+  })
 
   modalTitle.value = place.displayName
   modalAddress.value = place.formattedAddress
@@ -381,4 +456,3 @@ const getPlaceByPlaceID = async (
   border-radius: 8px;
 }
 </style>
-
