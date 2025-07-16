@@ -39,6 +39,14 @@ export enum RoutePaths {
   PROFILE_CHANGE_PASSWORD = "profile/change-password",
 
   PRAYER_PROMPTS = "prayer-prompts",
+
+  DASHBOARD_INSIGHT = 'dashboard/insight',
+
+  CHURCH_LOCATION = 'dashboard/church-locations',
+
+  GENERATIONAL_CHURCHES_BY_TREE = 'dashboard/generational-churches-by-tree',
+  GENERATIONAL_CHURCHES_BY_GRAPH = 'dashboard/generational-churches-by-graph',
+  DASHBOARD_PEOPLE_GROUPS = 'dashboard/people-groups'
 }
 
 export type GenderTypes = "male" | "female"

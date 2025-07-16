@@ -54,6 +54,8 @@ export default {
     location_longitude: null,
     location_latitude: null,
     google_location_data: null,
+    province_name: null,
+    district_name: null,
   } as types.ChurchFormModel,
 
   community: {
@@ -70,6 +72,8 @@ export default {
     community_needs_5: null,
     peace_persons: [] as any[],
     committees: [] as any[],
+    province_name: null,
+    district_name: null,
     churchPlanters: [] as any[],
     churches: [] as any[],
   },
@@ -82,4 +86,18 @@ export default {
     name: null,
     value: null,
   } as types.NotificationFormModel,
+
+  insight: {
+    avg_church_size: null,
+    baptized_member_count: null,
+    church_count: null,
+    contact_baptized_count: null,
+  } as types.InsightFormModel,
+
+  churchLocation: {
+    lat: 0,
+    lng: 0,
+    name: "",
+  } as types.ChurchLocationFormModel,
+
 } as const

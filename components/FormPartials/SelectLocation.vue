@@ -230,33 +230,30 @@ watch(showModal, async (visible) => {
       title: "Default Location",
     })
 
-    // @ts-expect-error google maps
     google.maps.event.addListener(map, "drag", function () {
       try {
         mapMarker.position = {
-          lat: map.getCenter().lat(),
-          lng: map.getCenter().lng(),
+          lat: map.getCenter()?.lat() ?? 0,
+          lng: map.getCenter()?.lng() ?? 0,
         }
         modalTitle.value =
           "Latitude: " +
-          map.getCenter().lat() +
+          (map.getCenter()?.lat() ?? 0) +
           ", Longitude: " +
-          map.getCenter().lng()
+          (map.getCenter()?.lng() ?? 0)
         modalAddress.value = ""
       } catch (err) {
         console.log(err)
       }
     })
 
-    // @ts-expect-error google maps
     google.maps.event.addListener(map, "dragend", function () {
-      position.lat = map.getCenter().lat()
-      position.lng = map.getCenter().lng()
+      position.lat = map.getCenter()?.lat() ?? 0
+      position.lng = map.getCenter()?.lng() ?? 0
       modalAddress.value = ""
       getGeoCode(position)
     })
 
-    // @ts-expect-error google maps
     google.maps.event.addListener(map, "click", async function (event: any) {
       console.log(event)
       map.setCenter(event.latLng)
@@ -371,19 +368,19 @@ const getPlaceByPlaceID = async (
     const types = component.types
 
     if (types.includes("administrative_area_level_1")) {
-      adminLevels.administrative_area_level_1 = component.longText
+      adminLevels.administrative_area_level_1 = component.longText ?? ""
     } else if (types.includes("administrative_area_level_2")) {
-      adminLevels.administrative_area_level_2 = component.longText
+      adminLevels.administrative_area_level_2 = component.longText ?? ""
     } else if (types.includes("administrative_area_level_3")) {
-      adminLevels.administrative_area_level_3 = component.longText
+      adminLevels.administrative_area_level_3 = component.longText ?? ""
     } else if (types.includes("locality")) {
-      adminLevels.locality = component.longText
+      adminLevels.locality = component.longText ?? ""
     } else if (types.includes("sublocality")) {
-      adminLevels.sublocality = component.longText
+      adminLevels.sublocality = component.longText ?? ""
     } else if (types.includes("country")) {
-      adminLevels.country = component.longText
+      adminLevels.country = component.longText ?? ""
     } else if (types.includes("postal_code")) {
-      adminLevels.postal_code = component.longText
+      adminLevels.postal_code = component.longText ?? ""
     }
   })
 
@@ -396,9 +393,8 @@ const getPlaceByPlaceID = async (
   if (setMapOption) {
     setMap(position, place.viewport)
   }
-
   if (emitOption) {
-    emit("update", position, place)
+    await getGeoCode(position)
   }
 
   return {

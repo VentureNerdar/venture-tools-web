@@ -258,6 +258,22 @@ export interface PrayerPromptFormModel {
   deleted_at?: Date
 }
 
+export interface InsightFormModel {
+  avg_church_size?: number | null
+  baptized_member_count?: number | null
+  church_count?: number | null
+  contact_baptized_count?: number | null
+  provinces?: number | null
+  districts?: number | null
+  communities?: number | null
+}
+
+export interface ChurchLocationFormModel {
+  lat: number
+  lng: number
+  name: string
+}
+
 export type FormModel =
   | UserFormModel
   | UserRoleFormModel
@@ -276,3 +292,5 @@ export type FormModel =
   | NotificationFormModel
   | MovementNotificationFormModel
   | PrayerPromptFormModel
+  | InsightFormModel
+  | ChurchLocationFormModel
