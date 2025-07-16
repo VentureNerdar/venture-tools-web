@@ -6,7 +6,10 @@
 </template>
 
 <script setup>
-import * as echarts from "echarts"
+import * as echarts from "echarts/core"
+import { TooltipComponent, TitleComponent } from "echarts/components"
+import { BarChart } from "echarts/charts"
+import { CanvasRenderer } from "echarts/renderers"
 import { RoutePaths } from "~/types/index.d"
 
 const chartRef = ref(null)
@@ -14,6 +17,7 @@ const consume = useConsumeApi(RoutePaths.DASHBOARD_PEOPLE_GROUPS)
 const peopleGroups = await consume.browse({
   all: true,
 })
+echarts.use([TooltipComponent, TitleComponent, BarChart, CanvasRenderer])
 onMounted(() => {
   const labels = peopleGroups.map((p) => p.name)
   const memberData = peopleGroups.map((p) => p.member_count)
