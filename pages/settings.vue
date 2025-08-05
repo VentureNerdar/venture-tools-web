@@ -87,6 +87,14 @@
       >
         <SettingsPrayerPrompts />
       </n-tab-pane>
+
+      <n-tab-pane
+        name="ishare"
+        tab="iShare API"
+        class="tab"
+      >
+        <SettingsIShare />
+      </n-tab-pane>
     </n-tabs>
   </n-space>
 </template>
