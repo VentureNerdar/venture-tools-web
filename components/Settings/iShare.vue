@@ -1,0 +1,52 @@
+<template>
+  <n-tabs
+    type="line"
+    default-value="configure"
+  >
+    <n-tab-pane
+      name="synchronize"
+      tab="Synchronize"
+      class="tab"
+    >
+      <FormPartialsIShareSynchronize />
+    </n-tab-pane>
+
+    <n-tab-pane
+      name="configure"
+      tab="Configure"
+      class="tab"
+    >
+      <FormPartialsIShareConfigure />
+    </n-tab-pane>
+
+  </n-tabs>
+</template>
+
+<script
+  lang="ts"
+  setup
+>
+
+</script>
+
+<style
+  lang="scss"
+  scoped
+>
+  html {
+    .tab {
+      width: calc(100vw - 335px);
+      min-height: calc(100vh - 162px);
+      border: 1px solid rgba(0, 0, 0, 0.09);
+      border-radius: 0 0 4px 4px;
+      border-top: 0px;
+      padding: 10px;
+    }
+
+    &.dark {
+      .tab {
+        border-color: rgba(255, 255, 255, 0.08);
+      }
+    }
+  }
+</style>
