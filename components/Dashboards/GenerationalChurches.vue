@@ -7,12 +7,12 @@
         animated
       >
         <n-tab-pane
-          name="graph"
-          tab="Graph"
-        />
-        <n-tab-pane
           name="tree"
           tab="Tree"
+        />
+        <n-tab-pane
+          name="graph"
+          tab="Graph"
         />
       </n-tabs>
     </div>
@@ -33,7 +33,7 @@
 <script setup lang="ts">
 import { ref } from "vue"
 
-const activeTab = ref("graph")
+const activeTab = ref("tree")
 </script>
 
 <style scoped>

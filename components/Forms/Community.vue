@@ -156,6 +156,8 @@
           </n-card>
         </n-gi>
 
+
+        <!-- Add church from community  -->
         <n-gi v-if="p.editData">
           <n-list
             bordered
