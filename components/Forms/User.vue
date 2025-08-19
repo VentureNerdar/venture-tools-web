@@ -76,7 +76,7 @@
         v-model:value="d.model.movement_id"
         clearable
         :placeholder="helpers.translate('select_movement')"
-        :options="movementOptions"
+        :options="d.options.movements"
       />
     </n-form-item>
     <!-- e.o Movement -->
@@ -261,6 +261,7 @@ const modelRef: ModelRefType = ref({
 
 const consume = {
   contacts: useConsumeApi(RoutePaths.CONTACTS),
+  movements: useConsumeApi(RoutePaths.MOVEMENTS),
 }
 
 // data
@@ -271,6 +272,7 @@ const d = reactive({
   },
   options: {
     contacts: [] as any[],
+    movements: [] as any,
   },
 }) // e.o d
 
@@ -291,6 +293,12 @@ onMounted(async () => {
     movement: contact.assigned_to?.movement?.name,
     value: contact.id,
   }))
+
+  d.options.movements = await consume.movements.list({
+    labelOption: "name",
+    limit: 20,
+    existingID: d.model.movement_id,
+  })
 })
 
 const m = {
@@ -364,12 +372,6 @@ const languageOptions = computed(() => {
   }))
 })
 
-const movementOptions = computed(() => {
-  return useMovementsStore().movements.map((movement: any) => ({
-    label: movement.name,
-    value: movement.id,
-  }))
-})
 // e.o Computes that need for the form
 
 watch(

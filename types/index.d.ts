@@ -100,7 +100,7 @@ export type BrowseCondition = BrowseConditionAll | BrowseConditionPaged
 export type ListCondition = {
   labelOption: string
   limit: number
-  existingID?: number
+  existingID?: number | null
 }
 
 export type FilterOptions =
