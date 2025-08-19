@@ -893,7 +893,6 @@ const m = {
       d.peopleGroup = await consume.peopleGroups.browse({
         all: true,
       })
-      console.log(d.peopleGroup)
     },
   },
 }
@@ -943,7 +942,6 @@ watch(
 watch(
   () => d.model.member_count_by_people_group,
   () => {
-    console.log(d.model.member_count_by_people_group)
     if (d.model.member_count_by_people_group) {
       m.consume.getPeopleGroupList()
     }

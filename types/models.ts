@@ -266,6 +266,7 @@ export interface InsightFormModel {
   provinces?: number | null
   districts?: number | null
   communities?: number | null
+  people_groups?: number | null
 }
 
 export interface ChurchLocationFormModel {

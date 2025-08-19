@@ -28,7 +28,7 @@
             size="small"
             class="metrics"
           >
-            <div class="number main">65</div>
+            <div class="number main">{{ insightData.people_groups }}</div>
 
             <div class="label">{{ h.translate("people_groups") }}</div>
           </n-card>

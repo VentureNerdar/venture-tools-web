@@ -79,9 +79,12 @@
           >
             <n-select
               v-model:value="formValue.movement_id"
+              filterable
               clearable
+              remote
               :placeholder="h.translate('select_movement')"
-              :options="movementOptions"
+              :options="d.options.movements"
+              @search="m.handle.searchMovementsOption"
             />
           </n-form-item>
 
@@ -90,13 +93,13 @@
             :label="h.translate('contact')"
           >
             <n-select
-              :loading="contactLoading"
+              :loading="d.loading.contacts"
               filterable
               clearable
               remote
-              @search="handleSearchContactsOption"
+              @search="m.contactOptions"
               v-model:value="formValue.contact_id"
-              :options="contactOptions"
+              :options="d.options.contacts"
               :placeholder="h.translate('please_select')"
             >
               <template #action>
@@ -168,20 +171,94 @@ import { useContactStore } from "~/stores/useContactsStore"
 const auth = useAuthStore()
 const formRef = ref<FormInst | null>(null)
 const formValue = ref({ ...(auth.authUser as any) })
-const contactLoading = ref(false)
 
 const h = useHelpers()
+
+const d = reactive({
+  loading: {
+    movements: false,
+    contacts: false,
+  },
+  options: {
+    movements: [] as any,
+    contacts: [] as any,
+  },
+})
 
 const s = {
   roles: useUserStore(),
   languages: useLanguagesStore().languages,
   settingStore: useSettingStore(),
-  movements: useMovementsStore().movements,
+  movementStore: useMovementsStore(),
   contacts: useContactStore().contacts,
 }
 
 const consume = {
+  movements: useConsumeApi(RoutePaths.MOVEMENTS),
   contacts: useConsumeApi(RoutePaths.CONTACTS),
+}
+
+const m = {
+  handle: {
+    searchMovementsOption: async (query: string) => {
+      d.loading.movements = true
+      const searchResult = await consume.movements.browse(
+        {
+          all: true,
+          search_by: "name",
+          search: query,
+        },
+        false,
+      )
+
+      d.options.movements = [
+        ...searchResult.map((movement: any) => ({
+          label: movement.name,
+          value: movement.id,
+        })),
+      ]
+
+      d.loading.movements = false
+    },
+
+    searchContactsOption: async (query: string) => {
+      d.loading.contacts = true
+      const res = await consume.contacts.browse(
+        {
+          all: true,
+          search_by: "name",
+          search: query,
+        },
+        false,
+      )
+
+      d.options.contacts = [
+        ...res.map((contact: any) => ({
+          label: contact.name,
+          value: contact.id,
+        })),
+      ]
+      d.loading.contacts = false
+    },
+  },
+  movementOptions: async () => {
+    const movements = await consume.movements.list({
+      labelOption: "name",
+      limit: 20,
+      existingID: formValue.value.movement_id,
+    })
+
+    d.options.movements = [...movements]
+  },
+
+  contactOptions: async () => {
+    const contacts = await consume.contacts.list({
+      labelOption: "name",
+      limit: 20,
+      existingID: formValue.value.contact_id,
+    })
+    d.options.contacts = [...contacts]
+  },
 }
 
 const rules = {
@@ -211,45 +288,11 @@ const languageOptions = computed(() => {
   }))
 })
 
-const contactOptions = ref(
-  s.contacts.map((contact: any) => ({
-    label: contact.name,
-    value: contact.id,
-  })),
-)
-
 const authUserRoleName = computed(() => {
   return s.roles.userRoles.find(
     (role: any) => role.id === formValue.value.user_role_id,
   )?.label
 })
-
-const movementOptions = computed(() => {
-  return s.movements.map((movement: any) => ({
-    label: movement.name,
-    value: movement.id,
-  }))
-})
-
-const handleSearchContactsOption = async (query: string) => {
-  contactLoading.value = true
-  const res = await consume.contacts.browse(
-    {
-      all: true,
-      search_by: "name",
-      search: query,
-    },
-    false,
-  )
-
-  contactOptions.value = [
-    ...res.map((contact: any) => ({
-      label: contact.name,
-      value: contact.id,
-    })),
-  ]
-  contactLoading.value = false
-}
 
 const handleProfileUpdate = async () => {
   const userConsume = useConsumeApi(RoutePaths.USERS, auth.authUser.id)
@@ -268,4 +311,7 @@ const handleProfileUpdate = async () => {
     s.settingStore.setUserPreferredLanguage(selected)
   }
 }
+
+m.movementOptions()
+m.contactOptions()
 </script>
