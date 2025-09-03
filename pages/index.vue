@@ -94,7 +94,7 @@ const rules = {
   identifier: [
     {
       required: true,
-      message: "Please input your email or username",
+      message: "Please input your email, username or phone number",
       trigger: "blur",
     },
   ],
