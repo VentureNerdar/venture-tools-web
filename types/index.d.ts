@@ -46,7 +46,10 @@ export enum RoutePaths {
 
   GENERATIONAL_CHURCHES_BY_TREE = 'dashboard/generational-churches-by-tree',
   GENERATIONAL_CHURCHES_BY_GRAPH = 'dashboard/generational-churches-by-graph',
-  DASHBOARD_PEOPLE_GROUPS = 'dashboard/people-groups'
+  DASHBOARD_PEOPLE_GROUPS = 'dashboard/people-groups',
+
+  CONTACT_PRAYER_COUNT = 'prayer-count/contact',
+  CHURCH_PRAYER_COUNT = 'prayer-count/church',
 }
 
 export type GenderTypes = "male" | "female"
