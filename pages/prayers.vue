@@ -106,6 +106,24 @@
       </n-space>
     </n-gi>
   </n-grid>
+  <n-grid
+    x-gap="10"
+    cols="3"
+    class="wrapper"
+  >
+    <n-gi :span="2">
+      <div class="load-more">
+        <n-button
+          text
+          type="primary"
+          size="small"
+          @click="m.handle.click.loadMore"
+        >
+          {{ hasMore ? "Load More ..." : "No More Data" }}
+        </n-button>
+      </div>
+    </n-gi>
+  </n-grid>
 </template>
 
 <script lang="ts" setup>
@@ -137,6 +155,8 @@ const consume = {
 
 // Language Switching
 const h = useHelpers()
+const limit = ref(2)
+const hasMore = ref(true)
 // e.o Language Switching
 
 const d = reactive({
@@ -179,14 +199,40 @@ const m = {
           return `${item.prayer_count} people prayed for this`
         }
       },
+
+      loadMore: async () => {
+        limit.value += limit.value
+        const newData = await m.handle.fetchPrayers()
+        if (
+          d.prayers.churchPrayers.length == newData.churchPrayers.length &&
+          d.prayers.contactPrayers.length == newData.contactPrayers.length
+        ) {
+          hasMore.value = false
+          return
+        }
+        d.prayers.churchPrayers = newData.churchPrayers
+        d.prayers.contactPrayers = newData.contactPrayers
+      },
+    },
+    fetchPrayers: async () => {
+      const res = await consume.prayers.browse(
+        {
+          with: JSON.stringify(limit.value),
+        } as BrowseConditionAll,
+        false,
+      )
+      return res as Prayers
     },
   },
 }
 
-d.prayers = (await consume.prayers.browse(
-  { all: true } as BrowseConditionAll,
-  false,
-)) as Prayers
+// d.prayers = (await consume.prayers.browse(
+//   {
+//     with: JSON.stringify(limit.value),
+//   } as BrowseConditionAll,
+//   false,
+// )) as Prayers
+d.prayers = (await m.handle.fetchPrayers()) as Prayers
 
 console.log("Prayers:", d.prayers)
 </script>
@@ -198,5 +244,10 @@ console.log("Prayers:", d.prayers)
 }
 .praying-hands {
   cursor: pointer;
+}
+.load-more {
+  display: flex;
+  justify-content: center;
+  margin-top: 30px;
 }
 </style>
