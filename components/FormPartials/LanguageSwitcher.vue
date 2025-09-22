@@ -1,12 +1,24 @@
 <template>
   <div class="container">
-    <n-select
-      class="language-switcher"
-      size="small"
-      v-model:value="selectedLanguage"
-      :options="languageOptions"
-      placeholder="Please Select"
-    />
+    <div v-if="p.screenSize">
+      <n-select
+        class="language-switcher"
+        size="small"
+        v-model:value="selectedLanguage"
+        :options="mobileLanguageOptions"
+        placeholder="Please Select"
+      />
+
+    </div>
+    <div v-else>
+      <n-select
+        class="language-switcher"
+        size="small"
+        v-model:value="selectedLanguage"
+        :options="languageOptions"
+        placeholder="Please Select"
+      />
+    </div>
   </div>
 </template>
 
@@ -15,6 +27,16 @@ import { ref, computed, watch } from "vue"
 import { useLanguagesStore } from "~/stores/useLanguagesStore"
 import { useAuthStore } from "~/stores/useAuthStore"
 import { useSettingStore } from "~/stores/useSettingsStore"
+
+const p = withDefaults(
+  defineProps<{
+    screenSize: boolean
+  }>(),
+  {
+    screenSize: false
+  },
+)
+
 
 // — selected value
 const selectedLanguage = ref<number>(1)
@@ -35,6 +57,12 @@ const languageOptions = computed(() =>
   languageStore.languages.map((lang: any) => ({
     label: lang.name,
     value: lang.id,
+  })),
+)
+const mobileLanguageOptions = computed(() =>
+  languageStore.languages.map((lang: any) => ({
+    label: lang.locale.toUpperCase(),
+    value: lang.id
   })),
 )
 
@@ -82,13 +110,14 @@ watch(
 
 <style lang="scss" scoped>
 .container {
-  width: 200px;
+  // width: 200px;
 
   .language-switcher {
     /* display: block; */
     display: flex;
     align-items: center;
     justify-content: center;
+    min-width: 70px;
 
     .n-base-selection {
       display: block;

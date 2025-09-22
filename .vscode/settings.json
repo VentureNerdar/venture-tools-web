@@ -12,5 +12,9 @@
   "editor.tokenColorCustomizations": {
     "comments": "",
     "textMateRules": []
+  },
+  "kiroAgent.configureMCP": "Disabled",
+  "[vue]": {
+    "editor.defaultFormatter": "Vue.volar"
   }
 }

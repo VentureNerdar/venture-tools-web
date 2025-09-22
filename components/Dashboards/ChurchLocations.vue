@@ -26,8 +26,7 @@ const toLatLng = (loc: { lat: number; long?: number; lng?: number }) => ({
   lat: loc.lat,
   lng: loc.lng ?? loc.long!,
 })
-
-onMounted(async () => {
+const initMap = async () => {
   const { Map } = (await google.maps.importLibrary(
     "maps",
   )) as google.maps.MapsLibrary
@@ -59,12 +58,18 @@ onMounted(async () => {
 
   if (locations.length > 1) map.fitBounds(bounds)
   else map.setCenter(toLatLng(locations[0]))
+}
+
+onMounted(async () => {
+  await initMap()
 })
+
 </script>
 
 <style scoped>
 .map-container {
   width: 100%;
   height: 100%;
+  /* height: 400px */
 }
 </style>

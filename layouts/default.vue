@@ -5,7 +5,7 @@
   >
     <n-notification-provider :max="5">
       <n-dialog-provider>
-        <n-layout>
+        <n-layout v-if="!isMobile">
           <IncludesHeader />
 
           <div class="content">
@@ -27,6 +27,28 @@
 
           <IncludesFooter />
         </n-layout>
+        <!-- Mobile -->
+        <n-layout v-else>
+          <IncludesMobileHeader />
+          <!-- <IncludesMobileNavigation /> -->
+
+          <div class="content">
+            <div class="mobile-main">
+              <n-scrollbar
+                style="max-height: calc(100vh - 100px)"
+                :size="20"
+                :x-scrollable="false"
+                :show-scrollbar="true"
+              >
+                <NuxtPage />
+              </n-scrollbar>
+            </div>
+          </div>
+          <IncludesMobileFooter />
+
+        </n-layout>
+
+
       </n-dialog-provider>
     </n-notification-provider>
   </n-config-provider>
@@ -48,6 +70,16 @@ const currentTheme = computed(() =>
 const currentThemeOverrides = computed(() =>
   themeStore.darkMode ? darkThemeOverrides : lightThemeOverrides,
 )
+
+const width = ref(process.client ? window.innerWidth : 1200)
+const isMobile = computed(() => width.value < 768)
+
+if (process.client) {
+  window.addEventListener("resize", () => {
+    width.value = window.innerWidth
+  })
+
+}
 </script>
 
 <style lang="scss" scoped>
@@ -59,6 +91,15 @@ const currentThemeOverrides = computed(() =>
     height: calc(100vh - 90px);
     width: calc(100vw - 80px);
     margin-left: 60px;
+  }
+}
+
+.mobile-content {
+  height: calc(100vh - 80px);
+
+  .mobile-main {
+    padding: 10px;
+    height: calc(100vh - 90px);
   }
 }
 
