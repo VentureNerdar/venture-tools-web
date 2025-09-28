@@ -89,6 +89,13 @@
           >
             <SettingsPrayerPrompts />
           </n-tab-pane>
+          <n-tab-pane
+            name="ishare"
+            tab="iShare API"
+            class="tab"
+          >
+            <SettingsIShare />
+          </n-tab-pane>
         </n-tabs>
       </n-space>
     </div>
@@ -113,6 +120,7 @@
         <SettingsNotifications v-else-if="d.currentTab === 'notifications'" />
         <SettingsMovements v-else-if="d.currentTab === 'movements'" />
         <SettingsPrayerPrompts v-else-if="d.currentTab === 'prayer_prompts'" />
+        <SettingsIShare v-else-if="d.currentTab === 'ishare'" />
       </div>
     </div>
   </div>
@@ -140,6 +148,7 @@ const options = [
   { label: h.translate("notifications"), value: "notifications" },
   { label: h.translate("movements"), value: "movements" },
   { label: h.translate("prayer_prompts"), value: "prayer_prompts" },
+  { label: h.translate("ishare"), value: "ishare" },
 ]
 
 const width = ref(process.client ? window.innerWidth : 1200)

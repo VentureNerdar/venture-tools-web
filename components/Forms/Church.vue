@@ -12,9 +12,10 @@
       vertical
     >
       <n-card size="small">
+
         <n-grid
+          :cols="isMobile ? 1 : 10"
           x-gap="10"
-          :cols="10"
         >
           <n-gi>
             <n-form-item
@@ -98,13 +99,10 @@
           </n-gi>
 
           <n-gi span="3">
-            <n-form-item
-              :label="
-                helpers.translate('location') === ''
-                  ? 'Location'
-                  : helpers.translate('location')
-              "
-            >
+            <n-form-item :label="helpers.translate('location') === ''
+              ? 'Location'
+              : helpers.translate('location')
+              ">
               <n-input-group>
                 <n-input
                   v-model:value="d.model.location_longitude as string"
@@ -131,7 +129,7 @@
 
       <n-card size="small">
         <n-grid
-          :cols="5"
+          :cols="isMobile ? 1 : 5"
           x-gap="10"
         >
           <n-gi span="2">
@@ -170,9 +168,8 @@
             >
               <n-select
                 v-model:value="d.model.parent_church_id"
-                :placeholder="
-                  helpers.translate('select_a_parent_church_if_any')
-                "
+                :placeholder="helpers.translate('select_a_parent_church_if_any')
+                  "
                 filterable
                 clearable
                 remote
@@ -283,9 +280,7 @@
               path="member_count_by_people_group"
               :label="helpers.translate('member_count_by_people_group')"
             >
-              <n-switch
-                v-model:value="d.model.member_count_by_people_group as boolean"
-              ></n-switch>
+              <n-switch v-model:value="d.model.member_count_by_people_group as boolean"></n-switch>
             </n-form-item>
             <n-grid
               :cols="4"
@@ -298,15 +293,14 @@
                   :label="peopleGroup.name || ''"
                 >
                   <n-input-number
-                    :value="
-                      m.handle.getPeopleGroupCount(peopleGroup.id as number)
-                    "
+                    :value="m.handle.getPeopleGroupCount(peopleGroup.id as number)
+                      "
                     @update:value="
                       m.handle.setPeopleGroupCount(
                         peopleGroup.id as number,
                         $event as number,
                       )
-                    "
+                      "
                     clearable
                     :show-button="false"
                     :placeholder="helpers.translate('please_input')"
@@ -402,6 +396,7 @@ type ModelRefType = Ref<ChurchFormModel>
 const module = modules.churches
 
 // const h = useHelpers()
+const { isMobile } = useScreenSize()
 
 const consume = {
   users: useConsumeApi(RoutePaths.USERS),

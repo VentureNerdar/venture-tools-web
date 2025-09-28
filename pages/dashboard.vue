@@ -48,31 +48,43 @@
       <div class="mobile-select">
         <n-select
           size="large"
-          v-model:value="value"
+          v-model:value="d.currentTab"
           :options="options"
           @update:value="m.handleTabChange"
         />
       </div>
       <div class="mobile-tab">
-        <DashboardsInsights v-if="d.currentTab === 'insights'" />
-        <DashboardsGenerationalChurches v-else-if="d.currentTab === 'generational_churches'" />
-        <DashboardsPeopleGroups v-else-if="d.currentTab === 'people_groups'" />
-        <DashboardsChurchLocations v-else-if="d.currentTab === 'church_locations'" />
+        <div v-if="d.currentTab === 'insights'">
+          <DashboardsInsights />
+        </div>
+        <div
+          class="church-location"
+          v-else-if="d.currentTab === 'church_locations'"
+        >
+          <DashboardsChurchLocations />
+        </div>
+        <div v-else-if="d.currentTab === 'generational_churches'">
+          <DashboardsGenerationalChurches />
+        </div>
+        <div v-else-if="d.currentTab === 'people_groups'">
+          <DashboardsPeopleGroups />
+        </div>
+
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
+import { ref, reactive, computed, onMounted, watch } from "vue"
+import { useRoute, useRouter } from "vue-router"
+
 const route = useRoute()
 const router = useRouter()
-const value = ref('insights')
 
 // Language Switching
 const h = useHelpers()
 // e.o Language Switching
-
-
 
 const options = [
   { label: h.translate("insights"), value: "insights" },
@@ -81,7 +93,6 @@ const options = [
   { label: h.translate("people_groups"), value: "people_groups" },
 ]
 
-
 const width = ref(process.client ? window.innerWidth : 1200)
 const isMobile = computed(() => width.value < 768)
 
@@ -89,29 +100,36 @@ if (process.client) {
   window.addEventListener("resize", () => {
     width.value = window.innerWidth
   })
-
 }
+
 const d = reactive({
-  currentTab: route.query.settingType as string,
+  currentTab: "insights",
 })
 
-if (!("dashboardType" in route.query)) {
-  router.push({ query: { dashboardType: "insights" } })
-}
+onMounted(() => {
+  if (route.query.dashboardType) {
+    d.currentTab = route.query.dashboardType as string
+  } else {
+    router.replace({ query: { dashboardType: d.currentTab } })
+  }
+})
 
-const m = {
-  handleTabChange(tab: string) {
-    d.currentTab = tab
-    router.push({ query: { dashboardType: tab } })
-  },
-}
 
 watch(
   () => route.query.dashboardType,
   (dashboardType) => {
-    d.currentTab = dashboardType as string
-  },
+    if (dashboardType) {
+      d.currentTab = dashboardType as string
+    }
+  }
 )
+
+const m = {
+  handleTabChange(tab: string) {
+    d.currentTab = tab
+    router.replace({ query: { dashboardType: tab } })
+  },
+}
 </script>
 
 <style lang="scss" scoped>
@@ -138,6 +156,10 @@ html {
 .mobile-tab {
   margin-top: 20px;
   height: calc(100vh - 180px);
+
+  .church-location {
+    height: calc(100vh - 180px);
+  }
 
 }
 </style>

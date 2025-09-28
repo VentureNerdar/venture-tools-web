@@ -1,16 +1,17 @@
 <template>
   <div>
-    <h1 style="margin-top: 0px; color: #17badf">
+    <h1 style="margin-top: 0px; color: #17badf; margin-left: 10px;">
       {{ h.translate("our_progress") }}
     </h1>
 
     <n-space
       vertical
       :size="30"
+      style="padding: 10px;"
     >
       <n-grid
         x-gap="10"
-        :cols="6"
+        :cols="isMobile ? 2 : 6"
       >
         <n-gi>
           <n-card
@@ -37,7 +38,8 @@
 
       <n-grid
         x-gap="10"
-        :cols="6"
+        y-gap="10"
+        :cols="isMobile ? 2 : 6"
       >
         <n-gi>
           <n-card
@@ -112,7 +114,10 @@
         <PlusRound style="width: 20px" /> {{ h.translate("add_information") }}
       </h1>
 
-      <n-space :size="10">
+      <n-space
+        :size="10"
+        :vertical="isMobile"
+      >
         <n-button
           size="large"
           type="primary"
@@ -207,7 +212,8 @@ type DType = {
 }
 
 const h = useHelpers()
-const router = useRouter()
+const screenSize = useScreenSize()
+const isMobile = screenSize.isMobile
 
 const d = reactive({
   visibility: {

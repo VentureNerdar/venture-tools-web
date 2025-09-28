@@ -1,5 +1,8 @@
 <template>
-  <n-card size="small" class="container">
+  <n-card
+    size="small"
+    :class="{ container: !isMobile }"
+  >
     <div class="notification-table">
       <n-data-table
         :columns="columns"
@@ -8,7 +11,7 @@
         :pagination="false"
         :row-props="rowProps"
         max-height="calc(100vh - 304px)"
-        />
+      />
     </div>
   </n-card>
 </template>
@@ -27,53 +30,61 @@ const props = defineProps({
 })
 
 const data = ref<MovementNotificationFormModel[]>([])
-const helpers = useHelpers();
+const helpers = useHelpers()
+const { isMobile } = useScreenSize()
 // computed columns
-const columns = computed(() => [
-  {
-    title: helpers.translate('title'),
-     width: 200,
-    key: 'title',
-  },
-  {
-    title: helpers.translate('body'),
-    width: 300,
-    key: 'body'
-  },
-  {
-  title: '',
-  key: 'actions',
-  width: 100,
-  render(row: MovementNotificationFormModel) {
-    return h(
-      NButton,
-      {
-        size: 'small',
-        type: 'error',
-        strong: true,
-        onClick: (e: MouseEvent) => {
-          e.stopPropagation() // Prevent row click event
-          emit('delete-row', row)
-        },
-      },
-      {
-        icon: () =>
-          h(NIcon, null, {
-            default: () => h(DeleteForeverRound),
-          }),
-      }
-    )
-  },
-} 
-])
+const columns = computed(() => {
+  const base = [
+    {
+      title: helpers.translate('title'),
+      width: 200,
+      key: 'title',
+    },
 
- const rowProps = (row: any) => {
-    return {
-      style: 'cursor: pointer;',
-      onClick: () => {
-        emit('row-click', row)
-      }
+    {
+      title: '',
+      key: 'actions',
+      width: 100,
+      render(row: MovementNotificationFormModel) {
+        return h(
+          NButton,
+          {
+            size: 'small',
+            type: 'error',
+            strong: true,
+            onClick: (e: MouseEvent) => {
+              e.stopPropagation() // Prevent row click event
+              emit('delete-row', row)
+            },
+          },
+          {
+            icon: () =>
+              h(NIcon, null, {
+                default: () => h(DeleteForeverRound),
+              }),
+          }
+        )
+      },
     }
+  ]
+
+  if (!isMobile) {
+    base.push({
+      title: helpers.translate('body'),
+      width: 300,
+      key: 'body'
+    },)
+  }
+  return base
+})
+
+const rowProps = (row: any) => {
+  return {
+    style: 'cursor: pointer;',
+    onClick: () => {
+      emit('row-click', row)
+    }
+  }
 }
 watch(() => props.data, (newValue) => {
   data.value = newValue
@@ -84,6 +95,7 @@ watch(() => props.data, (newValue) => {
 <style lang="scss" scoped>
 .container {
   width: 620px;
+
   .notification-table {
     width: 600px;
     height: calc(100vh - 250px);

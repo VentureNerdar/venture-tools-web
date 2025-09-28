@@ -1,16 +1,16 @@
 <template>
-  <div class="container">
+  <div :class="isMobile ? 'mobile-container' : 'desktop-container'">
     <div>
-      <NotificationTable 
-        :data="notifications" 
-        @row-click="handleRowClick" 
+      <NotificationTable
+        :data="notifications"
+        @row-click="handleRowClick"
         @delete-row="handleDeleteRow"
       />
     </div>
     <div class="form-container">
-      <NotificationForm 
-        v-model:form="form" 
-        @update:form="handleFormUpdate" 
+      <NotificationForm
+        v-model:form="form"
+        @update:form="handleFormUpdate"
       />
     </div>
   </div>
@@ -28,6 +28,7 @@ const form = ref({
 const notifications = ref<MovementNotificationFormModel[]>([])
 
 const authStore = useAuthStore()
+const { isMobile } = useScreenSize()
 
 const handleRowClick = (row: any) => {
   form.value.title = row.title
@@ -86,11 +87,18 @@ fetchNotification()
 </script>
 
 <style lang="scss" scoped>
-.container {
+.desktop-container {
   display: flex;
   gap: 10px;
+
   .form-container {
     width: 100%;
   }
+}
+
+.mobile-container {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 10px;
 }
 </style>

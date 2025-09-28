@@ -13,7 +13,7 @@
     >
       <n-grid
         x-gap="10"
-        :cols="4"
+        :cols="isMobile ? 1 : 4"
       >
         <!-- Is Active -->
         <n-gi>
@@ -40,13 +40,10 @@
         <!-- e.o Name -->
 
         <n-gi span="2">
-          <n-form-item
-            :label="
-              h.translate('location') === ''
-                ? 'Location'
-                : h.translate('location')
-            "
-          >
+          <n-form-item :label="h.translate('location') === ''
+            ? 'Location'
+            : h.translate('location')
+            ">
             <n-input-group>
               <n-input
                 v-model:value="d.model.location_longitude"
@@ -71,7 +68,7 @@
 
       <n-grid
         x-gap="10"
-        :cols="4"
+        :cols="isMobile ? 1 : 4"
       >
         <!-- Community Checklists -->
         <n-gi span="2">
@@ -103,7 +100,7 @@
 
       <n-grid
         x-gap="10"
-        :cols="4"
+        :cols="isMobile ? 1 : 4"
       >
         <n-gi span="2">
           <n-card size="small">
@@ -111,45 +108,38 @@
               :size="10"
               vertical
             >
-              <n-checkbox
-                v-model:checked="d.model.conducted_survey_of_community_needs"
-              >
+              <n-checkbox v-model:checked="d.model.conducted_survey_of_community_needs">
                 {{ h.translate("conducted_survey_of_community_needs") }}
               </n-checkbox>
 
               <n-input
                 v-model:value="d.model.community_needs_1"
-                :disabled="
-                  d.model.conducted_survey_of_community_needs ? false : true
-                "
+                :disabled="d.model.conducted_survey_of_community_needs ? false : true
+                  "
                 :placeholder="h.translate('community_needs') + ' 1'"
               />
               <n-input
                 v-model:value="d.model.community_needs_2"
-                :disabled="
-                  d.model.conducted_survey_of_community_needs ? false : true
-                "
+                :disabled="d.model.conducted_survey_of_community_needs ? false : true
+                  "
                 :placeholder="h.translate('community_needs') + ' 2'"
               />
               <n-input
                 v-model:value="d.model.community_needs_3"
-                :disabled="
-                  d.model.conducted_survey_of_community_needs ? false : true
-                "
+                :disabled="d.model.conducted_survey_of_community_needs ? false : true
+                  "
                 :placeholder="h.translate('community_needs') + ' 3'"
               />
               <n-input
                 v-model:value="d.model.community_needs_4"
-                :disabled="
-                  d.model.conducted_survey_of_community_needs ? false : true
-                "
+                :disabled="d.model.conducted_survey_of_community_needs ? false : true
+                  "
                 :placeholder="h.translate('community_needs') + ' 4'"
               />
               <n-input
                 v-model:value="d.model.community_needs_5"
-                :disabled="
-                  d.model.conducted_survey_of_community_needs ? false : true
-                "
+                :disabled="d.model.conducted_survey_of_community_needs ? false : true
+                  "
                 :placeholder="h.translate('community_needs') + ' 5'"
               />
             </n-space>
@@ -164,13 +154,11 @@
             hoverable
           >
             <template #header>
-              <div
-                style="
+              <div style="
                   display: flex;
                   justify-content: space-between;
                   align-items: center;
-                "
-              >
+                ">
                 <b>
                   {{ h.translate("churches") }} :
                   {{ d.model.churches ? d.model.churches.length : "" }}
@@ -239,10 +227,10 @@ type ModelRefType = Ref<CommunityFormModel>
 const module = modules.communities
 
 const emit = defineEmits(["formChanged"])
-// Language Switching
+
 const h = useHelpers()
 const authUser = useAuthStore().authUser
-// e.o Language Switching
+const { isMobile } = useScreenSize()
 
 // props
 // Self Ref : Need to change editData form model type

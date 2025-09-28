@@ -1,11 +1,12 @@
 <template>
   <n-grid
+    :cols="isMobile ? 12 : 5"
     y-gap="10"
-    cols="5"
   >
     <n-gi
-      :offset="1"
-      :span="3"
+      class="container"
+      :span="isMobile ? 12 : 3"
+      :offset="isMobile ? 0 : 1"
     >
       <n-card size="small">
         <n-form
@@ -133,9 +134,7 @@
               size="small"
               @click="handleProfileUpdate"
             >
-              <template #icon
-                ><n-icon :component="CloudUploadRound"
-              /></template>
+              <template #icon><n-icon :component="CloudUploadRound" /></template>
               {{ h.translate("update") }}
             </n-button>
           </n-flex>
@@ -173,6 +172,9 @@ const formRef = ref<FormInst | null>(null)
 const formValue = ref({ ...(auth.authUser as any) })
 
 const h = useHelpers()
+const screenSize = useScreenSize()
+const isMobile = screenSize.isMobile
+
 
 const d = reactive({
   loading: {
@@ -315,3 +317,10 @@ const handleProfileUpdate = async () => {
 m.movementOptions()
 m.contactOptions()
 </script>
+
+<style lang="scss" scoped>
+.container {
+  padding: 5px;
+  // width: 100vw;
+}
+</style>

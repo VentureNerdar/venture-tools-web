@@ -1,7 +1,13 @@
 <template>
   <div>
-    <n-space :size="10" vertical>
-      <n-alert v-if="data.deleted_at !== null" type="error">
+    <n-space
+      :size="10"
+      vertical
+    >
+      <n-alert
+        v-if="data.deleted_at !== null"
+        type="error"
+      >
         <template #icon>
           <n-icon>
             <DeleteRound />
@@ -22,14 +28,19 @@
 
             <td style="width: 20%">
               <b>{{ h.translate('contact_status') }} :</b> &nbsp;
-              <n-tag :border="false" type="info">
-                {{ m.contactStatus(data.contact_status_id as number) }}</n-tag
+              <n-tag
+                :border="false"
+                type="info"
               >
+                {{ m.contactStatus(data.contact_status_id as number) }}</n-tag>
             </td>
 
             <td style="width: 20%">
               <b>{{ h.translate('faith_status') }} :</b> &nbsp;
-              <n-tag :border="false" type="info">
+              <n-tag
+                :border="false"
+                type="info"
+              >
                 {{ m.faithStatus(data.faith_status_id as number) }}
               </n-tag>
             </td>
@@ -65,8 +76,14 @@
                 <b>{{ h.translate('people_group') }} </b>
               </div>
 
-              <n-space :size="10" v-if="dataPeopleGroups">
-                <n-tag v-for="pg in dataPeopleGroups" type="default">
+              <n-space
+                :size="10"
+                v-if="dataPeopleGroups"
+              >
+                <n-tag
+                  v-for="pg in dataPeopleGroups"
+                  type="default"
+                >
                   {{ "name" in pg ? (pg as any).name : "N/A" }}
                 </n-tag>
               </n-space>
@@ -110,12 +127,18 @@
         </tbody>
       </table>
 
-      <n-table :bordered="true" :single-line="false">
+      <n-table
+        :bordered="true"
+        :single-line="false"
+      >
         <tbody>
           <tr>
             <td>
               <b>{{ h.translate('created_at') }}</b> &nbsp;
-              <n-text tag="div" code>{{
+              <n-text
+                tag="div"
+                code
+              >{{
                 useHelpers().formatDate(
                   data.created_at ? data.created_at : "N/A",
                 )
@@ -123,7 +146,10 @@
             </td>
             <td>
               <b>{{ h.translate('updated_at') }}</b> &nbsp;
-              <n-text tag="div" code>{{
+              <n-text
+                tag="div"
+                code
+              >{{
                 useHelpers().formatDate(
                   data.updated_at ? data.updated_at : "N/A",
                 )
@@ -131,7 +157,10 @@
             </td>
             <td>
               <b>{{ h.translate('deleted_at') }}</b> &nbsp;
-              <n-text tag="div" code>{{
+              <n-text
+                tag="div"
+                code
+              >{{
                 useHelpers().formatDate(
                   data.deleted_at ? data.deleted_at : "N/A",
                 )
@@ -177,7 +206,7 @@ const s = {
   faithMilestones: useFaithMilestoneStore(),
 }
 
- const h = useHelpers()
+const h = useHelpers()
 
 const d = reactive({
   faithMilestones: [] as any[],

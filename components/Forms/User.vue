@@ -55,12 +55,14 @@
         <n-radio-group
           v-model:value="d.model.user_role_id"
           name="userRoleRadioGroup"
+          style="display: flex; flex-wrap: wrap; "
         >
           <n-radio-button
             v-for="role in userRoleOptions"
             :key="role.value"
             :value="role.value"
             :label="role.label"
+            style="margin-bottom:2px"
           />
         </n-radio-group>
       </n-flex>
@@ -71,6 +73,7 @@
     <n-form-item
       path="movement"
       :label="helpers.translate('movement')"
+      :style="{ marginTop: isMobile ? '20px' : '0px' }"
     >
       <n-select
         v-model:value="d.model.movement_id"
@@ -203,6 +206,7 @@ const module = modules.users
 const emit = defineEmits(["formChanged"])
 
 const helpers = useHelpers()
+const { isMobile } = useScreenSize()
 
 // props
 // Self Ref : Need to change editData form model type

@@ -14,7 +14,7 @@
       <n-card size="small">
         <n-grid
           x-gap="10"
-          :cols="4"
+          :cols="isMobile ? 1 : 4"
         >
           <!-- Is Active -->
           <n-gi>
@@ -110,7 +110,7 @@
       <n-card size="small">
         <n-grid
           x-gap="10"
-          :cols="4"
+          :cols="isMobile ? 1 : 4"
         >
           <!-- Name -->
           <n-gi>
@@ -223,7 +223,7 @@
           </n-gi>
         </n-grid>
 
-        <n-grid :cols="4">
+        <n-grid :cols="isMobile ? 1 : 4">
           <n-gi span="4">
             <n-card size="small">
               <n-space vertical>
@@ -231,7 +231,7 @@
 
                 <n-grid
                   x-gap="10"
-                  :cols="5"
+                  :cols="isMobile ? 1 : 5"
                 >
                   <n-gi
                     v-for="cp in d.options.communicationPlatforms"
@@ -239,9 +239,8 @@
                   >
                     <ModalsContactCommunicationPlatforms
                       :platform="cp"
-                      :contactCommunicationPlatforms="
-                        d.model.contact_communication_platforms
-                      "
+                      :contactCommunicationPlatforms="d.model.contact_communication_platforms
+                        "
                       @save-clicked="
                         m.handle.emit.communicationPlatformSaveClicked
                       "
@@ -264,7 +263,7 @@
       <n-card size="small">
         <n-grid
           x-gap="10"
-          :cols="4"
+          :cols="isMobile ? 1 : 4"
         >
           <!-- Faith Milestones -->
           <n-gi span="2">
@@ -278,9 +277,8 @@
                   v-for="fm in d.options.faithMilestones"
                   :type="m.handle.change.faithMilestoneOptionType(fm.id)"
                   size="medium"
-                  :secondary="
-                    m.handle.change.faithMilestoneOptionSecondary(fm.id)
-                  "
+                  :secondary="m.handle.change.faithMilestoneOptionSecondary(fm.id)
+                    "
                   @click="m.handle.addToFaithMilestoneForm(fm)"
                 >
                   <n-image
@@ -450,6 +448,7 @@ const consume = {
 const emit = defineEmits(["formChanged", "beingUploaded"])
 
 const helpers = useHelpers()
+const { isMobile } = useScreenSize()
 
 // props
 // Self Ref : Need to change editData form model type
@@ -573,7 +572,7 @@ if (p.editData !== false) {
     s.communicationPlatforms.communicationPlatforms.forEach(
       (cp: { name: string; id: number }) => {
         if (modelRefRef.contact_communication_platforms !== undefined) {
-          ;(
+          ; (
             modelRefRef.contact_communication_platforms as {
               [key: number]: any[]
             }
@@ -600,7 +599,7 @@ if (p.editData !== false) {
   s.communicationPlatforms.communicationPlatforms.forEach(
     (cp: { name: string; id: number }) => {
       if (modelRefRef.contact_communication_platforms) {
-        ;(
+        ; (
           modelRefRef.contact_communication_platforms as {
             [key: number]: any[]
           }
@@ -958,7 +957,7 @@ const m = {
         d.options.communicationPlatforms.reverse()
     },
 
-    searchOption: () => {},
+    searchOption: () => { },
   },
 
   render: {

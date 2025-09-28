@@ -1,6 +1,9 @@
 <template>
   <div>
-    <div style="width: 400px">
+    <div
+      style="width: 400px"
+      :class="{ 'tab-wrapper': isMobile }"
+    >
       <n-tabs
         v-model:value="activeTab"
         type="segment"
@@ -34,6 +37,8 @@
 import { ref } from "vue"
 
 const activeTab = ref("tree")
+const screenSize = useScreenSize()
+const isMobile = screenSize.isMobile
 </script>
 
 <style scoped>
@@ -42,5 +47,9 @@ const activeTab = ref("tree")
   height: calc(100vh - 160px);
   justify-content: center;
   align-items: center;
+}
+
+.tab-wrapper {
+  margin: 0 auto
 }
 </style>

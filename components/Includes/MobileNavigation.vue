@@ -8,7 +8,7 @@
       <NuxtLink
         :to="nav.link"
         class="nuxt-link"
-        @click="handleClick"
+        @click="handleClick(nav.title)"
       >
         {{ nav.title.toUpperCase() }}
       </NuxtLink>
@@ -28,8 +28,6 @@ interface NavigationItem {
 const emit = defineEmits(["link-clicked"])
 const h = useHelpers()
 const auth = useAuthStore()
-
-
 
 const navItems = [
   {
@@ -72,10 +70,23 @@ const navItems = [
     link: "/movement-users",
     roles: [3],
   },
+  {
+    title: "Profile",
+    link: "/profile",
+    roles: [1, 2, 3, 4, 5]
+  },
+  {
+    title: "Logout",
+    roles: [1, 2, 3, 4, 5]
+  }
 ] as NavigationItem[]
 
-const handleClick = () => {
+const handleClick = (navTitle: string) => {
+  if (navTitle == 'Logout') {
+    auth.logout()
+  }
   emit('link-clicked')
+
 }
 const userRoledNavItems = computed(() => {
   return navItems
