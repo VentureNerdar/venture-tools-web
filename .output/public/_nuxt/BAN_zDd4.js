@@ -1,0 +1,1 @@
+import{r,D as n,x as d,bd as a}from"./YtHq8OO6.js";function w(){const e=r(window.innerWidth),i=n(()=>e.value<768),t=n(()=>e.value>=768&&e.value<1024),s=n(()=>e.value>=1024);{const o=()=>{e.value=window.innerWidth};d(()=>{window.addEventListener("resize",o)}),a(()=>{window.removeEventListener("resize",o)})}return{width:e,isMobile:i,isTablet:t,isDesktop:s}}export{w as u};
