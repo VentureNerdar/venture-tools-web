@@ -6,6 +6,7 @@
         secondary
         size="small"
         @click="m.handleDelete"
+        :style="`width: ${p.buttonWidth ?? 'auto'};`"
       >
         <template #icon>
           <component :is="p.permanent ? DeleteForeverRound : ArchiveRound" />
@@ -31,7 +32,8 @@
   const p = withDefaults(defineProps<{
     permanent?: boolean
     model: RoutePaths,
-    id: number
+    id: number,
+    buttonWidth?: string
   }>(), {
     permanent: true
   })
@@ -42,7 +44,7 @@
     handleDelete() {
       dialog.warning({
         title: p.permanent ? h.translate('confirm_deletion') : h.translate('confirm_archive'),
-        content: p.permanent 
+        content: p.permanent
           ? h.translate('are_you_sure_you_cannot_undo_this_action_afterwards')
           : h.translate('are_you_sure_you_want_to_archive_this_item'),
         positiveText: p.permanent ? h.translate('confirm_delete') : h.translate('confirm_archive'),

@@ -6,6 +6,7 @@
         secondary
         size="small"
         @click="m.handle.click.viewModalButton"
+        :style="`width: ${p.buttonWidth ?? 'auto'};`"
       >
         <template #icon>
           <TextSnippetRound />
@@ -91,7 +92,8 @@
     id: number,
     data: any,
     viewComponent: any,
-    width: ModalWidthSize
+    width: ModalWidthSize,
+    buttonWidth?: string
   }>(), {
   })
 

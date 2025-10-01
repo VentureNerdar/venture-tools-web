@@ -1,6 +1,6 @@
 <template>
 
-  <GenericsActionBar>
+  <GenericsActionBar v-if="!isMobile">
     <template #left>
       <b>{{ h.translate('manage_faith_milestones') }}</b>
     </template>
@@ -28,7 +28,8 @@
   import modules from '~/utils/modules'
 
   const module = modules.faithMilestones as Module
-const h = useHelpers()
+  const h = useHelpers()
+  const { isMobile } = useDevice()
 
   const d = reactive({
     loading: {

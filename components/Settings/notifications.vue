@@ -1,12 +1,15 @@
 <template>
-  <GenericsActionBar>
+  <GenericsActionBar v-if="!isMobile">
     <template #left>
       <b>Manage Notification</b>
     </template>
     <template #right></template>
   </GenericsActionBar>
 
-  <n-scrollbar style="height: calc(100vh - 160px)">
+  <n-scrollbar
+    style="height: calc(100vh - 160px)"
+    v-if="!isMobile"
+  >
     <n-card size="small">
       <n-space
         vertical
@@ -110,13 +113,11 @@
               <n-space
                 :size="20"
                 vertical
-                >
+              >
                 <!-- :placeholder="`Enter the message title in ${lang.name}`" -->
                 <n-input
                   v-model:value="notiForm.notificationMessage[lang.name].title"
                   :placeholder="h.translate(h.toSnakeCase(`enter_the_message_title_in_${lang.name}`))"
-
-
                   :disabled="!notiForm.enabled"
                   maxlength="100"
                   show-count
@@ -150,6 +151,8 @@
       </n-space>
     </n-card>
   </n-scrollbar>
+
+  <DisplaysMobileEmpty v-else />
 </template>
 
 <script
@@ -159,6 +162,7 @@
   import { RoutePaths, type NotificationFormModel } from "~/types/index.d"
   import { useLanguagesStore } from "~/stores/useLanguagesStore"
   import type { SelectOption } from 'naive-ui'
+
 
   // Types
   interface TimeConfig {
@@ -185,6 +189,7 @@
   // Store
   const languagesStore = useLanguagesStore()
   const h = useHelpers()
+  const { isMobile } = useDevice()
 
   // Constants
   const intervalUnitOptions: SelectOption[] = [

@@ -68,7 +68,8 @@ export default defineNuxtConfig({
 
   modules: [
     "@nuxtjs/color-mode",
-    "@nuxt/eslint"
+    "@nuxt/eslint",
+    "@nuxtjs/device"
   ],
 
   alias: {

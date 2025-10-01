@@ -1,5 +1,8 @@
 <template>
-  <n-scrollbar style="max-height: calc(100vh - 120px);">
+  <n-scrollbar
+    v-if="!isMobile"
+    style="max-height: calc(100vh - 120px);"
+  >
     <n-spin :show="d.loading.page">
       <GenericsActionBar>
         <template #left>
@@ -122,6 +125,8 @@
     />
   </n-scrollbar>
 
+  <DisplaysMobileEmpty v-else />
+
 </template>
 
 <script
@@ -136,6 +141,7 @@
 
   const selectedLanguage = ref<number | undefined>(undefined)
   const h = useHelpers()
+  const { isMobile } = useDevice()
 
   const models = {
     languages: RoutePaths.LANGUAGES,

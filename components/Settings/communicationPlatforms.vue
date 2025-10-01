@@ -1,6 +1,6 @@
 <template>
 
-  <GenericsActionBar>
+  <GenericsActionBar v-if="!isMobile">
     <template #left>
       <b>{{ h.translate('manage_communication_platforms') }}</b>
     </template>
@@ -23,12 +23,13 @@
   setup
 >
 
-import type { StoreOptions, FormModalOptions } from '~/types/index.d'
+  import type { StoreOptions, FormModalOptions } from '~/types/index.d'
   import type { Module } from '~/utils/modules'
   import modules from '~/utils/modules'
 
   const module = modules.communicationPlatforms as Module
   const h = useHelpers()
+  const { isMobile } = useDevice()
   const d = reactive({
     loading: {
       page: false

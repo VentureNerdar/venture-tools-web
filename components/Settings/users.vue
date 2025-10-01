@@ -1,11 +1,14 @@
 <template>
   <GenericsActionBar>
+
     <template #left>
-      <b>{{ h.translate('manage_users') }}</b>
+      <b>{{ isMobile ? ' ' : h.translate('manage_users') }}</b>
     </template>
 
     <template #right>
-      <ModalsUserRole />
+      <div :style="`${isMobile ? 'padding-right: 10px; margin-top: 10px;' : ''}`">
+        <ModalsUserRole />
+      </div>
     </template>
   </GenericsActionBar>
 
@@ -28,6 +31,7 @@
   import { RoutePaths } from '~/types/index.d'
 
   import modules from '~/utils/modules'
+  const { isMobile } = useDevice()
 
   const getMovement = async () => {
     const response = await consume.movements.browse({

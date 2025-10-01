@@ -99,10 +99,11 @@
         </n-tabs>
       </n-space>
     </div>
+
     <div v-else>
       <div class="mobile-select">
         <n-select
-          size="large"
+          size="small"
           v-model:value="value"
           :options="options"
           @update:value="m.handleTabChange"
@@ -127,86 +128,91 @@
 
 </template>
 
-<script lang="ts" setup>
+<script
+  lang="ts"
+  setup
+>
 
-const route = useRoute()
-const router = useRouter()
+  const route = useRoute()
+  const router = useRouter()
 
-// Language Switching
-const h = useHelpers()
-// e.o Language Switching
-const value = ref('users')
+  // Language Switching
+  const h = useHelpers()
+  // e.o Language Switching
+  const value = ref('users')
 
-const options = [
-  { label: h.translate("users"), value: "users" },
-  { label: h.translate("communication_platforms"), value: "communication_platforms" },
-  { label: h.translate("faith_milestones"), value: "faith_milestones" },
-  { label: h.translate("people_groups"), value: "people_groups" },
-  { label: h.translate("denominations"), value: "denominations" },
-  { label: h.translate("community_checklists"), value: "community_checklists" },
-  { label: h.translate("languages"), value: "languages" },
-  { label: h.translate("notifications"), value: "notifications" },
-  { label: h.translate("movements"), value: "movements" },
-  { label: h.translate("prayer_prompts"), value: "prayer_prompts" },
-  { label: h.translate("ishare"), value: "ishare" },
-]
+  const options = [
+    { label: h.translate("users"), value: "users" },
+    { label: h.translate("communication_platforms"), value: "communication_platforms" },
+    { label: h.translate("faith_milestones"), value: "faith_milestones" },
+    { label: h.translate("people_groups"), value: "people_groups" },
+    { label: h.translate("denominations"), value: "denominations" },
+    { label: h.translate("community_checklists"), value: "community_checklists" },
+    { label: h.translate("languages"), value: "languages" },
+    { label: h.translate("notifications"), value: "notifications" },
+    { label: h.translate("movements"), value: "movements" },
+    { label: h.translate("prayer_prompts"), value: "prayer_prompts" },
+    { label: h.translate("ishare"), value: "ishare" },
+  ]
 
-const width = ref(process.client ? window.innerWidth : 1200)
-const isMobile = computed(() => width.value < 768)
+  const width = ref(process.client ? window.innerWidth : 1200)
+  const isMobile = computed(() => width.value < 768)
 
-if (process.client) {
-  window.addEventListener("resize", () => {
-    width.value = window.innerWidth
+  if (process.client) {
+    window.addEventListener("resize", () => {
+      width.value = window.innerWidth
+    })
+  }
+
+
+  const d = reactive({
+    currentTab: route.query.settingType as string,
   })
-}
 
+  if (!("settingType" in route.query)) {
+    router.push({ query: { settingType: "users" } })
+  }
 
-const d = reactive({
-  currentTab: route.query.settingType as string,
-})
+  const m = {
+    handleTabChange(tab: string) {
+      d.currentTab = tab
+      router.push({ query: { settingType: tab } })
+    },
+  }
 
-if (!("settingType" in route.query)) {
-  router.push({ query: { settingType: "users" } })
-}
-
-const m = {
-  handleTabChange(tab: string) {
-    d.currentTab = tab
-    router.push({ query: { settingType: tab } })
-  },
-}
-
-watch(
-  () => route.query.settingType,
-  (settingType) => {
-    d.currentTab = settingType as string
-  },
-)
+  watch(
+    () => route.query.settingType,
+    (settingType) => {
+      d.currentTab = settingType as string
+    },
+  )
 </script>
 
-<style lang="scss" scoped>
-html {
-  .tab {
-    border: 1px solid rgba(0, 0, 0, 0.09);
-    border-radius: 0 4px 4px 0;
-    border-left: 0px;
-    padding: 10px;
-  }
-
-  &.dark {
+<style
+  lang="scss"
+  scoped
+>
+  html {
     .tab {
-      border-color: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(0, 0, 0, 0.09);
+      border-radius: 0 4px 4px 0;
+      border-left: 0px;
       padding: 10px;
     }
+
+    &.dark {
+      .tab {
+        border-color: rgba(255, 255, 255, 0.08);
+        padding: 10px;
+      }
+    }
   }
-}
 
-.mobile-select {
-  margin: 5px;
-}
+  .mobile-select {
+    margin: 5px;
+  }
 
-.mobile-tab {
-  margin-top: 20px;
-
-}
+  .mobile-tab {
+    /* margin-top: 20px; */
+  }
 </style>

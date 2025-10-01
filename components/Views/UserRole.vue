@@ -16,7 +16,10 @@
         {{ h.translate('this_user_role_is_in_trash') }}
       </n-alert>
 
-      <n-table :single-line="false">
+      <n-table
+        v-if="!isMobile"
+        :single-line="false"
+      >
         <tbody>
           <tr>
             <td>
@@ -28,7 +31,6 @@
             </td>
           </tr>
 
-
           <tr>
             <td colspan="2">
               <div><b>{{ h.translate('description') }}</b></div>
@@ -39,36 +41,34 @@
       </n-table>
 
       <n-table
-        :bordered="true"
+        v-else
         :single-line="false"
       >
         <tbody>
           <tr>
             <td>
-              <b>{{ h.translate('created_at') }} </b> &nbsp;
-              <n-text
-                tag="div"
-                code
-              >{{ data.created_at }}</n-text>
-            </td>
-            <td>
-              <b>{{ h.translate('updated_at') }} </b> &nbsp;
-              <n-text
-                tag="div"
-                code
-              >{{ data.updated_at }}</n-text>
-            </td>
-            <td>
-              <b>{{ h.translate('deleted_at') }} </b> &nbsp;
-              <n-text
-                tag="div"
-                code
-              >{{ data.deleted_at ? data.deleted_at : 'N/A' }}</n-text>
+              <b>{{ h.translate('name') }} :</b> &nbsp; {{ data.name }}
             </td>
           </tr>
-        </tbody>
 
+          <tr>
+            <td>
+              <b>{{ h.translate('label') }} :</b> &nbsp;
+              {{ data.label }}
+            </td>
+          </tr>
+
+          <tr>
+            <td>
+              <div><b>{{ h.translate('description') }}</b></div>
+              <p>{{ data.description }}</p>
+            </td>
+          </tr>
+
+        </tbody>
       </n-table>
+
+      <DisplaysMetaInfoViewTable :data="data" />
     </n-space>
   </div>
 </template>
@@ -84,6 +84,7 @@
 
   const emit = defineEmits(['modalTitle'])
   const h = useHelpers()
+  const { isMobile } = useDevice()
 
   const p = withDefaults(defineProps<{
     id: number,

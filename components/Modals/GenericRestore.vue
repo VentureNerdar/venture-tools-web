@@ -6,6 +6,7 @@
         secondary
         size="small"
         @click="m.handleRestore"
+        :style="`width: ${p.buttonWidth ?? 'auto'};`"
       >
         <template #icon>
           <RestorePageRound />
@@ -30,7 +31,8 @@
 
   const p = withDefaults(defineProps<{
     model: RoutePaths,
-    id: number
+    id: number,
+    buttonWidth?: string
   }>(), {
   })
 

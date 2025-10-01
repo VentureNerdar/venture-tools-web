@@ -1,6 +1,6 @@
 <template>
 
-  <GenericsActionBar>
+  <GenericsActionBar v-if="!isMobile">
     <template #left>
       <b>{{ h.translate('manage_people_groups') }}</b>
     </template>
@@ -29,6 +29,7 @@
 
   const module = modules.peopleGroups as Module
   const h = useHelpers()
+  const { isMobile } = useDevice()
 
   console.log(module)
 

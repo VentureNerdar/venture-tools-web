@@ -27,37 +27,8 @@
         </tbody>
       </n-table>
 
-      <n-table
-        :bordered="true"
-        :single-line="false"
-      >
-        <tbody>
-          <tr>
-            <td>
-              <b>{{ h.translate('created_at') }}</b> &nbsp;
-              <n-text
-                tag="div"
-                code
-              >{{ data.created_at }}</n-text>
-            </td>
-            <td>
-              <b>{{ h.translate('updated_at') }}</b> &nbsp;
-              <n-text
-                tag="div"
-                code
-              >{{ data.updated_at }}</n-text>
-            </td>
-            <td>
-              <b>{{ h.translate('deleted_at') }}</b> &nbsp;
-              <n-text
-                tag="div"
-                code
-              >{{ data.deleted_at ? data.deleted_at : 'N/A' }}</n-text>
-            </td>
-          </tr>
-        </tbody>
+      <DisplaysMetaInfoViewTable :data="data" />
 
-      </n-table>
     </n-space>
   </div>
 </template>
