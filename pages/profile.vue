@@ -34,16 +34,6 @@
           </n-form-item>
 
           <n-form-item
-            :label="h.translate('username')"
-            path="username"
-          >
-            <n-input
-              v-model:value="formValue.username"
-              :placeholder="h.translate('input_username')"
-            />
-          </n-form-item>
-
-          <n-form-item
             :label="h.translate('email_address')"
             path="email"
           >

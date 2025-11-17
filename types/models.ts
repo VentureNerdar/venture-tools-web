@@ -2,7 +2,7 @@ import type { AgeGroups, GenderTypes } from "."
 
 export interface UserFormModel {
   name: string | null
-  username: string | null
+  // username: string | null
   email: string | null
   user_role_id: string | null
   movement_id: number | null

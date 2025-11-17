@@ -3,7 +3,7 @@ import type * as types from "@/types/models"
 export default {
   user: {
     name: null,
-    username: null,
+    // username: null,
     password: null,
     user_role_id: "3",
     biography: null,

@@ -121,7 +121,7 @@ export default {
       ],
       fields: [
         "name",
-        "username",
+        // "username",
         "email",
         "user_role_id",
         "is_active",
@@ -135,7 +135,7 @@ export default {
     form: {
       model: {
         name: null,
-        username: null,
+        // username: null,
         password: null,
         user_role_id: "3",
         biography: null,

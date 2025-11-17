@@ -19,17 +19,6 @@
     </n-form-item>
     <!-- e.o Name -->
 
-    <!-- Username -->
-    <n-form-item
-      path="username"
-      :label="helpers.translate('username')"
-    >
-      <n-input
-        v-model:value="d.model.username"
-        :placeholder="helpers.translate('please_input')"
-      />
-    </n-form-item>
-    <!-- e.o Username -->
 
     <!-- Password -->
     <n-form-item

@@ -27,7 +27,7 @@
                 <n-form-item path="identifier">
                   <n-input
                     v-model:value="form.identifier"
-                    placeholder="Email or Username"
+                    placeholder="Email or Phone"
                     @keydown.enter="handleLogin"
                   />
                 </n-form-item>
@@ -49,8 +49,7 @@
                     type="primary"
                     secondary
                     @click="handleLogin"
-                    >LOGIN</n-button
-                  >
+                  >LOGIN</n-button>
                 </n-space>
               </n-form>
             </n-space>
@@ -94,7 +93,7 @@ const rules = {
   identifier: [
     {
       required: true,
-      message: "Please input your email, username or phone number",
+      message: "Please input your email or phone number",
       trigger: "blur",
     },
   ],

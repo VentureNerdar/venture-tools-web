@@ -32,11 +32,11 @@
                     {{ data.is_active ? h.translate('active_up') : h.translate('inactive_up') }}
                   </n-tag>
                 </n-text>
-                <div class="wrap-info">
+                <!-- <div class="wrap-info">
                   <n-text depth="3">
                     @{{ data.username }}
                   </n-text>
-                </div>
+                </div> -->
               </td>
               <td>
                 <n-text type="info">
@@ -130,11 +130,11 @@
                     {{ data.is_active ? h.translate('active_up') : h.translate('inactive_up') }}
                   </n-tag>
                 </n-text>
-                <div class="wrap-info">
+                <!-- <div class="wrap-info">
                   <n-text depth="3">
                     @{{ data.username }}
                   </n-text>
-                </div>
+                </div> -->
               </td>
 
             </tr>
@@ -228,52 +228,46 @@
   </div>
 </template>
 
-<script
-  lang="ts"
-  setup
->
-  import { DeleteRound } from '@vicons/material'
-  import { useLanguagesStore } from '~/stores/useLanguagesStore'
-  import { useUserStore } from '~/stores/useUsersStore'
+<script lang="ts" setup>
+import { DeleteRound } from '@vicons/material'
+import { useLanguagesStore } from '~/stores/useLanguagesStore'
+import { useUserStore } from '~/stores/useUsersStore'
 
-  const emit = defineEmits(['modalTitle'])
-  const h = useHelpers()
-  const { isMobile } = useDevice()
+const emit = defineEmits(['modalTitle'])
+const h = useHelpers()
+const { isMobile } = useDevice()
 
-  const p = withDefaults(defineProps<{
-    id: number,
-    data: any
-  }>(), {
-  })
+const p = withDefaults(defineProps<{
+  id: number,
+  data: any
+}>(), {
+})
 
-  const s = {
-    userRole: useUserStore(),
-    systemLanguages: useLanguagesStore()
+const s = {
+  userRole: useUserStore(),
+  systemLanguages: useLanguagesStore()
+}
+
+const m = {
+  userRole: (roleID: number) => {
+
+    const role = s.userRole.userRoles.find((role: any) => role.id === roleID)
+    return role ? role.name.toUpperCase() : 'N/A'
+
+  },
+
+  languagePreference: (languageID: number) => {
+    const language = s.systemLanguages.languages.find((lang: any) => lang.id === languageID)
+    return language ? language.name : 'N/A'
   }
+}
 
-  const m = {
-    userRole: (roleID: number) => {
-
-      const role = s.userRole.userRoles.find((role: any) => role.id === roleID)
-      return role ? role.name.toUpperCase() : 'N/A'
-
-    },
-
-    languagePreference: (languageID: number) => {
-      const language = s.systemLanguages.languages.find((lang: any) => lang.id === languageID)
-      return language ? language.name : 'N/A'
-    }
-  }
-
-  emit('modalTitle', p.data.name)
+emit('modalTitle', p.data.name)
 
 </script>
 
-<style
-  scoped
-  lang="scss"
->
-  .wrap-info {
-    margin-top: 10px;
-  }
+<style scoped lang="scss">
+.wrap-info {
+  margin-top: 10px;
+}
 </style>
