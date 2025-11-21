@@ -4,7 +4,7 @@ import type { LanguageFormModel } from '~/types'
 interface Status {
   id: number
   name: string
-  type: 'contact' | 'group' | 'faith_status'
+  type: 'contact' | 'group' | 'position'
 }
 
 export const useSettingStore = defineStore('setting', () => {
@@ -16,7 +16,7 @@ export const useSettingStore = defineStore('setting', () => {
   const currentPreferredLanguage = computed(() => userPreferredLanguage)
   const contactStatuses = computed(() => statuses.value.filter((s) => s.type === 'contact'))
   const groupStatuses = computed(() => statuses.value.filter((s) => s.type === 'group'))
-  const faithStatuses = computed(() => statuses.value.filter((s) => s.type === 'faith_status'))
+  const faithStatuses = computed(() => statuses.value.filter((s) => s.type === 'position'))
 
   const options = computed(() => ({
     contact: contactStatuses.value.map((s) => ({ label: s.name, value: s.id })),

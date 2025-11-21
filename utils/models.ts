@@ -22,7 +22,7 @@ export default {
   contact: {
     is_active: true,
     contact_status_id: 1,
-    faith_status_id: 8,
+    position_id: 8,
     name: null,
     gender: null,
     age: null,

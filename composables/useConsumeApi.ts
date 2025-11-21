@@ -10,6 +10,7 @@ import type { ConfigProviderProps } from "naive-ui"
 import { RoutePaths } from "~/types/index.d"
 import { createDiscreteApi, darkTheme } from "naive-ui"
 import { NaiveThemeOverrides } from "~/types/NaiveThemeOverrides"
+import { useAuthStore } from "~/stores/useAuthStore"
 
 type ConsumptionType =
   | "browse"
@@ -69,6 +70,19 @@ const request = async (
 
   if (consumptionType === "list") {
     routePath = routePath + "/list"
+  }
+
+  const authStore = useAuthStore()
+
+  if (
+    authStore.isLoginExpired()
+  ) {
+    await authStore.logout()
+    discreteNotificationAPI.notification.error({
+      title: "Please login again.",
+      description: "Your session is expired",
+    })
+    return navigateTo("/login")
   }
 
   const response = await $fetch(routePath, requestOptions).catch(

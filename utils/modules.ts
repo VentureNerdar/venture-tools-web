@@ -63,6 +63,11 @@ export type Module = {
     modalWidthSize: ModalWidthSize
   }
 
+  contactCommunicationPlatform?: {
+    component: object
+    modalWidthSize: ModalWidthSize
+  }
+
   // other options
   options: {
     // filter options
@@ -276,8 +281,8 @@ export default {
           sorter: true,
         },
         {
-          title: "Nickname",
-          key: "nickname",
+          title: "Position",
+          key: "position.name",
         },
         {
           title: "Status",
@@ -332,6 +337,12 @@ export default {
     view: {
       component: views.contact,
       modalWidthSize: "calc(100vw - 40px)" as ModalWidthSize,
+    },
+
+    contactCommunicationPlatform: {
+      component: views.contactCommunicationPlatform,
+      modalWidthSize: "calc(80vw - 40px)" as ModalWidthSize,
+
     },
 
     options: {

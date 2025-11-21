@@ -30,11 +30,11 @@
           <!-- Faith Status -->
           <n-gi>
             <n-form-item
-              path="faith_status_id"
-              :label="helpers.translate('faith_status')"
+              path="position_id"
+              :label="helpers.translate('position')"
             >
               <n-select
-                v-model:value="d.model.faith_status_id"
+                v-model:value="d.model.position_id"
                 :options="useSettingStore().options.faith"
               />
             </n-form-item>

@@ -10,6 +10,7 @@ import CommunityChecklist from "@/components/Views/CommunityChecklist.vue"
 import Community from "@/components/Views/Community.vue"
 import Movement from "@/components/Views/Movement.vue"
 import PrayerPrompt from "@/components/Views/PrayerPrompt.vue"
+import ContactCommunicationPlatform from "~/components/Views/ContactCommunicationPlatform.vue"
 
 export default {
   user: User,
@@ -20,6 +21,7 @@ export default {
   faithMilestone: FaithMilestone,
   communicationPlatform: CommunicationPlatform,
   contact: Contact,
+  contactCommunicationPlatform: ContactCommunicationPlatform,
   church: Church,
   communityChecklist: CommunityChecklist,
   community: Community,

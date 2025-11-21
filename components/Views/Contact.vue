@@ -39,12 +39,12 @@
             </td>
 
             <td style="width: 20%">
-              <b>{{ h.translate('faith_status') }} :</b> &nbsp;
+              <b>{{ h.translate('position') }} :</b> &nbsp;
               <n-tag
                 :border="false"
                 type="info"
               >
-                {{ m.faithStatus(data.faith_status_id as number) }}
+                {{ m.faithStatus(data.position_id as number) }}
               </n-tag>
             </td>
           </tr>
@@ -157,12 +157,12 @@
 
           <tr>
             <td style="width: 20%">
-              <b>{{ h.translate('faith_status') }} :</b> &nbsp;
+              <b>{{ h.translate('position') }} :</b> &nbsp;
               <n-tag
                 :border="false"
                 type="info"
               >
-                {{ m.faithStatus(data.faith_status_id as number) }}
+                {{ m.faithStatus(data.position_id as number) }}
               </n-tag>
             </td>
           </tr>
@@ -261,155 +261,149 @@
   </div>
 </template>
 
-<script
-  lang="ts"
-  setup
->
-  import { DeleteRound } from "@vicons/material"
-  import { useFaithMilestoneStore } from "~/stores/useFaithMilestonesStore"
-  import { useLanguagesStore } from "~/stores/useLanguagesStore"
-  import { useSettingStore } from "~/stores/useSettingsStore"
-  import { useUserStore } from "~/stores/useUsersStore"
+<script lang="ts" setup>
+import { DeleteRound } from "@vicons/material"
+import { useFaithMilestoneStore } from "~/stores/useFaithMilestonesStore"
+import { useLanguagesStore } from "~/stores/useLanguagesStore"
+import { useSettingStore } from "~/stores/useSettingsStore"
+import { useUserStore } from "~/stores/useUsersStore"
 
-  import type { ContactFormModel, PeopleGroupFormModel } from "~/types"
-  import { RoutePaths } from "~/types/index.d"
+import type { ContactFormModel, PeopleGroupFormModel } from "~/types"
+import { RoutePaths } from "~/types/index.d"
 
-  const emit = defineEmits(["modalTitle"])
-  const { isMobile } = useDevice()
+const emit = defineEmits(["modalTitle"])
+const { isMobile } = useDevice()
 
-  const p = withDefaults(
-    defineProps<{
-      id: number
-      data: ContactFormModel
-    }>(),
-    {},
-  )
+const p = withDefaults(
+  defineProps<{
+    id: number
+    data: ContactFormModel
+  }>(),
+  {},
+)
 
-  const consume = {
-    faithMilestone: useConsumeApi(RoutePaths.FAITH_MILESTONES),
-  }
+const consume = {
+  faithMilestone: useConsumeApi(RoutePaths.FAITH_MILESTONES),
+}
 
-  const s = {
-    userRole: useUserStore(),
-    systemLanguages: useLanguagesStore(),
-    settings: useSettingStore(),
-    faithMilestones: useFaithMilestoneStore(),
-  }
+const s = {
+  userRole: useUserStore(),
+  systemLanguages: useLanguagesStore(),
+  settings: useSettingStore(),
+  faithMilestones: useFaithMilestoneStore(),
+}
 
-  const h = useHelpers()
+const h = useHelpers()
 
-  const d = reactive({
-    faithMilestones: [] as any[],
-  })
+const d = reactive({
+  faithMilestones: [] as any[],
+})
 
-  const m = {
-    userRole: (roleID: number) => {
-      const role = s.userRole.userRoles.find((role: any) => role.id === roleID)
-      return role ? role.name.toUpperCase() : "N/A"
+const m = {
+  userRole: (roleID: number) => {
+    const role = s.userRole.userRoles.find((role: any) => role.id === roleID)
+    return role ? role.name.toUpperCase() : "N/A"
+  },
+
+  languagePreference: (languageID: number) => {
+    const language = s.systemLanguages.languages.find(
+      (lang: any) => lang.id === languageID,
+    )
+    return language ? language.name : "N/A"
+  },
+
+  contactStatus: (contactStatusID: number) => {
+    let status = s.settings.options.contact.find(
+      (c: any) => c.value === contactStatusID,
+    )
+    return status ? h.translate(h.toSnakeCase(status.label)) : "N/A"
+  },
+
+  faithStatus: (faithStatusID: number) => {
+    const status = s.settings.options.faith.find(
+      (f: any) => f.value === faithStatusID,
+    )
+    // return status ? h.translate(h.toSnakeCase(status.label)) : "N/A"
+
+    return status ? h.translate(h.toSnakeCase(status.label)) : "N/A"
+  },
+
+  handle: {
+    hasFaithMilestone: (fmid: number) => {
+      return p.data.faith_milestones?.some((d: any) => d.id === fmid)
+        ? "hi"
+        : ""
+    },
+  },
+
+  render: {
+    assignedTo: (at: any) => {
+      return at?.name
     },
 
-    languagePreference: (languageID: number) => {
-      const language = s.systemLanguages.languages.find(
-        (lang: any) => lang.id === languageID,
+    coachedBy: (cb: any) => {
+      return cb !== null ? cb.name : "N/A"
+    },
+  },
+
+  consume: {
+    faithMilestone: async () => {
+      d.faithMilestones = await consume.faithMilestone.browse(
+        { all: true },
+        {
+          isPersist: true,
+          key: "faithMilestones",
+          storeState: s.faithMilestones.faithMilestones,
+        },
       )
-      return language ? language.name : "N/A"
     },
+  },
+}
 
-    contactStatus: (contactStatusID: number) => {
-      let status = s.settings.options.contact.find(
-        (c: any) => c.value === contactStatusID,
-      )
-      return status ? h.translate(h.toSnakeCase(status.label)) : "N/A"
-    },
+const dataPeopleGroups = computed(() => {
+  return p.data.people_group
+    ? (JSON.parse(JSON.stringify(p.data.people_group)) as PeopleGroupFormModel)
+    : []
+})
 
-    faithStatus: (faithStatusID: number) => {
-      const status = s.settings.options.faith.find(
-        (f: any) => f.value === faithStatusID,
-      )
-      // return status ? h.translate(h.toSnakeCase(status.label)) : "N/A"
+emit("modalTitle", p.data.name)
 
-      return status ? h.translate(h.toSnakeCase(status.label)) : "N/A"
-    },
-
-    handle: {
-      hasFaithMilestone: (fmid: number) => {
-        return p.data.faith_milestones?.some((d: any) => d.id === fmid)
-          ? "hi"
-          : ""
-      },
-    },
-
-    render: {
-      assignedTo: (at: any) => {
-        return at?.name
-      },
-
-      coachedBy: (cb: any) => {
-        return cb !== null ? cb.name : "N/A"
-      },
-    },
-
-    consume: {
-      faithMilestone: async () => {
-        d.faithMilestones = await consume.faithMilestone.browse(
-          { all: true },
-          {
-            isPersist: true,
-            key: "faithMilestones",
-            storeState: s.faithMilestones.faithMilestones,
-          },
-        )
-      },
-    },
-  }
-
-  const dataPeopleGroups = computed(() => {
-    return p.data.people_group
-      ? (JSON.parse(JSON.stringify(p.data.people_group)) as PeopleGroupFormModel)
-      : []
-  })
-
-  emit("modalTitle", p.data.name)
-
-  m.consume.faithMilestone()
+m.consume.faithMilestone()
 </script>
 
-<style
-  scoped
-  lang="scss"
->
-  .wrap-info {
-    margin-top: 10px;
+<style scoped lang="scss">
+.wrap-info {
+  margin-top: 10px;
+}
+
+.uppercase {
+  text-transform: uppercase;
+}
+
+.wrap-faith-milestones {
+  border: 1px solid rgba(204, 204, 204, 0.1);
+  padding: 10px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  width: calc(100% - 20px);
+
+  &.not-included {
+    filter: grayscale(100%);
+    opacity: 0.4;
   }
+}
 
-  .uppercase {
-    text-transform: uppercase;
-  }
+.table {
+  width: 100%;
+  border: 1px solid rgba(204, 204, 204, 0.1);
+  border-collapse: collapse;
 
-  .wrap-faith-milestones {
-    border: 1px solid rgba(204, 204, 204, 0.1);
-    padding: 10px;
-    border-radius: 4px;
-    display: flex;
-    align-items: center;
-    width: calc(100% - 20px);
-
-    &.not-included {
-      filter: grayscale(100%);
-      opacity: 0.4;
+  tr {
+    td {
+      padding: 10px;
+      border: 1px solid rgba(204, 204, 204, 0.1);
     }
   }
-
-  .table {
-    width: 100%;
-    border: 1px solid rgba(204, 204, 204, 0.1);
-    border-collapse: collapse;
-
-    tr {
-      td {
-        padding: 10px;
-        border: 1px solid rgba(204, 204, 204, 0.1);
-      }
-    }
-  }
+}
 </style>

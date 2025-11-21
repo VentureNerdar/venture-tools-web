@@ -27,7 +27,7 @@ export interface ContactFormModel {
   contact_status_id: number | null
   is_active: boolean
   assigned_to?: number | null
-  faith_status_id: number | null
+  position_id: number | null
   coached_by?: number | null
 
   name: string | null

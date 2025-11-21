@@ -16,6 +16,7 @@
           style="width: 100%"
         >
           <n-flex :gap="10">
+
             <div v-if="d.visibility.trash && !isMobile">
               <n-text
                 type="error"
@@ -245,12 +246,18 @@
             >
               <n-input
                 size="small"
-                :placeholder="`${helper.translate('search_in')} ${helper.translate(p.module.name.toLowerCase())} ${helper.translate('by')}  ${helper.translate(p.searchByFieldName)}...`"
                 v-model:value="d.searchKeyword"
                 :clearable="true"
+                placeholder=""
                 @keydown="m.handle.keydown.search"
                 @change="m.handle.cleared.search"
-              />
+              >
+                <template #prefix>
+                  <n-icon>
+                    <SearchRound />
+                  </n-icon>
+                </template>
+              </n-input>
             </div>
             <!-- e.o SEARCH -->
 
@@ -350,578 +357,591 @@
   </n-spin>
 </template>
 
-<script
-  lang="ts"
-  setup
->
-  // TODO:
-  /*
-    [x] : display table
-    [x] : pagination
-    [x] : create / edit ( save )
-    [x] : search
-    [x] : quick filter
-    [x] : soft delete
-    [x] : hard delete
-    [x] : sort
-    [x] : advanced filter
-    [x] : clear advanced filter
-    [x] : view soft deletes
-    [x] : restore soft deletes
-    [x] : view
-    [ ] : export
-    [ ] : select & bulk actions
-  */
+<script lang="ts" setup>
+// TODO:
+/*
+  [x] : display table
+  [x] : pagination
+  [x] : create / edit ( save )
+  [x] : search
+  [x] : quick filter
+  [x] : soft delete
+  [x] : hard delete
+  [x] : sort
+  [x] : advanced filter
+  [x] : clear advanced filter
+  [x] : view soft deletes
+  [x] : restore soft deletes
+  [x] : view
+  [ ] : export
+  [ ] : select & bulk actions
+*/
 
-  import {
-    NButton,
-    NIcon,
-    NSpace,
-    NDataTable,
-    type DataTableInst,
-  } from "naive-ui"
-  import type {
-    StoreOptions,
-    FormModalOptions,
-    BrowseCondition,
-    FormModel,
-    ModalWidthSize,
-  } from "~/types"
-  import {
-    FilterAltRound,
-    PlusRound,
-    FilterAltOffRound,
-    DeleteForeverRound,
-    InboxRound,
-  } from "@vicons/material"
-  import GenericDelete from "../Modals/GenericDelete.vue"
-  import GenericRestore from "../Modals/GenericRestore.vue"
-  import GenericEdit from "../Modals/GenericEdit.vue"
-  import type { Module } from "~/utils/modules"
-  import GenericView from "../Modals/GenericView.vue"
+import {
+  NButton,
+  NIcon,
+  NSpace,
+  NDataTable,
+  type DataTableInst,
+} from "naive-ui"
+import type {
+  StoreOptions,
+  FormModalOptions,
+  BrowseCondition,
+  FormModel,
+  ModalWidthSize,
+} from "~/types"
+import {
+  FilterAltRound,
+  PlusRound,
+  FilterAltOffRound,
+  DeleteForeverRound,
+  SearchRound,
+  InboxRound,
+} from "@vicons/material"
+import GenericDelete from "../Modals/GenericDelete.vue"
+import GenericRestore from "../Modals/GenericRestore.vue"
+import GenericEdit from "../Modals/GenericEdit.vue"
+import type { Module } from "~/utils/modules"
+import GenericView from "../Modals/GenericView.vue"
+import GenericContactView from "../Modals/GenericContactView.vue"
 
-  type QuickFilterType = "single" | "multiple"
+type QuickFilterType = "single" | "multiple"
 
-  const mobileFilterDrawerState = ref<boolean>(false)
-  const tableRef = ref<DataTableInst | null>(null)
-  const table = tableRef
+const mobileFilterDrawerState = ref<boolean>(false)
+const tableRef = ref<DataTableInst | null>(null)
+const table = tableRef
 
-  const helper = useHelpers()
-  const { isMobile } = useDevice()
-  const translationTitleMap: Record<string, string> = {
-    Name: "name",
-    Nickname: "nickname",
-    "Contact Status": "contact_status",
-    Description: "description",
-    Email: "email",
-    "Active Status": "active_status",
-  }
+const helper = useHelpers()
+const { isMobile } = useDevice()
+const translationTitleMap: Record<string, string> = {
+  Name: "name",
+  Nickname: "nickname",
+  "Contact Status": "contact_status",
+  Description: "description",
+  Email: "email",
+  "Active Status": "active_status",
+}
 
-  const translationOptionsMap: Record<string, string> = {
-    All: "all",
-    Active: "active",
-    Paused: "paused",
-    Archived: "archived",
-    "New Contact": "new_contact",
-    "Not Ready": "not_ready",
-    Administrators: "administrators",
-    "Church Planters": "church_planters",
-    Guest: "guest",
-  }
+const translationOptionsMap: Record<string, string> = {
+  All: "all",
+  Active: "active",
+  Paused: "paused",
+  Archived: "archived",
+  "New Contact": "new_contact",
+  "Not Ready": "not_ready",
+  Administrators: "administrators",
+  "Church Planters": "church_planters",
+  Guest: "guest",
+}
 
-  const e = defineEmits(["refreshed"])
+const e = defineEmits(["refreshed"])
 
-  const p = withDefaults(
-    defineProps<{
-      module: Module
-      storeOptions: StoreOptions
-      formModalOptions: FormModalOptions
-      searchByFieldName: string
-      browseOptions?: false | BrowseCondition
-      getAll: boolean
-      needToRefresh?: boolean
-    }>(),
-    {
-      browseOptions: false,
-      getAll: false,
-      needToRefresh: false,
-    },
-  ) // e.o p
+const p = withDefaults(
+  defineProps<{
+    module: Module
+    storeOptions: StoreOptions
+    formModalOptions: FormModalOptions
+    searchByFieldName: string
+    browseOptions?: false | BrowseCondition
+    getAll: boolean
+    needToRefresh?: boolean
+  }>(),
+  {
+    browseOptions: false,
+    getAll: false,
+    needToRefresh: false,
+  },
+) // e.o p
 
-  const translatedFilterValues = computed(() => {
-    // single filter
-    if (!Array.isArray(p.module.options.filter)) {
-      d.filterType = "single"
+const translatedFilterValues = computed(() => {
+  // single filter
+  if (!Array.isArray(p.module.options.filter)) {
+    d.filterType = "single"
 
-      if (p.module.options.filter === false) return
+    if (p.module.options.filter === false) return
 
-      return p.module.options.filter.values.map((filter: any) => {
-        const key = translationOptionsMap[filter.label]
-        return {
-          ...filter,
-          label: key ? helper.translate(key) : filter.label,
-        }
-      })
-    } else {
-      d.filterType = "multiple"
-      const filters = JSON.parse(JSON.stringify(p.module.options.filter))
-      const filterItemsMap = new Map<string, any>()
-
-      filters.forEach((filterGroup: any) => {
-        if (!filterItemsMap.has(filterGroup.whereFieldIs)) {
-          filterItemsMap.set(filterGroup.whereFieldIs, {
-            name: filterGroup.name,
-            whereFieldIs: filterGroup.whereFieldIs,
-            values: filterGroup.values.map((filter: any) => {
-              const key = translationOptionsMap[filter.label]
-              return {
-                ...filter,
-                label: key ? helper.translate(key) : filter.label,
-              }
-            }),
-          })
-        }
-      })
-
-      const filterItems = Array.from(filterItemsMap.values())
-
-      return filterItems
-    }
-  })
-
-  const d = reactive({
-    modalForm: false as false | FormModel,
-    showModal: false,
-    selectedFilterOption: ref(null),
-    selectedSoftDeletesOption: ref(null),
-    visibility: {
-      trash: false,
-    },
-    data: [],
-    page: 1,
-    pageSize: 5,
-    pageCount: 100,
-    totalItems: 0,
-    loading: {
-      page: false,
-    }, // e.o loading
-    searchKeyword: "",
-    filteredOptions: [] as {
-      key: string
-      value: number[] | boolean[] | string[]
-    }[],
-    filterType: "single" as QuickFilterType,
-
-    browseQuery: {
-      page: 1,
-      per_page: 5,
-    } as BrowseCondition,
-
-    defaultBrowseQuery: {
-      page: 1,
-      per_page: 5,
-    }, // e.o defaultBrowseQuery
-  }) // e.o d
-
-  const u = {
-    consume: useConsumeApi(p.module.routePath),
-  } // e.o u
-
-  const m = {
-    getData: async (browseQuery: BrowseCondition) => {
-      d.loading.page = true
-
-      const bq = { ...browseQuery } as BrowseCondition
-
-      if (p.getAll) {
-        delete (bq as any).page
-        delete (bq as any).per_page
-          ; (bq as any).all = true
+    return p.module.options.filter.values.map((filter: any) => {
+      const key = translationOptionsMap[filter.label]
+      return {
+        ...filter,
+        label: key ? helper.translate(key) : filter.label,
       }
+    })
+  } else {
+    d.filterType = "multiple"
+    const filters = JSON.parse(JSON.stringify(p.module.options.filter))
+    const filterItemsMap = new Map<string, any>()
 
-      const response = await u.consume.browse(bq, p.storeOptions)
-      d.loading.page = false
-
-      if (!p.getAll) {
-        if (response.data && typeof response.data === "object") {
-          if (!p.getAll) {
-            const res = response as { data: any; total?: number }
-            d.data = res.data
-
-            if (res.total !== undefined) {
-              d.totalItems = res.total
-              d.pageCount = Math.ceil(res.total / d.pageSize)
+    filters.forEach((filterGroup: any) => {
+      if (!filterItemsMap.has(filterGroup.whereFieldIs)) {
+        filterItemsMap.set(filterGroup.whereFieldIs, {
+          name: filterGroup.name,
+          whereFieldIs: filterGroup.whereFieldIs,
+          values: filterGroup.values.map((filter: any) => {
+            const key = translationOptionsMap[filter.label]
+            return {
+              ...filter,
+              label: key ? helper.translate(key) : filter.label,
             }
-          } else {
-            console.log(response)
-          }
-        }
-      } else {
-        d.data = response
+          }),
+        })
       }
-    }, // e.o getData
-
-    browse: async () => {
-      await m.getData(d.browseQuery)
-    },
-
-    handle: {
-      click: {
-        createButton: () => {
-          d.modalForm = false
-          d.showModal = true
-        },
-
-        editButton: (row: any) => {
-          d.modalForm = { ...row }
-
-          if (p.formModalOptions.hiddenFieldsOnEdit) {
-            p.formModalOptions.hiddenFieldsOnEdit.forEach((element) => {
-              if (d.modalForm && typeof d.modalForm === "object") {
-                delete (d.modalForm as Record<string, any>)[element]
-              }
-            })
-          }
-
-          // deleting timestamps . let the backend update it .
-          if (d.modalForm) {
-            if ("created_at" in d.modalForm) {
-              delete (d.modalForm as Record<string, any>)["created_at"]
-            }
-
-            if ("updated_at" in d.modalForm) {
-              delete (d.modalForm as Record<string, any>)["updated_at"]
-            }
-
-            if ("deleted_at" in d.modalForm) {
-              delete (d.modalForm as Record<string, any>)["deleted_at"]
-            }
-          }
-
-          d.showModal = true
-        },
-
-        deleteButton: (row: any) => {
-          console.log(row)
-        },
-
-        clearFilterButton: () => {
-          d.filteredOptions = []
-          d.selectedFilterOption = null
-          table?.value?.clearFilters()
-          m.handle.changed.filter([])
-          m.browse()
-
-          if (isMobile) {
-            mobileFilterDrawerState.value = false
-          }
-        }
-      },
-
-      changed: {
-        quickFilter: (
-          value: string | { label: string; value: string; whereFieldIs: string },
-        ) => {
-          if (d.filterType === "single") {
-            if (p.module.options.filter !== false) {
-              if (value === "all") {
-                if ("all" in d.browseQuery === false) {
-                  d.browseQuery.page = d.defaultBrowseQuery.page
-                  delete d.browseQuery.search_by
-                  delete d.browseQuery.search
-                }
-
-                d.page = 1
-
-                m.browse()
-                return
-              }
-
-              // need to check here for filter
-              if (!Array.isArray(p.module.options.filter)) {
-                d.browseQuery.search_by = p.module.options.filter.whereFieldIs
-              }
-
-              d.browseQuery.search = value as string
-
-              m.browse()
-            }
-          } else {
-            if (typeof value !== "string") {
-              d.browseQuery.search_by = value.whereFieldIs
-              d.browseQuery.search = value.value
-
-              d.filteredOptions = []
-              d.filteredOptions.push({
-                key: value.whereFieldIs,
-                value: [value.value],
-              })
-              m.browse()
-            }
-          }
-        }, // e.o. quickFilter
-
-        pageSize: (value: number) => {
-          const browseQuery = {
-            all: false,
-            page: d.page,
-            per_page: value,
-          } as BrowseCondition
-
-          if ("all" in d.browseQuery === false) {
-            d.browseQuery.per_page = value
-          }
-
-          m.browse()
-        }, // e.o. pageSize
-
-        pageNumber: (value: number) => {
-          if ("all" in d.browseQuery === false) {
-            d.browseQuery.page = value
-          }
-
-          m.browse()
-        },
-
-        sort: (sort: any) => {
-          console.log(sort)
-
-          switch (sort.order) {
-            case "ascend":
-              Object.assign(d.browseQuery, {
-                sort: [{ key: sort.columnKey, order: "asc" }],
-              })
-              break
-
-            case "descend":
-              Object.assign(d.browseQuery, {
-                sort: [{ key: sort.columnKey, order: "desc" }],
-              })
-              break
-
-            default:
-              delete d.browseQuery.sort
-              break
-          }
-
-          m.browse()
-        }, // e.o sort
-
-        filter: (filter: any) => {
-          const filterClone = JSON.parse(JSON.stringify(filter))
-          console.log(filterClone)
-
-          Object.entries(filterClone).forEach(([key, value]) => {
-            const existingEntry = d.filteredOptions.find(
-              (entry) => entry.key === key,
-            )
-
-            if (Array.isArray(value) && value.length > 0) {
-              if (existingEntry) {
-                existingEntry.value = value
-              } else {
-                d.filteredOptions.push({ key: key, value: value as string[] })
-              }
-            } else {
-              d.filteredOptions = d.filteredOptions.filter(
-                (entry) => entry.key !== key,
-              )
-            }
-          })
-
-          const whereIn = JSON.parse(JSON.stringify(d.filteredOptions))
-
-          if (whereIn.length > 0) {
-            d.browseQuery.whereIn = whereIn
-          } else {
-            delete d.browseQuery.whereIn
-            delete d.browseQuery.search
-            delete d.browseQuery.search_by
-          }
-
-          m.browse()
-        }, // e.o filter
-      }, // e.o changed
-
-      keydown: {
-        search: (e: KeyboardEvent) => {
-          if (e.key === "Enter") {
-            const searchBrowseQuery = {
-              ...d.defaultBrowseQuery,
-              search_by: p.searchByFieldName,
-              search: d.searchKeyword,
-            } as BrowseCondition
-
-            m.getData(searchBrowseQuery)
-          }
-        }, // e.o search
-      }, // e.o keydown
-
-      cleared: {
-        search: () => {
-          if (d.searchKeyword === "") {
-            m.getData(d.defaultBrowseQuery)
-          }
-        },
-      }, // e.o cleared
-
-      emits: {
-        closeModal: (refresh: boolean) => {
-          if (refresh) {
-            m.getData(d.defaultBrowseQuery)
-          }
-
-          d.showModal = false
-        },
-
-        deleteProgress: (successStatus: boolean) => {
-          if (successStatus) {
-            m.getData(d.browseQuery)
-          }
-        },
-
-        trashViewToggled: (toggled: boolean) => {
-          d.visibility.trash = toggled
-          d.browseQuery.onlyTrashed = toggled || undefined
-          m.browse()
-        },
-      },
-    }, // e.o handle
-  } // e.o m
-
-  const dataColumns = computed(() => {
-    // const columns = [...p.module.dataTable.columns]
-    const translatedColumns = p.module.dataTable.columns.map((column: any) => {
-      // Look up a translation key based on the original title.
-      const translationKey = translationTitleMap[column.title]
-      return translationKey
-        ? { ...column, title: helper.translate(translationKey) }
-        : column
     })
 
-    translatedColumns.push({
-      key: "actions",
-      width: "160px",
-      align: "center",
-      render(row: any) {
-        const buttons = [] as any[]
+    const filterItems = Array.from(filterItemsMap.values())
 
+    return filterItems
+  }
+})
+
+const d = reactive({
+  modalForm: false as false | FormModel,
+  showModal: false,
+  selectedFilterOption: ref(null),
+  selectedSoftDeletesOption: ref(null),
+  visibility: {
+    trash: false,
+  },
+  data: [],
+  page: 1,
+  pageSize: 5,
+  pageCount: 100,
+  totalItems: 0,
+  loading: {
+    page: false,
+  }, // e.o loading
+  searchKeyword: "",
+  filteredOptions: [] as {
+    key: string
+    value: number[] | boolean[] | string[]
+  }[],
+  filterType: "single" as QuickFilterType,
+
+  browseQuery: {
+    page: 1,
+    per_page: 5,
+  } as BrowseCondition,
+
+  defaultBrowseQuery: {
+    page: 1,
+    per_page: 5,
+  }, // e.o defaultBrowseQuery
+}) // e.o d
+
+const u = {
+  consume: useConsumeApi(p.module.routePath),
+} // e.o u
+
+const m = {
+  getData: async (browseQuery: BrowseCondition) => {
+    d.loading.page = true
+
+    const bq = { ...browseQuery } as BrowseCondition
+
+    if (p.getAll) {
+      delete (bq as any).page
+      delete (bq as any).per_page
+        ; (bq as any).all = true
+    }
+
+    const response = await u.consume.browse(bq, p.storeOptions)
+    d.loading.page = false
+
+    if (!p.getAll) {
+      if (response.data && typeof response.data === "object") {
+        if (!p.getAll) {
+          const res = response as { data: any; total?: number }
+          d.data = res.data
+
+          if (res.total !== undefined) {
+            d.totalItems = res.total
+            d.pageCount = Math.ceil(res.total / d.pageSize)
+          }
+        } else {
+          console.log(response)
+        }
+      }
+    } else {
+      d.data = response
+    }
+  }, // e.o getData
+
+  browse: async () => {
+    await m.getData(d.browseQuery)
+  },
+
+  handle: {
+    click: {
+      createButton: () => {
+        d.modalForm = false
+        d.showModal = true
+      },
+
+      editButton: (row: any) => {
+        d.modalForm = { ...row }
+
+        if (p.formModalOptions.hiddenFieldsOnEdit) {
+          p.formModalOptions.hiddenFieldsOnEdit.forEach((element) => {
+            if (d.modalForm && typeof d.modalForm === "object") {
+              delete (d.modalForm as Record<string, any>)[element]
+            }
+          })
+        }
+
+        // deleting timestamps . let the backend update it .
+        if (d.modalForm) {
+          if ("created_at" in d.modalForm) {
+            delete (d.modalForm as Record<string, any>)["created_at"]
+          }
+
+          if ("updated_at" in d.modalForm) {
+            delete (d.modalForm as Record<string, any>)["updated_at"]
+          }
+
+          if ("deleted_at" in d.modalForm) {
+            delete (d.modalForm as Record<string, any>)["deleted_at"]
+          }
+        }
+
+        d.showModal = true
+      },
+
+      deleteButton: (row: any) => {
+        console.log(row)
+      },
+
+      clearFilterButton: () => {
+        d.filteredOptions = []
+        d.selectedFilterOption = null
+        table?.value?.clearFilters()
+        m.handle.changed.filter([])
+        m.browse()
+
+        if (isMobile) {
+          mobileFilterDrawerState.value = false
+        }
+      }
+    },
+
+    changed: {
+      quickFilter: (
+        value: string | { label: string; value: string; whereFieldIs: string },
+      ) => {
+        if (d.filterType === "single") {
+          if (p.module.options.filter !== false) {
+            if (value === "all") {
+              if ("all" in d.browseQuery === false) {
+                d.browseQuery.page = d.defaultBrowseQuery.page
+                delete d.browseQuery.search_by
+                delete d.browseQuery.search
+              }
+
+              d.page = 1
+
+              m.browse()
+              return
+            }
+
+            // need to check here for filter
+            if (!Array.isArray(p.module.options.filter)) {
+              d.browseQuery.search_by = p.module.options.filter.whereFieldIs
+            }
+
+            d.browseQuery.search = value as string
+
+            m.browse()
+          }
+        } else {
+          if (typeof value !== "string") {
+            d.browseQuery.search_by = value.whereFieldIs
+            d.browseQuery.search = value.value
+
+            d.filteredOptions = []
+            d.filteredOptions.push({
+              key: value.whereFieldIs,
+              value: [value.value],
+            })
+            m.browse()
+          }
+        }
+      }, // e.o. quickFilter
+
+      pageSize: (value: number) => {
+        const browseQuery = {
+          all: false,
+          page: d.page,
+          per_page: value,
+        } as BrowseCondition
+
+        if ("all" in d.browseQuery === false) {
+          d.browseQuery.per_page = value
+        }
+
+        m.browse()
+      }, // e.o. pageSize
+
+      pageNumber: (value: number) => {
+        if ("all" in d.browseQuery === false) {
+          d.browseQuery.page = value
+        }
+
+        m.browse()
+      },
+
+      sort: (sort: any) => {
+        console.log(sort)
+
+        switch (sort.order) {
+          case "ascend":
+            Object.assign(d.browseQuery, {
+              sort: [{ key: sort.columnKey, order: "asc" }],
+            })
+            break
+
+          case "descend":
+            Object.assign(d.browseQuery, {
+              sort: [{ key: sort.columnKey, order: "desc" }],
+            })
+            break
+
+          default:
+            delete d.browseQuery.sort
+            break
+        }
+
+        m.browse()
+      }, // e.o sort
+
+      filter: (filter: any) => {
+        const filterClone = JSON.parse(JSON.stringify(filter))
+        console.log(filterClone)
+
+        Object.entries(filterClone).forEach(([key, value]) => {
+          const existingEntry = d.filteredOptions.find(
+            (entry) => entry.key === key,
+          )
+
+          if (Array.isArray(value) && value.length > 0) {
+            if (existingEntry) {
+              existingEntry.value = value
+            } else {
+              d.filteredOptions.push({ key: key, value: value as string[] })
+            }
+          } else {
+            d.filteredOptions = d.filteredOptions.filter(
+              (entry) => entry.key !== key,
+            )
+          }
+        })
+
+        const whereIn = JSON.parse(JSON.stringify(d.filteredOptions))
+
+        if (whereIn.length > 0) {
+          d.browseQuery.whereIn = whereIn
+        } else {
+          delete d.browseQuery.whereIn
+          delete d.browseQuery.search
+          delete d.browseQuery.search_by
+        }
+
+        m.browse()
+      }, // e.o filter
+    }, // e.o changed
+
+    keydown: {
+      search: (e: KeyboardEvent) => {
+        if (e.key === "Enter") {
+          const searchBrowseQuery = {
+            ...d.defaultBrowseQuery,
+            search_by: p.searchByFieldName,
+            search: d.searchKeyword,
+          } as BrowseCondition
+
+          m.getData(searchBrowseQuery)
+        }
+      }, // e.o search
+    }, // e.o keydown
+
+    cleared: {
+      search: () => {
+        if (d.searchKeyword === "") {
+          m.getData(d.defaultBrowseQuery)
+        }
+      },
+    }, // e.o cleared
+
+    emits: {
+      closeModal: (refresh: boolean) => {
+        if (refresh) {
+          m.getData(d.defaultBrowseQuery)
+        }
+
+        d.showModal = false
+      },
+
+      deleteProgress: (successStatus: boolean) => {
+        if (successStatus) {
+          m.getData(d.browseQuery)
+        }
+      },
+
+      trashViewToggled: (toggled: boolean) => {
+        d.visibility.trash = toggled
+        d.browseQuery.onlyTrashed = toggled || undefined
+        m.browse()
+      },
+    },
+  }, // e.o handle
+} // e.o m
+
+const dataColumns = computed(() => {
+  // const columns = [...p.module.dataTable.columns]
+  const translatedColumns = p.module.dataTable.columns.map((column: any) => {
+    // Look up a translation key based on the original title.
+    const translationKey = translationTitleMap[column.title]
+    return translationKey
+      ? { ...column, title: helper.translate(translationKey) }
+      : column
+  })
+
+  translatedColumns.push({
+    key: "actions",
+    width: "160px",
+    align: "center",
+    render(row: any) {
+      const buttons = [] as any[]
+
+      buttons.push(
+        h(GenericView, {
+          id: row.id,
+          data: row,
+          viewComponent: p.module.view?.component,
+          width: p.module.view?.modalWidthSize as ModalWidthSize,
+          onEditButtonClicked: () => {
+            m.handle.click.editButton(row)
+          },
+        }),
+      )
+      if (!d.visibility.trash && p.module.name == 'Contacts') {
         buttons.push(
-          h(GenericView, {
+          h(GenericContactView, {
             id: row.id,
             data: row,
-            viewComponent: p.module.view?.component,
-            width: p.module.view?.modalWidthSize as ModalWidthSize,
-            onEditButtonClicked: () => {
+            viewComponent: p.module.contactCommunicationPlatform?.component,
+            width: p.module.contactCommunicationPlatform?.modalWidthSize as ModalWidthSize,
+
+          }
+
+          )
+        )
+      }
+
+      if (!d.visibility.trash && p.module.name !== 'Contacts') {
+        buttons.push(
+          h(GenericEdit, {
+            onEditClick: () => {
               m.handle.click.editButton(row)
             },
           }),
         )
+      }
 
-        if (!d.visibility.trash) {
-          buttons.push(
-            h(GenericEdit, {
-              onEditClick: () => {
-                m.handle.click.editButton(row)
-              },
-            }),
-          )
-        }
 
-        if (d.visibility.trash) {
-          buttons.push(
-            h(GenericRestore, {
-              model: p.module.routePath,
-              id: row.id,
-              onRestoreProgress: (successStatus: boolean) => {
-                m.handle.emits.deleteProgress(successStatus)
-              },
-            }),
-          )
-        }
 
+      console.log("props ++++++", p.module.name)
+
+      if (d.visibility.trash) {
         buttons.push(
-          h(GenericDelete, {
-            permanent: p.module.hasSoftDelete
-              ? d.visibility.trash
-                ? true
-                : false
-              : true,
+          h(GenericRestore, {
             model: p.module.routePath,
             id: row.id,
-            onDeleteProgress: (successStatus: boolean) => {
+            onRestoreProgress: (successStatus: boolean) => {
               m.handle.emits.deleteProgress(successStatus)
             },
           }),
         )
-
-        return [
-          h(
-            NSpace,
-            {
-              size: 10,
-              justify: "center",
-            },
-            {
-              default: () => buttons,
-            },
-          ),
-        ]
-      },
-    })
-
-    return translatedColumns
-  })
-
-  const isFiltered = computed(() => {
-    return d.filteredOptions.length > 0 ? true : false
-  })
-
-  if (p.browseOptions !== false) {
-    d.defaultBrowseQuery = JSON.parse(
-      JSON.stringify({
-        ...d.defaultBrowseQuery,
-        ...JSON.parse(JSON.stringify(p.browseOptions)),
-      }),
-    )
-  }
-
-  watch(
-    () => p.needToRefresh,
-    (newVal) => {
-      if (newVal) {
-        m.getData(d.defaultBrowseQuery)
-        e("refreshed")
       }
-    },
-    { deep: true },
-  )
 
-  m.getData(d.defaultBrowseQuery)
+      buttons.push(
+        h(GenericDelete, {
+          permanent: p.module.hasSoftDelete
+            ? d.visibility.trash
+              ? true
+              : false
+            : true,
+          model: p.module.routePath,
+          id: row.id,
+          onDeleteProgress: (successStatus: boolean) => {
+            m.handle.emits.deleteProgress(successStatus)
+          },
+        }),
+      )
+
+      return [
+        h(
+          NSpace,
+          {
+            size: 10,
+            justify: "center",
+          },
+          {
+            default: () => buttons,
+          },
+        ),
+      ]
+    },
+  })
+
+  return translatedColumns
+})
+
+const isFiltered = computed(() => {
+  return d.filteredOptions.length > 0 ? true : false
+})
+
+if (p.browseOptions !== false) {
+  d.defaultBrowseQuery = JSON.parse(
+    JSON.stringify({
+      ...d.defaultBrowseQuery,
+      ...JSON.parse(JSON.stringify(p.browseOptions)),
+    }),
+  )
+}
+
+watch(
+  () => p.needToRefresh,
+  (newVal) => {
+    if (newVal) {
+      m.getData(d.defaultBrowseQuery)
+      e("refreshed")
+    }
+  },
+  { deep: true },
+)
+
+m.getData(d.defaultBrowseQuery)
 </script>
 
-<style
-  lang="scss"
-  scoped
->
-  .data-display {
-    &.mobile {
-      background: none;
-      border-color: transparent;
-    }
+<style lang="scss" scoped>
+.data-display {
+  &.mobile {
+    background: none;
+    border-color: transparent;
   }
+}
 </style>
 
 <style lang="scss">
-  .mobile-filter-content {
-    .n-drawer-header {
-      padding: 10px !important;
-    }
+.mobile-filter-content {
+  .n-drawer-header {
+    padding: 10px !important;
+  }
 
-    .n-drawer-body {
-      .n-drawer-body-content-wrapper {
-        padding: 10px;
-      }
+  .n-drawer-body {
+    .n-drawer-body-content-wrapper {
+      padding: 10px;
     }
   }
+}
 </style>

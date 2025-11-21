@@ -20,9 +20,17 @@
           :width="'90%'"
           :button-width="'30%'"
         />
+        <ModalsGenericContactView
+          v-if="props.module.name == 'Contacts'"
+          :id="data.id"
+          :data="data"
+          :view-component="props.module.contactCommunicationPlatform?.component"
+          :width="'90vw'"
+          :button-width="'30%'"
+        />
 
         <n-button
-          v-if="!props.isTrashed"
+          v-if="!props.isTrashed && props.module.name != 'Contacts'"
           type="warning"
           secondary
           size="small"
@@ -34,6 +42,8 @@
             </n-icon>
           </template>
         </n-button>
+
+
 
         <ModalsGenericRestore
           v-if="props.module.hasSoftDelete && props.isTrashed"
@@ -55,49 +65,43 @@
   </div>
 </template>
 
-<script
-  lang="ts"
-  setup
->
-  import { NoteRound, TextSnippetRound, EditRound, DeleteRound } from '@vicons/material'
-  import GenericView from '../Modals/GenericView.vue'
-  import type { Module } from '~/utils/modules'
+<script lang="ts" setup>
+import { NoteRound, TextSnippetRound, EditRound, DeleteRound } from '@vicons/material'
+import GenericView from '../Modals/GenericView.vue'
+import type { Module } from '~/utils/modules'
 
-  const emits = defineEmits(['view', 'editClicked', 'delete'])
+const emits = defineEmits(['view', 'editClicked', 'delete'])
 
-  const props = defineProps<{
-    listData: any[],
-    listColumns: any[],
-    module: Module,
-    isTrashed: boolean
-  }>()
+const props = defineProps<{
+  listData: any[],
+  listColumns: any[],
+  module: Module,
+  isTrashed: boolean
+}>()
 
-  console.log(props.module)
+console.log(props.module)
 </script>
 
-<style
-  lang="scss"
-  scoped
->
-  .wrap-list {
-    .item {
-      background: rgba(255, 255, 255, 0.2);
-      padding: 10px;
-      border-radius: 4px;
-      margin-bottom: 10px;
+<style lang="scss" scoped>
+.wrap-list {
+  .item {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 10px;
+    border-radius: 4px;
+    margin-bottom: 10px;
 
-      .name {
-        font-weight: 600;
-      }
+    .name {
+      font-weight: 600;
+    }
 
-      .button-group {
-        display: flex;
-        gap: 8px;
+    .button-group {
+      display: flex;
+      gap: 8px;
 
-        .n-button {
-          flex: 1;
-        }
+      .n-button {
+        flex: 1;
       }
     }
   }
+}
 </style>

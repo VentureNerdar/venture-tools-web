@@ -32,6 +32,7 @@ export const useAuthStore = defineStore("auth", () => {
   const user = ref<User | null>(null)
   let authUser = ref(JSON.parse(localStorage.getItem("authUser") || "{}"))
   const token = ref(localStorage.getItem("Bearer") || "")
+  const loginTime = ref<number | null>(JSON.parse(localStorage.getItem("loginTime") || "0"))
 
   async function fetchUser() {
     const token = localStorage.getItem("Bearer") || ""
@@ -159,6 +160,9 @@ export const useAuthStore = defineStore("auth", () => {
     if (response) {
       token.value = "Bearer " + response.token
       localStorage.setItem("Bearer", token.value)
+      const now = Date.now()
+      loginTime.value = now
+      localStorage.setItem("loginTime", String(now))
       await registerDevice(response.user.id)
       await fetchUser()
     }
@@ -200,9 +204,23 @@ export const useAuthStore = defineStore("auth", () => {
     user.value = null
 
     localStorage.removeItem("Bearer")
+    localStorage.removeItem("loginTime")
 
     navigateTo("/")
   }
 
-  return { user, login, fetchUser, logout, authUser }
+  function isLoginExpired(): boolean {
+    if (!loginTime.value) return true
+
+    const now = Date.now()
+    // 24 hours
+    const hoursPassed = (now - loginTime.value) / (1000 * 60 * 60)
+    return hoursPassed >= 24
+
+    // Testing 3 min
+    // const minutesPassed = (now - loginTime.value) / (1000 * 60)
+    // return minutesPassed >= 3
+  }
+
+  return { user, login, fetchUser, logout, authUser, loginTime, isLoginExpired }
 })
