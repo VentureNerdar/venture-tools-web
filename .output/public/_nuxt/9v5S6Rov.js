@@ -1,1 +1,0 @@
-import{g as t,D as r}from"./YtHq8OO6.js";function f(u,s){return t(u,e=>{e!==void 0&&(s.value=e)}),r(()=>u.value===void 0?s.value:u.value)}function o(u,s="default",e=[]){const n=u.$slots[s];return n===void 0?e:n()}export{o as g,f as u};
