@@ -47,7 +47,7 @@ const consume = {
 
 // Language Switching
 const h = useHelpers()
-const limit = ref(2)
+const limit = ref(10)
 const hasMore = ref(true)
 // e.o Language Switching
 

@@ -11,101 +11,7 @@
       :size="10"
       vertical
     >
-      <n-card size="small">
-        <n-grid
-          x-gap="10"
-          :cols="isMobile ? 1 : 4"
-        >
-          <!-- Is Active -->
-          <n-gi>
-            <n-form-item
-              path="is_active"
-              :label="helpers.translate('is_active')"
-            >
-              <n-switch v-model:value="d.model.is_active"></n-switch>
-            </n-form-item>
-          </n-gi>
-          <!-- e.o Is Active -->
 
-          <!-- Faith Status -->
-          <n-gi>
-            <n-form-item
-              path="position_id"
-              :label="helpers.translate('position')"
-            >
-              <n-select
-                v-model:value="d.model.position_id"
-                :options="useSettingStore().options.faith"
-              />
-            </n-form-item>
-          </n-gi>
-          <!-- e.o Faith Status -->
-
-          <!-- Assigned To -->
-          <n-gi>
-            <n-form-item
-              path="assigned_to"
-              :label="helpers.translate('assigned_to')"
-            >
-              <n-select
-                :loading="d.loading.assignedTo"
-                filterable
-                clearable
-                remote
-                @search="m.handle.searchAssignedToOption"
-                v-model:value="d.model.assigned_to"
-                :render-label="m.handle.userRenderLabel"
-                :options="assignedToOptions"
-                :placeholder="helpers.translate('please_select')"
-                size="large"
-              >
-                <template #action>
-                  <n-text :depth="3">
-                    {{
-                      helpers.translate(
-                        "loading_maximum_20_users._type_in_the_name_of_the_user_to_search",
-                      )
-                    }}
-                  </n-text>
-                </template>
-              </n-select>
-            </n-form-item>
-          </n-gi>
-          <!-- e.o Assigned To -->
-
-          <!-- Coached By -->
-          <n-gi>
-            <n-form-item
-              path="coached_by"
-              :label="helpers.translate('coached_by')"
-            >
-              <n-select
-                :loading="d.loading.coachedBy"
-                filterable
-                clearable
-                remote
-                :placeholder="helpers.translate('please_select')"
-                @search="m.handle.searchCoachedByOption"
-                v-model:value="d.model.coached_by"
-                :render-label="m.handle.userRenderLabel"
-                :options="coachedByOptions"
-                size="large"
-              >
-                <template #action>
-                  <n-text :depth="3">
-                    {{
-                      helpers.translate(
-                        "loading_maximum_20_contacts._type_in_the_name_of_the_contact_to_search",
-                      )
-                    }}
-                  </n-text>
-                </template>
-              </n-select>
-            </n-form-item>
-          </n-gi>
-          <!-- e.o Coached By -->
-        </n-grid>
-      </n-card>
 
       <n-card size="small">
         <n-grid
@@ -139,6 +45,22 @@
             </n-form-item>
           </n-gi>
           <!-- e.o Nickname -->
+
+          <!-- Note-->
+          <n-gi>
+            <n-form-item
+              path="note"
+              :label="helpers.translate('note')"
+            >
+              <n-input
+                v-model:value="d.model.note"
+                :placeholder="helpers.translate('please_input')"
+              />
+            </n-form-item>
+          </n-gi>
+          <!-- e.o Note-->
+
+
 
           <!-- Gender -->
           <n-gi>
@@ -192,7 +114,7 @@
             </n-form-item>
           </n-gi>
 
-          <n-gi>
+          <!-- <n-gi>
             <n-form-item
               path="user_profile_id"
               :label="helpers.translate('user_profile')"
@@ -218,9 +140,23 @@
                     }}
                   </n-text>
                 </template>
-              </n-select>
+</n-select>
+</n-form-item>
+</n-gi> -->
+          <!-- Faith Status -->
+          <n-gi>
+            <n-form-item
+              path="position_id"
+              :label="helpers.translate('position')"
+            >
+              <n-select
+                v-model:value="d.model.position_id"
+                :options="useSettingStore().options.faith"
+              />
             </n-form-item>
           </n-gi>
+          <!-- e.o Faith Status -->
+
         </n-grid>
 
         <n-grid :cols="isMobile ? 1 : 4">
@@ -403,6 +339,90 @@
           />
         </n-form-item>
         <!-- e.o Current Prayers -->
+      </n-card>
+
+      <n-card size="small">
+        <n-grid
+          x-gap="10"
+          :cols="isMobile ? 1 : 4"
+        >
+          <!-- Is Active -->
+          <n-gi>
+            <n-form-item
+              path="is_active"
+              :label="helpers.translate('is_active')"
+            >
+              <n-switch v-model:value="d.model.is_active"></n-switch>
+            </n-form-item>
+          </n-gi>
+          <!-- e.o Is Active -->
+
+
+
+          <!-- Assigned To -->
+          <!-- <n-gi>
+            <n-form-item
+              path="assigned_to"
+              :label="helpers.translate('assigned_to')"
+            >
+              <n-select
+                :loading="d.loading.assignedTo"
+                filterable
+                clearable
+                remote
+                @search="m.handle.searchAssignedToOption"
+                v-model:value="d.model.assigned_to"
+                :render-label="m.handle.userRenderLabel"
+                :options="assignedToOptions"
+                :placeholder="helpers.translate('please_select')"
+                size="large"
+              >
+                <template #action>
+                  <n-text :depth="3">
+                    {{
+                      helpers.translate(
+                        "loading_maximum_20_users._type_in_the_name_of_the_user_to_search",
+                      )
+                    }}
+                  </n-text>
+                </template>
+</n-select>
+</n-form-item>
+</n-gi> -->
+          <!-- e.o Assigned To -->
+
+          <!-- Coached By -->
+          <!-- <n-gi>
+            <n-form-item
+              path="coached_by"
+              :label="helpers.translate('coached_by')"
+            >
+              <n-select
+                :loading="d.loading.coachedBy"
+                filterable
+                clearable
+                remote
+                :placeholder="helpers.translate('please_select')"
+                @search="m.handle.searchCoachedByOption"
+                v-model:value="d.model.coached_by"
+                :render-label="m.handle.userRenderLabel"
+                :options="coachedByOptions"
+                size="large"
+              >
+                <template #action>
+                  <n-text :depth="3">
+                    {{
+                      helpers.translate(
+                        "loading_maximum_20_contacts._type_in_the_name_of_the_contact_to_search",
+                      )
+                    }}
+                  </n-text>
+                </template>
+              </n-select>
+            </n-form-item>
+          </n-gi> -->
+          <!-- e.o Coached By -->
+        </n-grid>
       </n-card>
     </n-space>
   </n-form>

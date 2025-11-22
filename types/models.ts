@@ -32,6 +32,7 @@ export interface ContactFormModel {
 
   name: string | null
   nickname?: string | null
+  note?: string | null
   gender: GenderTypes | null
   age: AgeGroups | null
   baptism_date?: any | null
