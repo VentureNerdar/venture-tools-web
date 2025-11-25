@@ -239,16 +239,26 @@
 
           <!-- Baptized By -->
           <n-gi>
+            <!--
             <div style="margin-bottom: 10px">
               <n-checkbox v-model:checked="baptizedByFromContact">
                 Select baptized by from contact
               </n-checkbox>
             </div>
+            -->
+            <n-radio-group v-model:value="baptizedBySource">
+              <n-radio value="church_planter">
+                {{ helpers.translate('church_planter') }}
+              </n-radio>
+              <n-radio value="name">
+                {{ helpers.translate('name') }}
+              </n-radio>
+            </n-radio-group>
 
             <n-form-item
-              v-if="baptizedByFromContact"
+              v-if="baptizedBySource == 'church_planter'"
               path="baptized_by"
-              :label="helpers.translate('baptized_by')"
+              :label="helpers.translate('baptized_by_church_planter')"
             >
               <n-select
                 v-model:value="d.model.baptized_by"
@@ -258,9 +268,8 @@
                 filterable
                 clearable
                 remote
-                @search="m.handle.searchCoachedByOption"
+                @search="m.handle.searchChurchPlanterBaptizedByOption"
                 :placeholder="helpers.translate('please_select')"
-                size="large"
               >
                 <template #action>
                   <n-text :depth="3">
@@ -275,7 +284,7 @@
             </n-form-item>
 
             <n-form-item
-              v-if="!baptizedByFromContact"
+              v-if="baptizedBySource == 'name'"
               path="baptized_by_name"
               :label="helpers.translate('baptized_by_name')"
             >
@@ -436,7 +445,7 @@ import { NAvatar, NText } from "naive-ui"
 import modules from "~/utils/modules"
 
 // mandatory . variable form model types.
-import { RoutePaths, type ContactFormModel } from "~/types/index.d"
+import { RoutePaths, type ContactFormModel, type UserFormModel } from "~/types/index.d"
 
 // optional . modular imports based on what the module form need
 // mostly for computes
@@ -446,6 +455,7 @@ import { useAuthStore } from "~/stores/useAuthStore"
 import { usePeopleGroupStore } from "~/stores/usePeopleGroupsStore"
 import { useCommunicationPlatformStore } from "~/stores/useCommunicationPlatformsStore"
 import { useLanguagesStore } from "~/stores/useLanguagesStore"
+import ChurchPlanters from "../Modals/ChurchPlanters.vue"
 
 // e.o Imports
 
@@ -498,6 +508,7 @@ const formRef = ref<FormInst | null>(null)
 const rules: FormRules = { ...module.form.rules }
 
 const baptizedByFromContact = ref(false)
+const baptizedBySource = ref('church_planter')
 
 const translatedRules = computed(() => {
   const result: Record<string, any[]> = {}
@@ -682,6 +693,31 @@ const m = {
         })),
       ]
       d.loading.assignedTo = false
+    },
+
+    searchChurchPlanterBaptizedByOption: async (query: string) => {
+      d.loading.baptizedBy = true
+      const searchResult = await consume.users.browse(
+        {
+          all: true,
+          search_by: "name",
+          search: query,
+          whereIn: {
+            key: "user_role_id",
+            value: [4],
+          },
+        },
+        false,
+      )
+
+      d.options.baptizedBy = [
+        ...searchResult.map((user: UserFormModel) => ({
+          label: user.name,
+          value: user.id
+        }))
+      ]
+
+      d.loading.baptizedBy = false
     },
 
     searchUserProfilesOption: async (query: string) => {
@@ -942,24 +978,43 @@ const m = {
       }
     },
 
-    defaultContactsForCoachedByOption: async () => {
-      const contactWithAssignedTo = await consume.contacts.browse(
+    // defaultContactsForCoachedByOption: async () => {
+    //   const contactWithAssignedTo = await consume.contacts.browse(
+    //     {
+    //       all: true,
+    //       limit: 20,
+    //       with: JSON.stringify(["assignedTo", "assignedTo.movement"]),
+    //     },
+    //     false,
+    //   )
+    //   const contacts = contactWithAssignedTo.map((contact: any) => ({
+    //     label: contact.name,
+    //     verifier: contact.assigned_to?.name,
+    //     movement: contact.assigned_to?.movement?.name,
+    //     value: contact.id,
+    //   }))
+
+    //   d.options.coachedBy = [...contacts]
+    //   d.options.baptizedBy = [...contacts]
+    // },
+
+    defaultChurchPlantersForBaptizedByOption: async () => {
+      const churchPlanters = await consume.users.browse(
         {
           all: true,
           limit: 20,
-          with: JSON.stringify(["assignedTo", "assignedTo.movement"]),
-        },
-        false,
+          whereIn: {
+            key: "user_role_id",
+            value: [4],
+          }
+        }
       )
-      const contacts = contactWithAssignedTo.map((contact: any) => ({
-        label: contact.name,
-        verifier: contact.assigned_to?.name,
-        movement: contact.assigned_to?.movement?.name,
-        value: contact.id,
+      const mapChurchPlanters = churchPlanters.map((cp: UserFormModel) => ({
+        label: cp.name,
+        value: cp.id,
       }))
-
-      d.options.coachedBy = [...contacts]
-      d.options.baptizedBy = [...contacts]
+      console.log("church Planter Options", churchPlanters)
+      d.options.baptizedBy = [...mapChurchPlanters]
     },
 
     faithMilestones: async () => {
@@ -1052,8 +1107,9 @@ watch(
 // e.o watch and emit form changes
 
 m.consume.defaultUsersForAssignedToOption()
-m.consume.defaultContactsForCoachedByOption()
+// m.consume.defaultContactsForCoachedByOption()
 m.consume.faithMilestones()
+m.consume.defaultChurchPlantersForBaptizedByOption()
 m.consume.communicationPlatforms()
 </script>
 

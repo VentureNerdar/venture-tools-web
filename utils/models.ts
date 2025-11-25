@@ -11,6 +11,7 @@ export default {
     email: null,
     phone_number: null,
     is_active: true,
+    first_time_login: true,
   } as types.UserFormModel,
 
   userRole: {

@@ -133,6 +133,7 @@ export default {
         "phone_number",
         "biography",
         "preferred_language_id",
+        "first_time_login"
       ],
       hiddenFieldsOnEdit: ["password", "password_confirmation"],
     },
@@ -147,6 +148,7 @@ export default {
         preferred_language_id: null,
         email: null,
         phone_number: null,
+        first_time_login: true,
         is_active: true,
       } as models.UserFormModel,
       rules: {

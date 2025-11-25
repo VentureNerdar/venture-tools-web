@@ -10,6 +10,7 @@ export interface UserFormModel {
   phone_number: string | null
   biography: string | null
   preferred_language_id: number | null
+  first_time_login: boolean
   id?: number
   contact_id?: number | null
   password?: string | null
