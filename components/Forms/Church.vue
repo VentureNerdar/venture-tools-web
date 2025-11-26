@@ -51,9 +51,9 @@
             </n-form-item>
           </n-gi>
 
-          <n-gi span="2">
-            <!-- Community -->
-            <n-form-item
+          <!-- <n-gi span="2"> -->
+          <!-- Community -->
+          <!-- <n-form-item
               path="community_id"
               :label="helpers.translate('community')"
             >
@@ -67,16 +67,9 @@
                 :loading="d.loading.community"
                 :options="computedCommunityOptions"
               />
-            </n-form-item>
-            <!-- <n-modal 
-            v-model:show="showCreateCommunityModal" 
-            title="Create Community"
-            transform-origin="center"
-            :mask-closable="false"
-            >
-              <FormsCommunity @created="handleCommunityCreated" />
-            </n-modal> -->
-            <ModalsGenericSaveForm
+            </n-form-item> -->
+
+          <!-- <ModalsGenericSaveForm
               :show-modal="showCreateCommunityModal"
               :form="false"
               :form-modal-options="formModalOptions"
@@ -84,9 +77,8 @@
               :route-path="RoutePaths.COMMUNITIES"
               @close-modal="showCreateCommunityModal = false"
               @saved-form="handleSavedCommunityForm"
-            />
-            <!-- @community-id="(id) => d.model.community_id = id" -->
-          </n-gi>
+            /> -->
+          <!-- </n-gi> -->
           <!-- e.o Community -->
 
           <!-- Parent Church -->
@@ -123,6 +115,20 @@
                 />
               </n-input-group>
             </n-form-item>
+          </n-gi>
+
+          <n-gi span="2">
+            <!-- Name -->
+            <n-form-item
+              path="phone_number"
+              :label="helpers.translate('phone_number')"
+            >
+              <n-input
+                v-model:value="d.model.phone_number"
+                :placeholder="helpers.translate('enter_phone_number')"
+              />
+            </n-form-item>
+            <!-- e.o Name -->
           </n-gi>
         </n-grid>
       </n-card>
@@ -305,12 +311,6 @@
                     :show-button="false"
                     :placeholder="helpers.translate('please_input')"
                   />
-                  <!-- <n-input-number
-                    v-model:value="groupAmountModels[peopleGroup.id as number]"
-                    clearable
-                    :show-button="false"
-                    :placeholder="helpers.translate('please_input')"
-                  /> -->
                 </n-form-item>
               </n-gi>
             </n-grid>
@@ -397,6 +397,7 @@ const module = modules.churches
 
 // const h = useHelpers()
 const { isMobile } = useScreenSize()
+const authStore = useAuthStore()
 
 const consume = {
   users: useConsumeApi(RoutePaths.USERS),
@@ -504,14 +505,14 @@ if (p.editData !== false) {
     }
   }
 
-  if ("community" in p.editData) {
-    const community = JSON.parse(JSON.stringify(p.editData.community))
-    existingCommunity = { ...community }
-    if (community !== null) {
-      modelRefRef.community_id =
-        "id" in (community as any) ? (community as any).id : null
-    }
-  }
+  // if ("community" in p.editData) {
+  //   const community = JSON.parse(JSON.stringify(p.editData.community))
+  //   existingCommunity = { ...community }
+  //   if (community !== null) {
+  //     modelRefRef.community_id =
+  //       "id" in (community as any) ? (community as any).id : null
+  //   }
+  // }
 } else {
 }
 
@@ -538,6 +539,7 @@ const d = reactive({
     prayerPrompt: [] as any[],
   },
   peopleGroup: [] as PeopleGroupFormModel[],
+
 }) // e.o d
 
 // Computes that need for the form
@@ -568,37 +570,37 @@ const formModalOptions = {
   form: communityModule.form.model,
 } as FormModalOptions
 
-const handleSavedCommunityForm = (form: CommunityFormModel) => {
-  d.options.communities.push({
-    value: form.id,
-    label: form.name,
-  })
-  d.model.community_id = form.id as number
-}
+// const handleSavedCommunityForm = (form: CommunityFormModel) => {
+//   d.options.communities.push({
+//     value: form.id,
+//     label: form.name,
+//   })
+//   d.model.community_id = form.id as number
+// }
 
-const computedCommunityOptions = computed(() => {
-  return [
-    {
-      label: () =>
-        h(
-          "div",
-          {
-            style:
-              "display: flex; justify-content: space-between; align-items: center; color: #18a058; font-weight: 500; cursor: pointer;",
-            onClick: () => {
-              // Close dropdown if needed manually
-              d.model.community_id = null
-              showCreateCommunityModal.value = true
-            },
-          },
-          ["Create New Community"],
-        ),
-      value: "__create__",
-      disabled: true, // so selecting this won't assign to v-model
-    },
-    ...d.options.communities,
-  ]
-})
+// const computedCommunityOptions = computed(() => {
+//   return [
+//     {
+//       label: () =>
+//         h(
+//           "div",
+//           {
+//             style:
+//               "display: flex; justify-content: space-between; align-items: center; color: #18a058; font-weight: 500; cursor: pointer;",
+//             onClick: () => {
+//               // Close dropdown if needed manually
+//               d.model.community_id = null
+//               showCreateCommunityModal.value = true
+//             },
+//           },
+//           ["Create New Community"],
+//         ),
+//       value: "__create__",
+//       disabled: true, // so selecting this won't assign to v-model
+//     },
+//     ...d.options.communities,
+//   ]
+// })
 
 const computedGoogleLocationData = computed(() => {
   return d.model.google_location_data
@@ -611,18 +613,25 @@ const m = {
   handle: {
     searchAssignedToOption: async (query: string) => {
       d.loading.assignedTo = true
+      let params: any = {
+        all: true,
+        search_by: "name",
+        search: query,
+        whereNotIn: {
+          key: "user_role_id",
+          value: [1, 2, 5],
+        },
+        with: JSON.stringify(["verifier", "movement"]),
+      }
+      if (authStore.authUser.movement_id) {
+        params.whereIn = {
+          key: "movement_id",
+          value: [authStore.authUser.movement_id]
+        }
+      }
 
       const searchResult = await consume.users.browse(
-        {
-          all: true,
-          search_by: "name",
-          search: query,
-          whereNotIn: {
-            key: "user_role_id",
-            value: [1, 2, 5],
-          },
-          with: JSON.stringify(["verifier", "movement"]),
-        },
+        params,
         false,
       )
 
@@ -696,20 +705,7 @@ const m = {
     },
 
     setPeopleGroupCount: (groupID: number, amount: number) => {
-      // const pgIndex = d.model.member_count_list_by_people_group?.findIndex(
-      //   (pg: any) => pg.people_group_id === groupID,
-      // ) as number
-      // if (pgIndex !== -1 && d.model.member_count_list_by_people_group) {
-      //   d.model.member_count_list_by_people_group[pgIndex].amount = amount
-      // } else {
-      //   d.model.member_count_list_by_people_group = [
-      //     ...(d.model.member_count_list_by_people_group || []),
-      //   ]
-      //   d.model.member_count_list_by_people_group.push({
-      //     people_group_id: groupID,
-      //     amount: amount,
-      //   })
-      // }
+
       const list = d.model.member_count_list_by_people_group || []
       const existingIndex = list.findIndex(
         (pg) => pg.people_group_id === groupID,
@@ -776,12 +772,20 @@ const m = {
 
   consume: {
     defaultUsersForAssignedToOption: async () => {
+      let params: any = {
+        all: true,
+        limit: 20,
+        with: JSON.stringify(["verifier", "movement"])
+      }
+      if (authStore.authUser.movement_id) {
+        params.whereIn = {
+          key: "movement_id",
+          value: [authStore.authUser.movement_id]
+        }
+      }
+      console.log("query params", params)
       const usersWithVerifiersAndMovements = await consume.users.browse(
-        {
-          all: true,
-          limit: 20,
-          with: JSON.stringify(["verifier", "movement"]),
-        },
+        params,
         false,
       )
       const users = usersWithVerifiersAndMovements.map((user: any) => ({
@@ -801,7 +805,6 @@ const m = {
       d.options.prayerPrompt = [...prayerPrompt]
 
       if (p.editData === false) {
-        const authStore = useAuthStore()
         const userAlreadyInList = d.options.assignedTo.find(
           (ou: any) => ou.value === authStore.authUser.id,
         )
