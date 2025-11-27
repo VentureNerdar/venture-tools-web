@@ -11,18 +11,13 @@ export default defineNuxtConfig({
   app: {
     pageTransition: { name: 'page', mode: 'out-in' },
     head: {
+      title: 'Venture Tools',
       script: [
         {
           src: `https://maps.googleapis.com/maps/api/js?loading=async&libraries=places&key=${process.env.GOOGLE_MAPS_API_KEY}`,
           async: true,
           defer: true,
         },
-
-        // {
-        //   src: `https://places.googleapis.com/v1/places/GyuEmsRBfy61i59si0?fields=addressComponents&key=${process.env.GOOGLE_MAPS_API_KEY}`,
-        //   async: true,
-        //   defer: true,
-        // }
       ]
     }
   },
