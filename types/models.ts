@@ -37,7 +37,7 @@ export interface ContactFormModel {
   gender: GenderTypes | null
   age: AgeGroups | null
   baptism_date?: any | null
-  baptized_by?: number | null
+  baptized_by?: UserFormModel | null
   baptized_by_name?: string | null
   current_prayers?: string | null
   faith_milestones?: number[] | null

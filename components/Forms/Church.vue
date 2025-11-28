@@ -288,6 +288,25 @@
             >
               <n-switch v-model:value="d.model.member_count_by_people_group as boolean"></n-switch>
             </n-form-item>
+            <div
+              style="padding-bottom: 10px;"
+              v-if="d.model.member_count_by_people_group"
+            >
+              <n-button @click="d.visibility.peopleGroup = true">
+                <n-icon>
+                  <PlusFilled />
+                </n-icon>
+                {{ helpers.translate('add_people_group') }}
+              </n-button>
+            </div>
+            <FormPartialsChurchPeopleGroupModal
+              :show-dialog="d.visibility.peopleGroup"
+              :people-group-list="d.peopleGroup"
+              @update:show-dialog="d.visibility.peopleGroup = $event"
+              @added-people-group="m.handle.emit.addPeopleGroup"
+              @removed-people-group="m.handle.emit.removePeopleGroup"
+            />
+
             <n-grid
               :cols="4"
               x-gap="10"
@@ -311,10 +330,23 @@
                     :show-button="false"
                     :placeholder="helpers.translate('please_input')"
                   />
+                  <n-button
+                    size="small"
+                    type="error"
+                    secondary
+                    @click="m.handle.removePeopleGroup(peopleGroup)"
+                    style="margin-left: 5px"
+                  >
+                    <n-icon>
+                      <CloseRound />
+                    </n-icon>
+                  </n-button>
                 </n-form-item>
               </n-gi>
             </n-grid>
+
           </n-gi>
+
           <n-gi v-if="!d.model.member_count_by_people_group">
             <n-form-item
               path="church_members_count"
@@ -367,6 +399,7 @@
 import type { FormInst, FormRules, SelectOption } from "naive-ui"
 import { NText } from "naive-ui"
 import modules from "~/utils/modules"
+import { CloseRound } from '@vicons/material'
 import ModalsGenericSaveForm from "../Modals/GenericSaveForm.vue"
 
 // mandatory . variable form model types.
@@ -387,6 +420,7 @@ import { useDenominationStore } from "~/stores/useDenominationsStore"
 import { useSettingStore } from "~/stores/useSettingsStore"
 import { useLanguagesStore } from "~/stores/useLanguagesStore"
 import FormCommunity from "./Community.vue"
+import { PlusFilled } from "@vicons/material"
 // e.o Imports
 
 // mandatory . defining a model ref type. change the ref
@@ -521,6 +555,9 @@ const modelRef: ModelRefType = ref({ ...modelRefRef })
 // data
 const d = reactive({
   model: modelRef,
+  visibility: {
+    peopleGroup: false
+  },
   loading: {
     churches: false,
     assignedTo: false,
@@ -539,6 +576,7 @@ const d = reactive({
     prayerPrompt: [] as any[],
   },
   peopleGroup: [] as PeopleGroupFormModel[],
+  peopleGroupForProps: [] as PeopleGroupFormModel[]
 
 }) // e.o d
 
@@ -718,6 +756,20 @@ const m = {
       }
 
       d.model.member_count_list_by_people_group = [...list]
+      console.log("d model member count list by people group", d.model.member_count_by_people_group)
+    },
+    removePeopleGroup: (pg: PeopleGroupFormModel) => {
+      const index = d.peopleGroup.findIndex(x => x.id === pg.id)
+      const formIndex = d.model.member_count_list_by_people_group?.findIndex(x => x.people_group_id === pg.id)
+
+      if (index !== -1) {
+        d.peopleGroup.splice(index, 1)
+      }
+      if (formIndex !== -1) {
+        d.model.member_count_list_by_people_group?.splice(formIndex!!, 1)
+      }
+
+
     },
     userRenderLabel: (option: any) => {
       const verifier = option.verifier || ""
@@ -767,6 +819,26 @@ const m = {
           d.model.district_name = place.adminLevels.administrative_area_level_2
         }
       },
+      addPeopleGroup: (pg: PeopleGroupFormModel) => {
+        console.log("emitted value from pg", pg)
+        if (!d.peopleGroup.includes(pg)) {
+          d.peopleGroup.push(pg)
+        }
+      },
+      removePeopleGroup: (pg: PeopleGroupFormModel) => {
+        const index = d.peopleGroup.findIndex(x => x.id === pg.id)
+        const formPgIndex = d.model.member_count_list_by_people_group?.findIndex(x => x.people_group_id === pg.id)
+        if (index !== -1) {
+          d.peopleGroup.splice(index, 1)
+        }
+        console.log("const index", index)
+        console.log("pg.id ", pg.id)
+        console.log("people group after remove from parent", d.peopleGroup)
+        if (formPgIndex !== -1) {
+          d.model.member_count_list_by_people_group?.splice(formPgIndex!!, 1)
+        }
+
+      }
     },
   },
 
@@ -887,10 +959,17 @@ const m = {
         limit: 20,
       })
     },
-    getPeopleGroupList: async () => {
+    getPeopleGroupListForEdit: async (ids: number[]) => {
       d.peopleGroup = await consume.peopleGroups.browse({
         all: true,
+        whereIn: {
+          key: "id",
+          value: ids
+        }
+
       })
+      d.peopleGroupForProps = d.peopleGroup
+
     },
   },
 }
@@ -900,12 +979,16 @@ if (
   "member_count_by_people_group" in p.editData &&
   p.editData.member_count_by_people_group == true
 ) {
-  m.consume.getPeopleGroupList()
 
   if (
     "church_members" in p.editData &&
     p.editData.church_members !== undefined
+
   ) {
+    const pgIDs = p.editData.church_members.map((member: any) => member.people_group_id)
+    console.log("pgIDs +++++", pgIDs)
+    m.consume.getPeopleGroupListForEdit(pgIDs)
+
     const list = p.editData.church_members.map((member: any) => ({
       people_group_id: member.people_group_id,
       amount: member.amount,
@@ -941,7 +1024,7 @@ watch(
   () => d.model.member_count_by_people_group,
   () => {
     if (d.model.member_count_by_people_group) {
-      m.consume.getPeopleGroupList()
+      // m.consume.getPeopleGroupList()
     }
   },
 )

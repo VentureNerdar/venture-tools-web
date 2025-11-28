@@ -33,7 +33,7 @@
           <!-- e.o Name -->
 
           <!-- Nickname -->
-          <n-gi>
+          <!-- <n-gi>
             <n-form-item
               path="nickname"
               :label="helpers.translate('nickname')"
@@ -43,7 +43,7 @@
                 :placeholder="helpers.translate('please_input')"
               />
             </n-form-item>
-          </n-gi>
+          </n-gi> -->
           <!-- e.o Nickname -->
 
           <!-- Note-->

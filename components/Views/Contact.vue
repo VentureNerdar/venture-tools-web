@@ -16,51 +16,54 @@
         {{ h.translate('this_contact_is_in_trash') }}
       </n-alert>
 
-      <table
-        v-if="!isMobile"
-        class="table"
-      >
-        <tbody>
-          <tr>
-            <td colspan="2">
-              <b>{{ h.translate('name') }} :</b> &nbsp;
-              <span class="uppercase">{{ data.name }}</span>
-              <br />
-              <b>{{ h.translate('username') }} : </b> &nbsp; {{ data.nickname }}
-            </td>
+      <div v-if="!isMobile">
+        <table class="table">
+          <tbody>
+            <tr>
+              <td colspan="1">
+                <b>{{ h.translate('name') }} :</b> &nbsp;
+                <span class="uppercase">{{ data.name }}</span>
+                <br />
+                <!-- <b>{{ h.translate('username') }} : </b> &nbsp; {{ data.nickname }} -->
+              </td>
 
-            <td style="width: 20%">
-              <b>{{ h.translate('contact_status') }} :</b> &nbsp;
-              <n-tag
-                :border="false"
-                type="info"
-              >
-                {{ m.contactStatus(data.contact_status_id as number) }}</n-tag>
-            </td>
+              <td cols="1">
+                <b>{{ h.translate('active_status') }} :</b> &nbsp;
+                <n-tag
+                  :border="false"
+                  type="info"
+                >
+                  {{ m.activeStatus(data.is_active as boolean) }}</n-tag>
+              </td>
 
-            <td style="width: 20%">
-              <b>{{ h.translate('position') }} :</b> &nbsp;
-              <n-tag
-                :border="false"
-                type="info"
-              >
-                {{ m.faithStatus(data.position_id as number) }}
-              </n-tag>
-            </td>
-          </tr>
+              <td colspan="1">
+                <b>{{ h.translate('position') }} :</b> &nbsp;
+                <n-tag
+                  :border="false"
+                  type="info"
+                >
+                  {{ m.faithStatus(data.position_id as number) }}
+                </n-tag>
+              </td>
+            </tr>
 
-          <tr>
-            <td style="width: 20%">
-              <b>{{ h.translate('gender') }} : </b> &nbsp;
-              <span class="uppercase">{{ data.gender }}</span>
-            </td>
+            <tr>
+              <td colspan="1">
+                <b>{{ h.translate('gender') }} : </b> &nbsp;
+                <span class="uppercase">{{ data.gender }}</span>
+              </td>
 
-            <td style="width: 20%">
-              <b>{{ h.translate('age') }} : </b> &nbsp;
-              <span class="uppercase"> {{ data.age }}</span>
-            </td>
+              <td colspan="1">
+                <b>{{ h.translate('age') }} : </b> &nbsp;
+                <span class="uppercase"> {{ data.age }}</span>
+              </td>
 
-            <td>
+              <td colspan="1">
+                <b>{{ h.translate('note') }} : </b> &nbsp;
+                <span>{{ data.note }}</span>
+              </td>
+
+              <!-- <td>
               <b>{{ h.translate('assigned_to') }} :</b> &nbsp;
               <span class="uppercase">{{
                 m.render.assignedTo(data.assigned_to)
@@ -70,192 +73,238 @@
             <td>
               <b>{{ h.translate('coached_by') }} :</b> &nbsp;
               <span>{{ m.render.coachedBy(data.coached_by) }}</span>
-            </td>
-          </tr>
+            </td> -->
+            </tr>
+          </tbody>
+        </table>
 
-          <tr>
-            <td colspan="2">
-              <div style="margin-bottom: 10px">
-                <b>{{ h.translate('people_group') }} </b>
-              </div>
-
-              <n-space
-                :size="10"
-                v-if="dataPeopleGroups"
-              >
-                <n-tag
-                  v-for="pg in dataPeopleGroups"
-                  type="default"
-                >
-                  {{ "name" in pg ? (pg as any).name : "N/A" }}
-                </n-tag>
-              </n-space>
-            </td>
-          </tr>
-
-          <tr>
-            <td colspan="4">
-              <div style="margin-bottom: 10px"><b>{{ h.translate('faith_milestones') }}</b></div>
-
-              <n-space :size="10">
-                <div
-                  v-for="fm in d.faithMilestones"
-                  :key="fm.id"
-                  :class="`wrap-faith-milestones ${m.handle.hasFaithMilestone(fm.id) ? '' : 'not-included'}`"
-                >
-                  <n-image
-                    width="20"
-                    lazy
-                    :src="useRuntimeConfig().public.rootURL + fm.icon"
-                    style="margin-right: 10px"
-                  />
-
-                  {{ fm.name }}
+        <table
+          class="table"
+          style="margin-top: 5px"
+        >
+          <tbody>
+            <tr>
+              <td colspan="12">
+                <div style="margin-bottom: 10px">
+                  <b>{{ h.translate('people_group') }} </b>
                 </div>
-              </n-space>
-            </td>
-          </tr>
 
-          <tr style="height: 100%">
-            <td colspan="4">
-              <n-space vertical>
-                <div><b>{{ h.translate('current_prayers') }}</b></div>
+                <n-space
+                  :size="10"
+                  v-if="dataPeopleGroups"
+                >
+                  <n-tag
+                    v-for="pg in dataPeopleGroups"
+                    type="default"
+                  >
+                    {{ "name" in pg ? (pg as any).name : "N/A" }}
+                  </n-tag>
+                </n-space>
+              </td>
+            </tr>
+
+          </tbody>
+        </table>
+
+        <table
+          class="table"
+          style="margin-top: 5px"
+        >
+          <tbody>
+            <tr>
+              <td colspan="4">
+                <div style="margin-bottom: 10px"><b>{{ h.translate('faith_milestones') }}</b></div>
+
+                <n-space :size="10">
+                  <div
+                    v-for="fm in d.faithMilestones"
+                    :key="fm.id"
+                    :class="`wrap-faith-milestones ${m.handle.hasFaithMilestone(fm.id) ? '' : 'not-included'}`"
+                  >
+                    <n-image
+                      width="20"
+                      lazy
+                      :src="useRuntimeConfig().public.rootURL + fm.icon"
+                      style="margin-right: 10px"
+                    />
+
+                    {{ fm.name }}
+                  </div>
+                </n-space>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <table
+          class="table"
+          style="margin-top:5px"
+        >
+          <tbody>
+            <tr>
+              <td colspan="12">
+                <n-space vertical>
+                  <div><b>{{ h.translate('current_prayers') }}</b></div>
+
+                  <div>
+                    {{ data.current_prayers }}
+                  </div>
+                </n-space>
+              </td>
+            </tr>
+
+          </tbody>
+        </table>
+
+        <table
+          class="table"
+          style="margin-top:5px"
+        >
+          <tbody>
+            <tr>
+              <td colspan="6">
+                <b>{{ h.translate('baptized_by') }} :</b> &nbsp;
+                <span class="uppercase">{{ m.baptizedBy() }}</span>
+                <br />
+              </td>
+              <td colspan="6">
+                <b>{{ h.translate('baptism_date') }}: </b> &nbsp;
+
+                <span>{{ m.baptismDate() }}</span>
+              </td>
+            </tr>
+          </tbody>
+
+        </table>
+        <DisplaysMetaInfoViewTable :data="data" />
+      </div>
+
+
+      <!-- Mobile  -->
+      <div v-else>
+        <table class="table">
+          <tbody>
+            <tr>
+              <td colspan="2">
+                <b>{{ h.translate('name') }} :</b> &nbsp;
+                <span class="uppercase">{{ data.name }}</span>
+                <br />
+                <b>{{ h.translate('username') }} : </b> &nbsp; {{ data.nickname }}
+              </td>
+            </tr>
+
+            <tr>
+              <td style="width: 20%">
+                <b>{{ h.translate('contact_status') }} :</b> &nbsp;
+                <n-tag
+                  :border="false"
+                  type="info"
+                >
+                  {{ m.activeStatus(data.is_active as boolean) }}</n-tag>
+              </td>
+            </tr>
+
+            <tr>
+              <td style="width: 20%">
+                <b>{{ h.translate('position') }} :</b> &nbsp;
+                <n-tag
+                  :border="false"
+                  type="info"
+                >
+                  {{ m.faithStatus(data.position_id as number) }}
+                </n-tag>
+              </td>
+            </tr>
+
+            <tr>
+              <td style="width: 20%">
+                <b>{{ h.translate('gender') }} : </b> &nbsp;
+                <span class="uppercase">{{ data.gender }}</span>
+              </td>
+            </tr>
+
+            <tr>
+              <td style="width: 20%">
+                <b>{{ h.translate('age') }} : </b> &nbsp;
+                <span class="uppercase"> {{ data.age }}</span>
+              </td>
+            </tr>
+
+            <tr>
+              <td>
+                <b>{{ h.translate('assigned_to') }} :</b> &nbsp;
+                <span class="uppercase">{{
+                  m.render.assignedTo(data.assigned_to)
+                  }}</span>
+              </td>
+
+            </tr>
+
+            <tr>
+              <td>
+                <b>{{ h.translate('coached_by') }} :</b> &nbsp;
+                <span>{{ m.render.coachedBy(data.coached_by) }}</span>
+              </td>
+            </tr>
+
+            <tr>
+              <td>
+                <div style="margin-bottom: 10px">
+                  <b>{{ h.translate('people_group') }} </b>
+                </div>
+                <n-space
+                  :size="10"
+                  v-if="dataPeopleGroups"
+                >
+                  <n-tag
+                    v-for="pg in dataPeopleGroups"
+                    type="default"
+                  >
+                    {{ "name" in pg ? (pg as any).name : "N/A" }}
+                  </n-tag>
+                </n-space>
+              </td>
+            </tr>
+
+            <tr>
+              <td colspan="4">
+                <div style="margin-bottom: 10px"><b>{{ h.translate('faith_milestones') }}</b></div>
 
                 <div>
-                  {{ data.current_prayers }}
+                  <div
+                    v-for="fm in d.faithMilestones"
+                    :key="fm.id"
+                    :class="`wrap-faith-milestones ${m.handle.hasFaithMilestone(fm.id) ? '' : 'not-included'}`"
+                    style="display: block !important; margin-bottom: 10px;"
+                  >
+                    <n-image
+                      width="20"
+                      lazy
+                      :src="useRuntimeConfig().public.rootURL + fm.icon"
+                      style="margin-right: 10px"
+                    />
+
+                    {{ fm.name }}
+                  </div>
                 </div>
-              </n-space>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+              </td>
+            </tr>
 
-      <table
-        v-else
-        class="table"
-      >
-        <tbody>
-          <tr>
-            <td colspan="2">
-              <b>{{ h.translate('name') }} :</b> &nbsp;
-              <span class="uppercase">{{ data.name }}</span>
-              <br />
-              <b>{{ h.translate('username') }} : </b> &nbsp; {{ data.nickname }}
-            </td>
-          </tr>
+            <tr style="height: 100%">
+              <td colspan="4">
+                <n-space vertical>
+                  <div><b>{{ h.translate('current_prayers') }}</b></div>
 
-          <tr>
-            <td style="width: 20%">
-              <b>{{ h.translate('contact_status') }} :</b> &nbsp;
-              <n-tag
-                :border="false"
-                type="info"
-              >
-                {{ m.contactStatus(data.contact_status_id as number) }}</n-tag>
-            </td>
-          </tr>
+                  <div>
+                    {{ data.current_prayers }}
+                  </div>
+                </n-space>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
 
-          <tr>
-            <td style="width: 20%">
-              <b>{{ h.translate('position') }} :</b> &nbsp;
-              <n-tag
-                :border="false"
-                type="info"
-              >
-                {{ m.faithStatus(data.position_id as number) }}
-              </n-tag>
-            </td>
-          </tr>
-
-          <tr>
-            <td style="width: 20%">
-              <b>{{ h.translate('gender') }} : </b> &nbsp;
-              <span class="uppercase">{{ data.gender }}</span>
-            </td>
-          </tr>
-
-          <tr>
-            <td style="width: 20%">
-              <b>{{ h.translate('age') }} : </b> &nbsp;
-              <span class="uppercase"> {{ data.age }}</span>
-            </td>
-          </tr>
-
-          <tr>
-            <td>
-              <b>{{ h.translate('assigned_to') }} :</b> &nbsp;
-              <span class="uppercase">{{
-                m.render.assignedTo(data.assigned_to)
-              }}</span>
-            </td>
-
-          </tr>
-
-          <tr>
-            <td>
-              <b>{{ h.translate('coached_by') }} :</b> &nbsp;
-              <span>{{ m.render.coachedBy(data.coached_by) }}</span>
-            </td>
-          </tr>
-
-          <tr>
-            <td>
-              <div style="margin-bottom: 10px">
-                <b>{{ h.translate('people_group') }} </b>
-              </div>
-              <n-space
-                :size="10"
-                v-if="dataPeopleGroups"
-              >
-                <n-tag
-                  v-for="pg in dataPeopleGroups"
-                  type="default"
-                >
-                  {{ "name" in pg ? (pg as any).name : "N/A" }}
-                </n-tag>
-              </n-space>
-            </td>
-          </tr>
-
-          <tr>
-            <td colspan="4">
-              <div style="margin-bottom: 10px"><b>{{ h.translate('faith_milestones') }}</b></div>
-
-              <div>
-                <div
-                  v-for="fm in d.faithMilestones"
-                  :key="fm.id"
-                  :class="`wrap-faith-milestones ${m.handle.hasFaithMilestone(fm.id) ? '' : 'not-included'}`"
-                  style="display: block !important; margin-bottom: 10px;"
-                >
-                  <n-image
-                    width="20"
-                    lazy
-                    :src="useRuntimeConfig().public.rootURL + fm.icon"
-                    style="margin-right: 10px"
-                  />
-
-                  {{ fm.name }}
-                </div>
-              </div>
-            </td>
-          </tr>
-
-          <tr style="height: 100%">
-            <td colspan="4">
-              <n-space vertical>
-                <div><b>{{ h.translate('current_prayers') }}</b></div>
-
-                <div>
-                  {{ data.current_prayers }}
-                </div>
-              </n-space>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-
-      <DisplaysMetaInfoViewTable :data="data" />
 
     </n-space>
   </div>
@@ -298,6 +347,7 @@ const h = useHelpers()
 const d = reactive({
   faithMilestones: [] as any[],
 })
+console.log("+++++++++++dtat", p.data)
 
 const m = {
   userRole: (roleID: number) => {
@@ -312,11 +362,30 @@ const m = {
     return language ? language.name : "N/A"
   },
 
-  contactStatus: (contactStatusID: number) => {
-    let status = s.settings.options.contact.find(
-      (c: any) => c.value === contactStatusID,
-    )
-    return status ? h.translate(h.toSnakeCase(status.label)) : "N/A"
+  activeStatus: (status: boolean) => {
+
+    return status ? h.translate("active") : h.translate("inactive")
+  },
+
+  baptizedBy: () => {
+    let name
+    if (p.data.baptized_by_name != null) {
+      name = p.data.baptized_by_name
+    }
+    if (p.data.baptized_by != null) {
+      name = p.data.baptized_by.name
+    }
+    return name
+  },
+
+  baptismDate: () => {
+    let date
+
+    if (p.data.baptism_date) {
+      date = new Date(p.data.baptism_date).toISOString().split("T")[0]
+    }
+    return date
+
   },
 
   faithStatus: (faithStatusID: number) => {
@@ -335,6 +404,8 @@ const m = {
         : ""
     },
   },
+
+
 
   render: {
     assignedTo: (at: any) => {
